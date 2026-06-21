@@ -1,74 +1,116 @@
-# ProgrammersArena React Frontend
+# ProgrammersArena Frontend
 
-This is the React frontend for ProgrammersArena, an online contest platform that supports input/output problems and ICPC-like contests. The frontend is built with React and styled using Tailwind CSS.
+React frontend for ProgrammersArena, an online contest platform. Built with React, Vite, and Tailwind CSS.
 
 ## Table of Contents
 
+- [Prerequisites](#prerequisites)
 - [Installation](#installation)
-- [Building the Project](#building-the-project)
-- [Running the Project](#running-the-project)
-- [Usage](#usage)
-- [License](#license)
+- [Configuration](#configuration)
+- [Development](#development)
+- [Building](#building)
+
+## Prerequisites
+
+- Node.js 18+
+- npm or yarn
 
 ## Installation
 
-### Prerequisites
+### Clone Repository
 
-- Node.js: Ensure Node.js is installed on your system. You can download it from [here](https://nodejs.org/).
-
-### Clone the Repository
-
-If you haven't already, clone the project repository from GitHub:
-
-```sh
+```bash
 git clone https://github.com/mali-ab/programmers-arena.git
-cd programmers-arena/react
+cd programmers-arena/frontend
 ```
 
-## Install Node.js Dependencies
+### Install Dependencies
 
-Navigate to the react directory and install the necessary dependencies:
-
-```sh
+```bash
 npm install
 ```
 
-### Building the Project
+## Configuration
 
-To build the project for production, run:
+### Environment Setup
 
-```sh
-npm run build
+Create `.env.local`:
+
+```env
+VITE_API_URL=http://localhost:8000/api
+VITE_APP_NAME=ProgrammersArena
 ```
 
-This will create an optimized production build in the build directory.
+Update `VITE_API_URL` to point to your backend API endpoint.
 
-### Running the Project
+## Development
 
-## Start Development Server
+### Start Development Server
 
-To start the development server, run:
-
-```sh
+```bash
 npm run dev
 ```
 
-This will run the app in development mode. Open http://localhost:3000 to view it in the browser. The page will reload if you make edits.
+Opens http://localhost:5173 in development mode with hot module reloading.
 
-### Usage
+### With Docker Compose
 
-## Access the Application
+```bash
+docker-compose up --build
+```
 
-- Access the React frontend at http://localhost:3000 when running locally.
-- The frontend interacts with the Laravel backend to provide features for participating in contests.
+Runs frontend at http://localhost:3000 via Nginx.
 
-### License
+## Building
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+### Production Build
 
-### Additional Notes
+```bash
+npm run build
+```
 
-- **Environment Configuration:** If your React app requires environment variables, make sure to create a `.env` file in the `react` directory and add the necessary configurations.
-- **Backend Integration:** Ensure the Laravel backend is running and accessible by the React frontend.
+Creates optimized production build in `dist/` directory.
 
-Feel free to adjust paths, repository URLs, and configurations based on your project's specifics.
+### Preview Build
+
+```bash
+npm run preview
+```
+
+Serves the production build locally.
+
+## Project Structure
+
+```
+src/
+├── components/      # Reusable React components
+├── contexts/        # Context providers
+├── views/           # Page/view components
+├── lang/            # Internationalization
+├── ckeditor/        # Rich text editor integration
+├── App.jsx          # Root component
+├── main.jsx         # Entry point
+├── router.jsx       # Route definitions
+├── index.css        # Global styles
+└── axios.js         # HTTP client
+```
+
+## Features
+
+- Real-time contest participation
+- Code editor with syntax highlighting
+- Submission tracking
+- Standings display
+- User profile management
+
+## Backend Integration
+
+Frontend communicates with Laravel backend API at the configured `VITE_API_URL`.
+
+For local development, ensure:
+- Backend is running on `http://localhost:8000`
+- CORS is configured to allow requests from `http://localhost:5173`
+
+## License
+
+MIT

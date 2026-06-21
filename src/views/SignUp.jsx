@@ -60,11 +60,12 @@ export default function SignUp() {
   if (loading) return <Loading />;
 
   return (
-    <div className="max-w-md w-full space-y-8">
-      <div className="flex items-center justify-center">
-        <img className="h-32" src="/logo.png" alt="logo" />
-      </div>
-      <div>
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50">
+      <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-3xl shadow-xl ring-1 ring-slate-200">
+        <div className="flex items-center justify-center">
+          <img className="h-24" src="/logo.png" alt="logo" />
+        </div>
+        <div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           {t("auth.register-text")}
         </h2>
@@ -208,11 +209,12 @@ export default function SignUp() {
             <select
               id="country"
               name="country"
-              onChange={(ev) => setCountryId(ev.target.value)}
+              value={countryId}
+              onChange={(ev) => setCountryId(parseInt(ev.target.value, 10))}
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               {countries.map((country) => (
-                <option key={country.id} value={country.id} selected={country.name === 'Turkmenistan'}>
+                <option key={country.id} value={country.id}>
                   {country.name}
                 </option>
               ))}
@@ -223,13 +225,13 @@ export default function SignUp() {
         <div className="space-y-2">
           <button
             type="submit"
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             {t("auth.sign-up")}
           </button>
           <Link
             to="/"
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
           >
             {t("auth.back")}
           </Link>

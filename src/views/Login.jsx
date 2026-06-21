@@ -49,11 +49,12 @@ export default function Login() {
   if (loading) return <Loading />;
 
   return (
-    <div className="max-w-md w-full space-y-8">
-      <div className="flex items-center justify-center">
-        <img className="h-32" src="/logo.png" alt="logo" />
-      </div>
-      <div>
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50">
+      <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-3xl shadow-xl ring-1 ring-slate-200">
+        <div className="flex items-center justify-center">
+          <img className="h-24" src="/logo.png" alt="logo" />
+        </div>
+        <div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           {t("auth.login-text")}
         </h2>
@@ -135,13 +136,13 @@ export default function Login() {
         <div className="space-y-2">
           <button
             type="submit"
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             {t("auth.login")}
           </button>
           <Link
             to="/"
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
           >
             {t("auth.back")}
           </Link>

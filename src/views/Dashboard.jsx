@@ -37,29 +37,35 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl py-10 sm:px-6 lg:px-8">
       <div className="container mx-auto px-4">
-        <div className="space-y-6">
+        <div className="mb-8 rounded-3xl bg-slate-900 p-8 text-white shadow-xl ring-1 ring-slate-200/20">
+          <h1 className="text-3xl font-semibold tracking-tight">Latest updates</h1>
+          <p className="mt-2 text-slate-300">Stay on top of announcements, contest news, and platform updates.</p>
+        </div>
+        <div className="grid gap-6 lg:grid-cols-2">
           {blogs.map((blog, index) => (
-            <div
+            <article
               key={index}
-              className="bg-white p-6 border-l-4 border-blue-500 rounded-r-lg shadow-md w-full"
+              className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-lg transition hover:-translate-y-1 hover:shadow-2xl"
             >
-              <div className="font-bold text-2xl mb-2">{blog.title}</div>
+              <div className="mb-4 text-xl font-semibold text-slate-900">{blog.title}</div>
               <div
+                className="text-slate-700 mb-5 overflow-hidden max-h-28"
                 dangerouslySetInnerHTML={{ __html: blog.description }}
-                className="text-gray-700 mb-4"
-              ></div>
-              <div className="text-gray-600 text-sm flex items-center">
-                <CalendarDaysIcon className="h-5 w-5 mr-1" />
-                <FormatToUTC dateTime={blog.createdAt} />
+              />
+              <div className="flex items-center justify-between text-sm text-slate-500">
+                <div className="inline-flex items-center gap-2">
+                  <CalendarDaysIcon className="h-5 w-5" />
+                  <span><FormatToUTC dateTime={blog.createdAt} /></span>
+                </div>
               </div>
-            </div>
+            </article>
           ))}
         </div>
 
         {blogs.length > 0 && (
-          <div className="mt-6">
+          <div className="mt-10">
             <PaginationLinks meta={meta} onPageClick={onPageClick} />
           </div>
         )}

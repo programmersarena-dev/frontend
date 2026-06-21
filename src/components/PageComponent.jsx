@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Disclosure, Menu } from "@headlessui/react";
 import { Bars3Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Outlet, NavLink, Link } from "react-router-dom";
+import { Outlet, NavLink, Link, useLocation } from "react-router-dom";
 import { useStateContext } from "../contexts/ContextProvider";
 import axiosClient from "../axios";
 import Loading from "./core/Loading";
 import ReactCountryFlag from "react-world-flags";
 
 const availableLanguages = [
-  { code: 'US', label: 'United Kingdom', title: 'en' },
+  { code: 'US', label: 'United States', title: 'en' },
   { code: 'RU', label: 'Russia', title: 'ru' },
   { code: 'TM', label: 'Turkmenistan', title: 'tm' },
 ];
@@ -18,6 +18,7 @@ function classNames(...classes) {
 }
 
 export default function PageComponent() {
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const { currentUser, logout, lang, setLang, t } = useStateContext();
 
@@ -45,8 +46,8 @@ export default function PageComponent() {
   if (loading) return <Loading />;
 
   return (
-    <div className="min-h-full">
-      <Disclosure as="nav" className="bg-gray-800">
+    <div className="min-h-full bg-slate-50 text-slate-900">
+      <Disclosure as="nav" className="bg-white shadow-sm border-b border-slate-200">
         {({ open }) => (
           <>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -68,12 +69,13 @@ export default function PageComponent() {
                           className={({ isActive }) => {
                             const active =
                               isActive ||
-                              location.pathname.startsWith(item.to.substring(0, 5));
+                              location.pathname === item.to ||
+                              location.pathname.startsWith(item.to + "/");
                             return classNames(
                               active
-                                ? "bg-gray-900 text-white"
-                                : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                              "rounded-md px-3 py-2 text-sm font-medium"
+                                ? "bg-slate-900 text-white"
+                                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+                              "rounded-full px-4 py-2 text-sm font-medium transition"
                             );
                           }}
                         >
@@ -84,15 +86,20 @@ export default function PageComponent() {
                   </div>
                 </div>
                 <div className="hidden md:flex items-center">
-                  <ul className="flex text-white">
+                  <ul className="flex items-center gap-2">
                     {availableLanguages.map((language) => (
-                      <li key={language.code} className="px-2">
+                      <li key={language.code}>
                         <button
-                          className={`language-btn ${lang === language.title ? 'active' : ''}`}
+                          className={classNames(
+                            "inline-flex items-center justify-center rounded-full border px-2 py-1 transition",
+                            lang === language.title
+                              ? "border-slate-900 bg-slate-900 text-white"
+                              : "border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-100"
+                          )}
                           onClick={() => changeLanguage(language.title)}
                           disabled={loading}
                         >
-                          <ReactCountryFlag code={language.code} svg style={{ width: '24px', height: '24px' }} />
+                          <ReactCountryFlag code={language.code} svg style={{ width: '20px', height: '20px' }} />
                         </button>
                       </li>
                     ))}
@@ -101,17 +108,17 @@ export default function PageComponent() {
                     <div className="ml-4 flex items-center md:ml-6">
                       {currentUser && (
                         <Menu as="div" className="ml-3">
-                          <div className="flex  text-white">
+                            <div className="flex text-slate-700">
                             <Link
                               to={`/profile/${currentUser.name}`}
-                              className={"block px-4 py-2 text-sm border-r-2 "}
+                              className="block px-4 py-2 text-sm border-r-2 border-slate-300 hover:text-slate-900"
                             >
                               {currentUser.name}
                             </Link>
 
                             <button
                               onClick={(ev) => logout(ev)}
-                              className={"block px-4 py-2 text-sm "}
+                              className="block px-4 py-2 text-sm text-slate-700 hover:text-slate-900"
                             >
                               {t("auth.logout")}
                             </button>
@@ -120,7 +127,7 @@ export default function PageComponent() {
                       )}
                       {!currentUser && (
                         <Menu as="div" className="ml-3">
-                          <div className="flex  text-white">
+                          <div className="flex text-slate-700">
                             <Link
                               to="/sign-up"
                               className="block px-4 py-2 text-sm border-r-2"
@@ -162,14 +169,13 @@ export default function PageComponent() {
                     className={({ isActive }) => {
                       const active =
                         isActive ||
-                        location.pathname.includes(
-                          item.to === "/" ? "blogs" : item.to.substring(0, 3)
-                        );
+                        location.pathname === item.to ||
+                        location.pathname.startsWith(item.to + "/");
                       return classNames(
                         active
-                          ? "bg-gray-900 text-white"
-                          : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                        "block rounded-md px-3 py-2 text-base font-medium"
+                          ? "bg-slate-900 text-white"
+                          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+                        "block rounded-full px-3 py-2 text-base font-medium transition"
                       );
                     }}
                   >
@@ -177,19 +183,25 @@ export default function PageComponent() {
                   </NavLink>
                 ))}
               </div>
-              <ul className="flex items-center justify-center text-white p-2">
-                {availableLanguages.map((language) => (
-                  <li key={language.code} className="px-2">
+              <div className="px-2 pb-3 pt-2 sm:px-3">
+                <div className="flex flex-wrap items-center gap-2 justify-center">
+                  {availableLanguages.map((language) => (
                     <button
-                      className={`language-btn ${lang === language.code ? 'active' : ''}`}
-                      onClick={() => changeLanguage(language.code)}
+                      key={language.code}
+                      className={classNames(
+                        "inline-flex items-center justify-center rounded-full border px-2 py-1 transition",
+                        lang === language.title
+                          ? "border-slate-900 bg-slate-900 text-white"
+                          : "border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-100"
+                      )}
+                      onClick={() => changeLanguage(language.title)}
                       disabled={loading}
                     >
-                      <ReactCountryFlag code={language.code} svg style={{ width: '24px', height: '24px' }} />
+                      <ReactCountryFlag code={language.code} svg style={{ width: '20px', height: '20px' }} />
                     </button>
-                  </li>
-                ))}
-              </ul>
+                  ))}
+                </div>
+              </div>
               {currentUser && (
                 <div className="border-t border-gray-700 pb-3 pt-4">
                   <div className="flex items-center px-5">
