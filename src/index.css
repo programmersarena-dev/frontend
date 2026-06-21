@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Force CKEditor dropdown panels to position above the toolbar */
+.ck-rounded-corners .ck.ck-dropdown__panel,
+.ck.ck-dropdown__panel {
+    top: auto !important;
+    bottom: 100% !important;
+    margin-bottom: 5px !important; /* Space between toolbar and dropdown */
+    margin-top: 0 !important;
+}
+
+/* Ensure the animation/transition originates from the bottom */
+.ck.ck-dropdown__panel_se,
+.ck.ck-dropdown__panel_sw {
+    transform-origin: bottom !important;
+}
