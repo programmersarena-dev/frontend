@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import FormatToUTC from "../core/FormatToUTC";
 import UserCodeModal from "../UserCodeModal";
 import { useStateContext } from "../../contexts/ContextProvider";
-import axiosClient from "../../axios";
+import axiosClient from "@/api/axios";
 import SubmissionVerdict from "./SubmissionVerdict";
 import { Link } from "react-router-dom";
 

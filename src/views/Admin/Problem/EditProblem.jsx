@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import axiosClient from "../../../axios";
+import axiosClient from "@/api/axios";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Textarea } from "@/components/ui";
 import { Button, Input, Tabs, Tab } from "@/components/ui";

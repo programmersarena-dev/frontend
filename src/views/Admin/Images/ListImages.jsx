@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axiosClient from "../../../axios";
+import axiosClient from "@/api/axios";
 import { useStateContext } from "../../../contexts/ContextProvider";
 
 const ListImages = ({ onDelete }) => {

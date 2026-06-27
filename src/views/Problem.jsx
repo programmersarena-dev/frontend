@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axiosClient from "../axios";
+import axiosClient from "@/api/axios";
 import Loading from "../components/core/Loading";
 import { useStateContext } from "../contexts/ContextProvider";
 import ProblemSidebar from "../components/Problemset/ProblemSidebar";

@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import axiosClient from "../axios";
+import axiosClient from "@/api/axios";
 import { useEffect, useState } from "react";
 import Loading from "./core/Loading";
 import { useStateContext } from "../contexts/ContextProvider";

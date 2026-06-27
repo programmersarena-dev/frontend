@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosClient from "@/axios";
+import axiosClient from "@/api/axios";
 import AdminPageHeader from "@/components/Admin/PageHeader";
 import AdminComponent from "@/components/Admin/AdminComponent";
 import AdminContestOfficialCheckBox from "@/components/Admin/AdminContestOfficialCheckBox";

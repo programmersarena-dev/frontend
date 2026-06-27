@@ -1,8 +1,8 @@
 import { createContext, useContext, useState } from "react";
 import en from "../lang/en.json";
-import tm from "../lang/tm.json";
+import tm from "../lang/tk.json";
 import ru from "../lang/ru.json";
-import axiosClient from "../axios";
+import axiosClient from "@/api/axios";
 
 const StateContext = createContext({
   currentUser: {},

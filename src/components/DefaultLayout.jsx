@@ -1,42 +1,16 @@
 import { useEffect, useState } from "react";
-import axiosClient from "../axios";
+import axiosClient from "@/api/axios";
 import { Outlet, useLocation } from "react-router-dom";
-import Loading from "./core/Loading";
-import { useStateContext } from "../contexts/ContextProvider";
-import Toast from "./core/Toast";
+import Loading from "@/components/core/Loading";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function DefaultLayout() {
-  const { currentUser, setCurrentUser, setLang } = useStateContext();
+  const { user } = useAuth();
   const location = useLocation();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const [user, lang] = await Promise.all([
-          axiosClient.get('/me'),
-          axiosClient.get('/lang'),
-        ]);
-        setCurrentUser(user.data);
-        setLang(lang.data);
-      } catch (err) {
-        console.error('Error fetching data:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      setLoading(false);
-    };
-  }, []);
 
   useEffect(() => {
     const fetchUserActivity = () => {
-      if (currentUser) axiosClient.get("/user-activity");
+      if (user) axiosClient.get("/auth/activity");
     };
     fetchUserActivity();
     const intervalId = setInterval(fetchUserActivity, 60000);
@@ -47,12 +21,9 @@ export default function DefaultLayout() {
     window.scrollTo(0, 0);
   }, [location]);
 
-  if (loading) return <Loading />;
-
   return (
-    <>
+    <div className="min-h-screen bg-[#09090b]">
       <Outlet />
-      <Toast />
-    </>
+    </div>
   );
 }

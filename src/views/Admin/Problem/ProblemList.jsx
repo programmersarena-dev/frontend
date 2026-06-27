@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Loading from "@/components/core/Loading";
 import { Link, useParams } from "react-router-dom";
-import axiosClient from "@/axios";
+import axiosClient from "@/api/axios";
 import {
   ArrowLeftIcon,
   PencilIcon,

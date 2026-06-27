@@ -1,242 +1,292 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axiosClient from "../axios.js";
-import { useStateContext } from "../contexts/ContextProvider.jsx";
-import Loading from "../components/core/Loading.jsx";
+import axiosClient from "@/api/axios";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 export default function SignUp() {
-  const { setCurrentUser, setUserToken, showToast, t } = useStateContext();
-  const [username, setUserName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [countryId, setCountryId] = useState(181);
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const { setUser } = useAuth();
+  const { addToast } = useToast();
+  const { __ } = useTranslation();
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    handle: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
+    first_name: "",
+    last_name: "",
+    country_id: 181,
+  });
+
   const [countries, setCountries] = useState([]);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+
+  const handleChange = (ev) => {
+    const { name, value } = ev.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "country_id" ? parseInt(value, 10) || "" : value,
+    }));
+
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
 
   const onSubmit = (ev) => {
     ev.preventDefault();
     setLoading(true);
+    setErrors({});
+
     axiosClient
-      .post("/sign-up", {
-        name: username,
-        email,
-        password,
-        password_confirmation: passwordConfirmation,
-        first_name: firstName,
-        last_name: lastName,
-        country_id: countryId,
-      })
+      .post("/auth/signup", formData)
       .then(({ data }) => {
         setLoading(false);
-        showToast(data.message);
-        setCurrentUser(data.user);
-        setUserToken(data.token);
-        return navigate("/");
+        addToast(data.message || __("auth.success-register"), "success");
+
+        setUser(data.user);
+        if (data.token) {
+          localStorage.setItem("TOKEN", data.token);
+        }
+        navigate("/");
       })
       .catch((err) => {
         setLoading(false);
-        const serverErrors = err.response.data.errors;
-        setErrors({
-          name: serverErrors.name ? serverErrors.name[0] : "",
-          email: serverErrors.email ? serverErrors.email[0] : "",
-          password: serverErrors.password ? serverErrors.password[0] : "",
-          first_name: serverErrors.first_name ? serverErrors.first_name[0] : "",
-          last_name: serverErrors.last_name ? serverErrors.last_name[0] : "",
-        });
+        if (err.response && err.response.status === 422) {
+          const serverErrors = err.response.data.errors || {};
+          const mappedErrors = {};
+          Object.keys(serverErrors).forEach((key) => {
+            mappedErrors[key] = serverErrors[key][0];
+          });
+          setErrors(mappedErrors);
+        } else {
+          addToast(__("auth.error-generic") || "An unexpected error occurred.", "error");
+        }
       });
   };
 
   useEffect(() => {
-    axiosClient.get("/countries").then((res) => {
-      setCountries(res.data);
-    });
+    let isMounted = true;
+    axiosClient
+      .get("/countries")
+      .then((res) => {
+        if (isMounted) setCountries(res.data || []);
+      })
+      .catch(() => {
+        if (isMounted) addToast("Failed to load countries list", "error");
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  if (loading) return <Loading />;
-
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50">
-      <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-3xl shadow-xl ring-1 ring-slate-200">
-        <div className="flex items-center justify-center">
-          <img className="h-24" src="/logo.png" alt="logo" />
-        </div>
-        <div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          {t("auth.register-text")}
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          {t("auth.or")}{" "}
-          <Link
-            to="/login"
-            className="font-medium text-indigo-600 hover:text-indigo-500"
-          >
-            {t("auth.login-text")}
-          </Link>
-        </p>
-      </div>
-      <form onSubmit={onSubmit} className="mt-8 space-y-6">
-        <div className="rounded-md shadow-sm -space-y-px">
-          <div>
-            <label htmlFor="username" className="sr-only">
-              {t("auth.username")}
-            </label>
-            <input
-              id="username"
-              name="username"
-              type="text"
-              required
-              value={username}
-              onChange={(ev) => setUserName(ev.target.value)}
-              className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${errors.name ? "border-red-500" : "border-gray-300"
-                } placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-              placeholder="Ulanyjy ady"
-            />
-            {errors.name && (
-              <p className="mt-2 text-sm text-red-600">{errors.name}</p>
-            )}
-          </div>
-          <div>
-            <label htmlFor="email" className="sr-only">
-              {t("auth.email")}
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={(ev) => setEmail(ev.target.value)}
-              className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${errors.email ? "border-red-500" : "border-gray-300"
-                } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-              placeholder="E-poçta salgysy"
-            />
-            {errors.email && (
-              <p className="mt-2 text-sm text-red-600">{errors.email}</p>
-            )}
-          </div>
-          <div>
-            <label htmlFor="password" className="sr-only">
-              {t("auth.password")}
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(ev) => setPassword(ev.target.value)}
-              className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${errors.password ? "border-red-500" : "border-gray-300"
-                } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-              placeholder="Parol"
-            />
-            {errors.password && (
-              <p className="mt-2 text-sm text-red-600">{errors.password}</p>
-            )}
-          </div>
-          <div>
-            <label htmlFor="password-confirmation" className="sr-only">
-              {t("auth.confirm-password")}
-            </label>
-            <input
-              id="password-confirmation"
-              name="password_confirmation"
-              type="password"
-              required
-              value={passwordConfirmation}
-              onChange={(ev) => setPasswordConfirmation(ev.target.value)}
-              className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${errors.password_confirmation ? "border-red-500" : "border-gray-300"
-                } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-              placeholder="Paroly tassyklamak"
-            />
-            {errors.password_confirmation && (
-              <p className="mt-2 text-sm text-red-600">
-                {errors.password_confirmation}
-              </p>
-            )}
-          </div>
-          <div>
-            <label htmlFor="first-name" className="sr-only">
-              {t("auth.first-name")}
-            </label>
-            <input
-              id="first-name"
-              name="first_name"
-              type="text"
-              required
-              value={firstName}
-              onChange={(ev) => setFirstName(ev.target.value)}
-              className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${errors.first_name ? "border-red-500" : "border-gray-300"
-                } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-              placeholder="Ady"
-            />
-            {errors.first_name && (
-              <p className="mt-2 text-sm text-red-600">{errors.first_name}</p>
-            )}
-          </div>
-          <div>
-            <label htmlFor="last-name" className="sr-only">
-              {t("auth.last-name")}
-            </label>
-            <input
-              id="last-name"
-              name="last_name"
-              type="text"
-              required
-              value={lastName}
-              onChange={(ev) => setLastName(ev.target.value)}
-              className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${errors.last_name ? "border-red-500" : "border-gray-300"
-                } placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-              placeholder="Familiýasy"
-            />
-            {errors.last_name && (
-              <p className="mt-2 text-sm text-red-600">{errors.last_name}</p>
-            )}
-          </div>
-        </div>
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-900 transition-colors duration-300">
+      <div className="w-full max-w-md space-y-8 bg-slate-950 p-8 rounded-3xl shadow-2xl border border-slate-800/60">
 
-        <div>
-          <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">
-            {t("auth.country")}
-          </label>
-          <div className="mt-2">
-            <select
-              id="country"
-              name="country"
-              value={countryId}
-              onChange={(ev) => setCountryId(parseInt(ev.target.value, 10))}
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+        <div className="flex flex-col items-center justify-center">
+          <img className="h-20 w-auto object-contain mb-4" src="/logo.png" alt="ProgrammersArena Logo" />
+          <h2 className="text-center text-3xl font-extrabold text-slate-100 tracking-tight">
+            {__("auth.register-text")}
+          </h2>
+          <p className="mt-2 text-center text-sm text-slate-400">
+            {__("auth.or")}{" "}
+            <Link
+              to="/login"
+              className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors focus:outline-none focus:underline"
             >
-              {countries.map((country) => (
-                <option key={country.id} value={country.id}>
-                  {country.name}
-                </option>
-              ))}
-            </select>
-          </div>
+              {__("auth.login-text")}
+            </Link>
+          </p>
         </div>
 
-        <div className="space-y-2">
-          <button
-            type="submit"
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            {t("auth.sign-up")}
-          </button>
-          <Link
-            to="/"
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
-          >
-            {t("auth.back")}
-          </Link>
-        </div>
-      </form>
+        <form onSubmit={onSubmit} className="space-y-5">
+          <div className="grid grid-cols-1 gap-4">
+
+            <div>
+              <label htmlFor="handle" className="block text-sm font-medium text-slate-300 mb-1">
+                {__("auth.handle")}
+              </label>
+              <input
+                id="handle"
+                name="handle"
+                type="text"
+                required
+                disabled={loading}
+                value={formData.handle}
+                onChange={handleChange}
+                className={`block w-full px-4 py-2.5 bg-slate-900 border ${errors.handle ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500" : "border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  } placeholder-slate-600 text-slate-200 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
+                placeholder="e.g., prog_tkm"
+              />
+              {errors.handle && (
+                <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.handle}</p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-1">
+                {__("auth.email")}
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                disabled={loading}
+                value={formData.email}
+                onChange={handleChange}
+                className={`block w-full px-4 py-2.5 bg-slate-900 border ${errors.email ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500" : "border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  } placeholder-slate-600 text-slate-200 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
+                placeholder="developer@programmersarena.com"
+              />
+              {errors.email && (
+                <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.email}</p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="first_name" className="block text-sm font-medium text-slate-300 mb-1">
+                  {__("auth.first-name")}
+                </label>
+                <input
+                  id="first_name"
+                  name="first_name"
+                  type="text"
+                  required
+                  disabled={loading}
+                  value={formData.first_name}
+                  onChange={handleChange}
+                  className={`block w-full px-4 py-2.5 bg-slate-900 border ${errors.first_name ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500" : "border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500"
+                    } placeholder-slate-600 text-slate-200 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
+                  placeholder="Oguz"
+                />
+                {errors.first_name && (
+                  <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.first_name}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="last_name" className="block text-sm font-medium text-slate-300 mb-1">
+                  {__("auth.last-name")}
+                </label>
+                <input
+                  id="last_name"
+                  name="last_name"
+                  type="text"
+                  required
+                  disabled={loading}
+                  value={formData.last_name}
+                  onChange={handleChange}
+                  className={`block w-full px-4 py-2.5 bg-slate-900 border ${errors.last_name ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500" : "border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500"
+                    } placeholder-slate-600 text-slate-200 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
+                  placeholder="Hanow"
+                />
+                {errors.last_name && (
+                  <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.last_name}</p>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="country_id" className="block text-sm font-medium text-slate-300 mb-1">
+                {__("auth.country")}
+              </label>
+              <select
+                id="country_id"
+                name="country_id"
+                disabled={loading}
+                value={formData.country_id}
+                onChange={handleChange}
+                className="block w-full px-4 py-2.5 bg-slate-900 border border-slate-700 focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-200 rounded-xl focus:outline-none text-sm transition duration-200 disabled:opacity-50"
+              >
+                {countries.map((country) => (
+                  <option key={country.id} value={country.id} className="bg-slate-950 text-slate-200">
+                    {country.name}
+                  </option>
+                ))}
+              </select>
+              {errors.country_id && (
+                <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.country_id}</p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-1">
+                {__("auth.password")}
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="new-password"
+                required
+                disabled={loading}
+                value={formData.password}
+                onChange={handleChange}
+                className={`block w-full px-4 py-2.5 bg-slate-900 border ${errors.password ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500" : "border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  } placeholder-slate-600 text-slate-200 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
+                placeholder="••••••••"
+              />
+              {errors.password && (
+                <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.password}</p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="password_confirmation" className="block text-sm font-medium text-slate-300 mb-1">
+                {__("auth.confirm-password")}
+              </label>
+              <input
+                id="password_confirmation"
+                name="password_confirmation"
+                type="password"
+                autoComplete="new-password"
+                required
+                disabled={loading}
+                value={formData.password_confirmation}
+                onChange={handleChange}
+                className={`block w-full px-4 py-2.5 bg-slate-900 border ${errors.password_confirmation ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500" : "border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  } placeholder-slate-600 text-slate-200 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
+                placeholder="••••••••"
+              />
+              {errors.password_confirmation && (
+                <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.password_confirmation}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="pt-2 space-y-3">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/40 active:bg-indigo-700 transition duration-200 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+            >
+              {loading && (
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+              )}
+              {loading ? __("auth.processing") || "Processing..." : __("auth.sign-up")}
+            </button>
+
+            <Link
+              to="/"
+              className="w-full flex justify-center py-2.5 px-4 border border-slate-700 text-sm font-semibold rounded-xl text-slate-300 bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-700/40 transition duration-200 text-center"
+            >
+              {__("auth.back")}
+            </Link>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

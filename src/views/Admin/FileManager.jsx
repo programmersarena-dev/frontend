@@ -9,7 +9,7 @@ import {
   ArrowLeftIcon,
 } from '@heroicons/react/24/outline';
 import AdminComponent from '../../components/Admin/AdminComponent';
-import axiosClient from '@/axios';
+import axiosClient from '@/api/axios';
 
 export default function FileManager() {
   const [files, setFiles] = useState([]);

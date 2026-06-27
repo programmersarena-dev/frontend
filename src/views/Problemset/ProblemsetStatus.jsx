@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axiosClient from "../../axios";
+import axiosClient from "@/api/axios";
 import Loading from "../../components/core/Loading";
 import { useLocation, useParams } from "react-router-dom";
 import SubmissionsList from "../../components/Submissions/SubmissionsList";
@@ -42,8 +42,7 @@ export default function ProblemsetStatus() {
   useEffect(() => {
     const pollSubmissions = () => {
       const compilingOrRunningSubmissions = submissions.filter(
-        (submission) =>
-          submission.verdict.startsWith("Compiling")
+        (submission) => submission.verdict?.startsWith("Compiling")
       );
 
       compilingOrRunningSubmissions.forEach((submission) => {
@@ -54,7 +53,7 @@ export default function ProblemsetStatus() {
             setSubmissions((prevSubmissions) =>
               prevSubmissions.map((sub) =>
                 sub.id === updatedSubmission.id
-                  ? { ...sub, verdict: updatedSubmission.verdict, time: updatedSubmission.time,memory: updatedSubmission.memory}
+                  ? { ...sub, verdict: updatedSubmission.verdict, time: updatedSubmission.time, memory: updatedSubmission.memory }
                   : sub
               )
             );

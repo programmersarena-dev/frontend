@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import axiosClient from "../axios.js";
-import Loading from "../components/core/Loading.jsx";
-import FormatToUTC from "../components/core/FormatToUTC.jsx";
-import PaginationLinks from "../components/core/PaginationLinks.jsx";
+import axiosClient from "@/api/axios";
+import Loading from "@/components/core/Loading.jsx";
+import FormatToUTC from "@/components/core/FormatToUTC.jsx";
+import PaginationLinks from "@/components/core/PaginationLinks.jsx";
 import { CalendarDaysIcon } from "@heroicons/react/24/outline";
 
 export default function Dashboard() {

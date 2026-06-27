@@ -1,14 +1,20 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
-import router from "./router.jsx";
+import "@/index.css";
+import router from "@/router";
 import { RouterProvider } from "react-router-dom";
-import { ContextProvider } from "./contexts/ContextProvider.jsx";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ToastProvider } from "@/contexts/ToastContext";
+import { TranslationProvider } from "@/contexts/TranslationContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ContextProvider>
-      <RouterProvider router={router} />
-    </ContextProvider>
+    <AuthProvider>
+      <ToastProvider>
+        <TranslationProvider>
+          <RouterProvider router={router} />
+        </TranslationProvider>
+      </ToastProvider>
+    </AuthProvider>
   </React.StrictMode>
 );

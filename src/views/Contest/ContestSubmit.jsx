@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "../../components/core/Loading";
-import axiosClient from "../../axios";
+import axiosClient from "@/api/axios";
 import { useStateContext } from "../../contexts/ContextProvider";
 
 export default function ContestSubmit() {

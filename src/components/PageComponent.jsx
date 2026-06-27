@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { Disclosure, Menu } from "@headlessui/react";
-import { Bars3Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Outlet, NavLink, Link, useLocation } from "react-router-dom";
-import { useStateContext } from "../contexts/ContextProvider";
-import axiosClient from "../axios";
-import Loading from "./core/Loading";
+import { Bars3Icon, UserIcon, XMarkIcon, ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
+import { Outlet, NavLink, Link, useLocation, useNavigate } from "react-router-dom";
+import axiosClient from "@/api/axios";
+import Loading from "@/components/core/Loading";
 import ReactCountryFlag from "react-world-flags";
+import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 const availableLanguages = [
   { code: 'US', label: 'United States', title: 'en' },
   { code: 'RU', label: 'Russia', title: 'ru' },
-  { code: 'TM', label: 'Turkmenistan', title: 'tm' },
+  { code: 'TM', label: 'Turkmenistan', title: 'tk' },
 ];
 
 function classNames(...classes) {
@@ -19,26 +20,45 @@ function classNames(...classes) {
 
 export default function PageComponent() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const { currentUser, logout, lang, setLang, t } = useStateContext();
+  const { user, setUser, currentLang, setCurrentLang } = useAuth();
+  const { __ } = useTranslation();
 
   const navigation = [
-    { name: t("navigation.notifications"), to: "/blogs" },
-    { name: t("navigation.contests"), to: "/contests" },
-    { name: t("navigation.archive"), to: "/problemset" },
-    { name: t("navigation.ratings"), to: "/ratings" },
+    { name: __("navigation.notifications"), to: "/blogs" },
+    { name: __("navigation.contests"), to: "/contests" },
+    { name: __("navigation.archive"), to: "/problemset" },
+    { name: __("navigation.ratings"), to: "/ratings" },
   ];
 
   const changeLanguage = (language) => {
     setLoading(true);
     axiosClient
-      .post(`/lang/${language}`)
+      .post(`/locale/`, { lang: language })
       .then(() => {
-        setLang(language);
+        setCurrentLang(language);
         setLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        console.error("Language switch error:", error);
+        setLoading(false);
+      });
+  };
+
+  const logout = (ev) => {
+    ev.preventDefault();
+    setLoading(true);
+    axiosClient
+      .post("/auth/logout")
+      .then(() => {
+        setUser(null);
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.error("Logout failed:", error);
+      })
+      .finally(() => {
         setLoading(false);
       });
   };
@@ -46,221 +66,239 @@ export default function PageComponent() {
   if (loading) return <Loading />;
 
   return (
-    <div className="min-h-full bg-slate-50 text-slate-900">
-      <Disclosure as="nav" className="bg-white shadow-sm border-b border-slate-200">
+    <div className="min-h-full bg-slate-900 text-zinc-100 selection:bg-emerald-500/30 selection:text-emerald-400 antialiased">
+      <Disclosure as="nav" className="bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 border-b border-zinc-800/80 header-glow">
         {({ open }) => (
           <>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="flex h-16 items-center justify-between">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
+                <div className="flex items-center gap-8">
+                  <Link to="/" className="flex-shrink-0 transition transform hover:scale-105">
                     <img
-                      className="h-8"
+                      className="h-8 w-auto brightness-110 contrast-125"
                       src="/logo.png"
                       alt="Programmers Arena"
                     />
-                  </div>
+                  </Link>
                   <div className="hidden md:block">
-                    <div className="ml-10 flex items-baseline space-x-4">
-                      {navigation.map((item) => (
-                        <NavLink
-                          key={item.name}
-                          to={item.to}
-                          className={({ isActive }) => {
-                            const active =
-                              isActive ||
-                              location.pathname === item.to ||
-                              location.pathname.startsWith(item.to + "/");
-                            return classNames(
+                    <div className="flex items-center space-x-1">
+                      {navigation.map((item) => {
+                        const active = location.pathname === item.to || location.pathname.startsWith(item.to + "/");
+                        return (
+                          <NavLink
+                            key={item.name}
+                            to={item.to}
+                            className={classNames(
                               active
-                                ? "bg-slate-900 text-white"
-                                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
-                              "rounded-full px-4 py-2 text-sm font-medium transition"
-                            );
-                          }}
-                        >
-                          {item.name}
-                        </NavLink>
-                      ))}
+                                ? "text-emerald-400 bg-zinc-900/60"
+                                : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900/30",
+                              "rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 relative group"
+                            )}
+                          >
+                            <span>{item.name}</span>
+                            {active && (
+                              <span className="absolute bottom-0 left-4 right-4 h-[2px] bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
+                            )}
+                          </NavLink>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
-                <div className="hidden md:flex items-center">
-                  <ul className="flex items-center gap-2">
+
+                <div className="hidden md:flex items-center gap-6">
+                  {/* Language Selector */}
+                  <ul className="flex items-center gap-1.5 bg-zinc-900/80 p-1 rounded-xl border border-zinc-800">
                     {availableLanguages.map((language) => (
                       <li key={language.code}>
                         <button
                           className={classNames(
-                            "inline-flex items-center justify-center rounded-full border px-2 py-1 transition",
-                            lang === language.title
-                              ? "border-slate-900 bg-slate-900 text-white"
-                              : "border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-100"
+                            "inline-flex items-center justify-center rounded-lg px-2.5 py-1 transition-all duration-200",
+                            currentLang === language.title
+                              ? "bg-zinc-800 text-emerald-400 border border-zinc-700/50 shadow-sm"
+                              : "text-zinc-500 hover:text-zinc-300 border border-transparent"
                           )}
                           onClick={() => changeLanguage(language.title)}
                           disabled={loading}
+                          title={language.label}
                         >
-                          <ReactCountryFlag code={language.code} svg style={{ width: '20px', height: '20px' }} />
+                          <ReactCountryFlag code={language.code} style={{ width: '18px', height: '18px', borderRadius: '2px', objectFit: 'cover' }} />
                         </button>
                       </li>
                     ))}
                   </ul>
-                  <div className="hidden md:block">
-                    <div className="ml-4 flex items-center md:ml-6">
-                      {currentUser && (
-                        <Menu as="div" className="ml-3">
-                            <div className="flex text-slate-700">
-                            <Link
-                              to={`/profile/${currentUser.name}`}
-                              className="block px-4 py-2 text-sm border-r-2 border-slate-300 hover:text-slate-900"
-                            >
-                              {currentUser.name}
-                            </Link>
 
-                            <button
-                              onClick={(ev) => logout(ev)}
-                              className="block px-4 py-2 text-sm text-slate-700 hover:text-slate-900"
-                            >
-                              {t("auth.logout")}
-                            </button>
-                          </div>
-                        </Menu>
-                      )}
-                      {!currentUser && (
-                        <Menu as="div" className="ml-3">
-                          <div className="flex text-slate-700">
-                            <Link
-                              to="/sign-up"
-                              className="block px-4 py-2 text-sm border-r-2"
-                            >
-                              {t("auth.sign-up")}
-                            </Link>
-                            <Link
-                              to="/login"
-                              className="block px-4 py-2 text-sm"
-                            >
-                              {t("auth.login")}
-                            </Link>
-                          </div>
-                        </Menu>
-                      )}
-                    </div>
+                  {/* Desktop User Panel */}
+                  <div className="flex items-center">
+                    {user ? (
+                      <Menu as="div" className="relative ml-3">
+                        <div className="flex items-center gap-1 bg-zinc-900/80 border border-zinc-800 rounded-xl p-1">
+                          <Link
+                            to={`/profile/${user.handle || user.name}`}
+                            className="flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-300 hover:text-emerald-400 font-medium transition rounded-lg hover:bg-zinc-800/40"
+                          >
+                            <div className="w-5 h-5 bg-emerald-500/10 rounded-md border border-emerald-500/20 flex items-center justify-center">
+                              <UserIcon className="w-3.5 h-3.5 text-emerald-400" />
+                            </div>
+                            <span>{user.handle || user.name}</span>
+                          </Link>
+
+                          <div className="w-[1px] h-5 bg-zinc-800 mx-1" />
+
+                          <button
+                            onClick={(ev) => logout(ev)}
+                            className="p-1.5 text-zinc-500 hover:text-rose-400 rounded-lg hover:bg-rose-500/10 transition"
+                            title={__("auth.logout")}
+                          >
+                            <ArrowRightOnRectangleIcon className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </Menu>
+                    ) : (
+                      <div className="flex items-center gap-2 bg-zinc-900/40 p-1 rounded-xl border border-zinc-800/60">
+                        <Link
+                          to="/login"
+                          className="px-4 py-1.5 text-sm text-zinc-400 hover:text-zinc-100 font-medium transition"
+                        >
+                          {__("auth.login")}
+                        </Link>
+                        <Link
+                          to="/sign-up"
+                          className="px-4 py-1.5 text-sm bg-zinc-100 text-zinc-900 font-semibold rounded-lg hover:bg-zinc-200 shadow-lg shadow-white/5 transition duration-200"
+                        >
+                          {__("auth.sign-up")}
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 </div>
+
+                {/* Mobile Menu Trigger */}
                 <div className="-mr-2 flex md:hidden">
-                  <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                  <Disclosure.Button className="relative inline-flex items-center justify-center rounded-xl bg-zinc-900 p-2 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 border border-zinc-800 focus:outline-none transition">
                     <span className="absolute -inset-0.5" />
-                    <span className="sr-only">{t("auth.open-main-menu")}</span>
+                    <span className="sr-only">{__("auth.open-main-menu")}</span>
                     {open ? (
-                      <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+                      <XMarkIcon className="block h-5 w-5" aria-hidden="true" />
                     ) : (
-                      <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                      <Bars3Icon className="block h-5 w-5" aria-hidden="true" />
                     )}
                   </Disclosure.Button>
                 </div>
               </div>
             </div>
 
-            <Disclosure.Panel className="md:hidden">
-              <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-                {navigation.map((item) => (
-                  <NavLink
-                    key={item.name}
-                    to={item.to}
-                    className={({ isActive }) => {
-                      const active =
-                        isActive ||
-                        location.pathname === item.to ||
-                        location.pathname.startsWith(item.to + "/");
-                      return classNames(
-                        active
-                          ? "bg-slate-900 text-white"
-                          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
-                        "block rounded-full px-3 py-2 text-base font-medium transition"
-                      );
-                    }}
-                  >
-                    {item.name}
-                  </NavLink>
-                ))}
+            {/* Mobile View Panel */}
+            <Disclosure.Panel className="md:hidden bg-slate-900 border-b border-zinc-800 dynamic-shadow-sm">
+              <div className="space-y-1 px-3 pb-4 pt-2">
+                {navigation.map((item) => {
+                  const active = location.pathname === item.to || location.pathname.startsWith(item.to + "/");
+                  return (
+                    <NavLink
+                      key={item.name}
+                      to={item.to}
+                      className={({ isActive }) =>
+                        classNames(
+                          active || isActive
+                            ? "bg-zinc-900 text-emerald-400 border-l-2 border-emerald-500"
+                            : "text-zinc-400 hover:bg-zinc-900/50 hover:text-zinc-200",
+                          "block px-4 py-2.5 text-base font-medium transition"
+                        )
+                      }
+                    >
+                      {item.name}
+                    </NavLink>
+                  );
+                })}
               </div>
-              <div className="px-2 pb-3 pt-2 sm:px-3">
-                <div className="flex flex-wrap items-center gap-2 justify-center">
+
+              {/* Language Selector Mobile */}
+              <div className="px-4 pb-4 pt-3 border-t border-zinc-900">
+                <div className="flex items-center gap-2 justify-center bg-zinc-900/60 p-1.5 rounded-xl border border-zinc-800/80">
                   {availableLanguages.map((language) => (
                     <button
                       key={language.code}
                       className={classNames(
-                        "inline-flex items-center justify-center rounded-full border px-2 py-1 transition",
-                        lang === language.title
-                          ? "border-slate-900 bg-slate-900 text-white"
-                          : "border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-100"
+                        "flex-1 inline-flex items-center justify-center rounded-lg py-2 transition-all duration-150",
+                        currentLang === language.title
+                          ? "bg-zinc-800 text-emerald-400 border border-zinc-700/50"
+                          : "text-zinc-500 hover:text-zinc-300"
                       )}
                       onClick={() => changeLanguage(language.title)}
                       disabled={loading}
                     >
-                      <ReactCountryFlag code={language.code} svg style={{ width: '20px', height: '20px' }} />
+                      <ReactCountryFlag code={language.code} style={{ width: '20px', height: '14px', borderRadius: '1px' }} />
                     </button>
                   ))}
                 </div>
               </div>
-              {currentUser && (
-                <div className="border-t border-gray-700 pb-3 pt-4">
-                  <div className="flex items-center px-5">
-                    <div className="flex-shrink-0">
-                      <UserIcon className="w-8 h-8 bg-black/25 p-2 rounded-full text-white" />
-                    </div>
-                    <div className="ml-3">
-                      <div className="text-base font-medium leading-none text-white">
-                        <Link
-                          to={`/profile/${currentUser.name}`}
+
+              {/* Authentication Mobile */}
+              <div className="border-t border-zinc-900 pb-4 pt-4 bg-zinc-900/20">
+                {user ? (
+                  <div>
+                    <div className="flex items-center px-5">
+                      <div className="flex-shrink-0">
+                        <div className="w-9 h-9 bg-emerald-500/10 rounded-xl border border-emerald-500/20 flex items-center justify-center">
+                          <UserIcon className="w-5 h-5 text-emerald-400" />
+                        </div>
+                      </div>
+                      <div className="ml-3">
+                        <Link 
+                          to={`/profile/${user.handle || user.name}`}
+                          className="text-base font-medium text-zinc-200 hover:text-emerald-400 block transition"
                         >
-                          {currentUser.name}
+                          {user.handle || user.name}
                         </Link>
                       </div>
                     </div>
+                    <div className="mt-3 space-y-1 px-3">
+                      <Disclosure.Button
+                        as="button"
+                        onClick={(ev) => logout(ev)}
+                        className="w-full text-left block rounded-xl px-4 py-2.5 text-base font-medium text-zinc-400 hover:bg-rose-950/20 hover:text-rose-400 transition"
+                      >
+                        {__("auth.logout")}
+                      </Disclosure.Button>
+                    </div>
                   </div>
-                  <div className="mt-3 space-y-1 px-2">
-                    <Disclosure.Button
-                      as="a"
-                      href="#"
-                      onClick={(ev) => logout(ev)}
-                      className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                    >
-                      {t("auth.logout")}
-                    </Disclosure.Button>
-                  </div>
-                </div>
-              )}
-              {!currentUser && (
-                <div className="border-t border-gray-700 pb-3 pt-4">
-                  <div className="mt-3 space-y-1 px-2">
-                    <NavLink
-                      to="/sign-up"
-                      className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                    >
-                      {t("auth.sign-up")}
-                    </NavLink>
+                ) : (
+                  <div className="space-y-2 px-4">
                     <NavLink
                       to="/login"
-                      className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                      className="block text-center rounded-xl px-4 py-2.5 text-base font-medium text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200 border border-zinc-800 transition"
                     >
-                      {t("auth.login")}
+                      {__("auth.login")}
+                    </NavLink>
+                    <NavLink
+                      to="/sign-up"
+                      className="block text-center bg-zinc-100 text-zinc-900 rounded-xl px-4 py-2.5 text-base font-semibold hover:bg-zinc-200 transition"
+                    >
+                      {__("auth.sign-up")}
                     </NavLink>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </Disclosure.Panel>
           </>
         )}
       </Disclosure>
 
-      <Outlet />
+      <main className="mx-auto max-w-100 px-4 sm:px-6 lg:px-8 py-8 selection:bg-emerald-500/20">
+        <Outlet />
+      </main>
 
-      <div className="text-center mt-8 pb-4 text-gray-500 text-sm">
-        <hr className="border-gray-600" />
-        <div className="py-5">
-          <p>&copy; ProgrammersArena</p>
+      <footer className="text-center mt-16 pb-8 text-zinc-600 text-xs max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <hr className="border-zinc-900 mb-6" />
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-zinc-500">
+          <p>&copy; {new Date().getFullYear()} ProgrammersArena. All rights reserved.</p>
+          <div className="flex gap-4 text-zinc-600">
+            <span className="hover:text-zinc-400 cursor-pointer transition">Terms</span>
+            <span>&bull;</span>
+            <span className="hover:text-zinc-400 cursor-pointer transition">Privacy</span>
+          </div>
         </div>
-      </div>
+      </footer>
     </div>
   );
 }

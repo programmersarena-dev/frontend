@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axiosClient from "../../axios";
+import axiosClient from "@/api/axios";
 import { Link, useParams } from "react-router-dom";
 import Loading from "../../components/core/Loading";
 import NotFound from "../../components/core/NotFound";

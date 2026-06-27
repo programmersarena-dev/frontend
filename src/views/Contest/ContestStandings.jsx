@@ -3,7 +3,7 @@ import { useStateContext } from "../../contexts/ContextProvider";
 import { Link, useParams } from "react-router-dom";
 import Loading from "../../components/core/Loading";
 import NotFound from "../../components/core/NotFound";
-import axiosClient from "../../axios";
+import axiosClient from "@/api/axios";
 import StandingsUserSubmissions from "../../components/Contest/StandingsUserSubmissions";
 import CountdownTimer from "../../components/core/CountdownTimer";
 

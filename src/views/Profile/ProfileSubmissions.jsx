@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axiosClient from "../../axios";
+import axiosClient from "@/api/axios";
 import Loading from "../../components/core/Loading";
 import PaginationLinks from "../../components/core/PaginationLinks";
 import { useLocation, useParams } from "react-router-dom";

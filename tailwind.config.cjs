@@ -2,7 +2,18 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      keyframes: {
+        "slide-in-right": {
+          "0%": { transform: "translateX(100%)", opacity: "0" },
+          "100%": { transform: "translateX(0)", opacity: "1" },
+        },
+      },
+      animation: {
+        "slide-in-right":
+          "slide-in-right 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+      },
+    },
   },
-  plugins: [require("@tailwindcss/forms")],
+  plugins: [],
 };

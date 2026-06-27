@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useStateContext } from "../../contexts/ContextProvider";
 import FormatToUTC from "../core/FormatToUTC";
-import axiosClient from "../../axios";
+import axiosClient from "@/api/axios";
 import ContestDetails from "../Contest/ContestDetails";
 import SubmissionVerdict from "../Submissions/SubmissionVerdict";
 

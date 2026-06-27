@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axiosClient from "../../axios";
+import axiosClient from "@/api/axios";
 import Loading from "./Loading";
 import { useStateContext } from "../../contexts/ContextProvider";
 

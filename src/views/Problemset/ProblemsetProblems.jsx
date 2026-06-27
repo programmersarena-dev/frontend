@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BoltIcon, CheckIcon, UserIcon } from "@heroicons/react/24/outline";
-import axiosClient from "../../axios";
+import axiosClient from "@/api/axios";
 import Loading from "../../components/core/Loading";
 import PaginationLinks from "../../components/core/PaginationLinks";
 import ProblemListSidebar from "../../components/Problemset/ProblemListSidebar";

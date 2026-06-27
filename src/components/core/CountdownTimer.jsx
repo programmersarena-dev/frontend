@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { useStateContext } from "../../contexts/ContextProvider";
+import { useStateContext } from "@/contexts/ContextProvider";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 const CountdownTimer = ({ dateString, className }) => {
-  const { t } = useStateContext();
+  const { __ } = useTranslation();
   const [difference, setDifference] = useState({
     days: 0,
     hours: 0,
@@ -45,9 +46,9 @@ const CountdownTimer = ({ dateString, className }) => {
 
   const renderDifference = () => {
     if (difference.days > 6) {
-      return `${Math.floor(difference.days / 7)} ${t("contest.week")}`;
+      return `${Math.floor(difference.days / 7)} ${__("contest.week")}`;
     } else if (difference.days > 0) {
-      return `${difference.days} ${t("contest.days")}`;
+      return `${difference.days} ${__("contest.days")}`;
     } else {
       const formatNumber = (num) => num.toString().padStart(2, "0");
       const hours = formatNumber(difference.hours);

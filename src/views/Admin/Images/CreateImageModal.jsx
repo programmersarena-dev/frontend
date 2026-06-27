@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axiosClient from "../../../axios";
+import axiosClient from "@/api/axios";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 const CreateImageModal = ({ isOpen, onClose, onUpload }) => {

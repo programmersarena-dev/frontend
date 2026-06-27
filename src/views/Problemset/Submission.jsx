@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import Loading from "../../components/core/Loading";
 import NotFound from "../../components/core/NotFound";
 import { useEffect, useState } from "react";
-import axiosClient from "../../axios";
+import axiosClient from "@/api/axios";
 import FormatToUTC from "../../components/core/FormatToUTC";
 import ProblemTests from "../../components/Problemset/ProblemTests";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";

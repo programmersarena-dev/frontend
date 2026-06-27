@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Loading from "../../components/core/Loading";
-import axiosClient from "../../axios";
+import axiosClient from "@/api/axios";
 import { useParams } from "react-router-dom";
 import ProblemItem from "../../components/Contest/ProblemItem";
 import ContestDetails from "../../components/Contest/ContestDetails";

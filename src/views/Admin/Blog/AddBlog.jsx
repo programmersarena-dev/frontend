@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axiosClient from "../../../axios";
+import axiosClient from "@/api/axios";
 import { useNavigate } from "react-router-dom";
 import { Textarea } from "@/components/ui";
 import { Button, Input, Tabs, Tab } from "@/components/ui";

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { ChevronDoubleRightIcon, UserCircleIcon, UserIcon, UsersIcon } from "@heroicons/react/24/outline";
+import { ChevronDoubleRightIcon, UserIcon, CalendarIcon, ClockIcon } from "@heroicons/react/24/outline";
 import CountdownTimer from "@/components/core/CountdownTimer";
-import { useStateContext } from "@/contexts/ContextProvider";
 import { Link } from "react-router-dom";
 import FormatToUTC from "@/components/core/FormatToUTC";
 import UserContestRegisterButton from "@/components/Contest/UserContestRegisterButton";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 export default function ContestItem({ contest, index }) {
-  const { t } = useStateContext();
+  const { __ } = useTranslation();
   const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
@@ -30,156 +30,150 @@ export default function ContestItem({ contest, index }) {
     }
   }, [currentDate, contest]);
 
-  return (
-    <tr className="hover:bg-gray-100">
+  const totalParticipants =
+    (contest.participants?.official?.length || 0) +
+    (contest.participants?.unofficial?.length || 0);
 
-      <td className="p-4 border-b border-gray-300 text-center mw-6">
-        <div className="relative flex items-center p-4">
+  return (
+    <tr className="bg-slate-950/40 hover:bg-slate-900/60 border-b border-slate-800/50 last:border-0 transition-colors duration-200">
+      <td className="p-4 text-center">
+        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
           {contest.type}
-        </div>
+        </span>
       </td>
 
-      <td className="p-4 border-b border-gray-300">
-        <div className="flex flex-col items-center justify-between">
-          {contest.name}
+      <td className="p-4 max-w-xs">
+        <div className="flex flex-col items-start gap-1.5">
+          <span className="text-sm font-bold text-slate-100 tracking-tight">
+            {contest.name}
+          </span>
           {contest.status === "ended" && (
             <Link
               to={`/contest/${contest.id}`}
-              className="flex items-center text-blue-500 hover:underline ml-2"
+              className="inline-flex items-center text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
             >
-              {t("contest.enter")}
-              <ChevronDoubleRightIcon className="w-4 h-4 ml-1" />
+              <span>{__("contest.enter") || "Enter"}</span>
+              <ChevronDoubleRightIcon className="w-3.5 h-3.5 ml-1" />
             </Link>
           )}
         </div>
       </td>
 
-      <td className="p-4 border-b border-gray-300 text-center">
-        {contest.authors &&
-          contest.authors.map((author, index) => (
-            <div className="p-1" key={index}>
+      <td className="p-4 text-center">
+        <div className="flex flex-wrap justify-center gap-1.5 max-w-[150px] mx-auto">
+          {contest.authors &&
+            contest.authors.map((author) => (
               <Link
-                to={`/profile/${author}`}
                 key={author}
-                className="text-blue-500 hover:underline"
+                to={`/profile/${author}`}
+                className="text-xs font-medium text-slate-300 hover:text-indigo-400 border border-slate-800 bg-slate-900/50 px-2 py-0.5 rounded-md transition-colors"
               >
                 {author}
               </Link>
-            </div>
-          ))}
+            ))}
+        </div>
       </td>
 
-      <td className="p-4 border-b border-gray-300 text-center">
-        <FormatToUTC dateTime={contest.start_date} />
+      <td className="p-4 text-center">
+        <div className="inline-flex items-center gap-1.5 text-xs text-slate-300 bg-slate-900/40 border border-slate-800/60 px-2.5 py-1 rounded-xl">
+          <CalendarIcon className="w-3.5 h-3.5 text-slate-500" />
+          <FormatToUTC dateTime={contest.start_date} />
+        </div>
       </td>
 
-      <td className="p-4 border-b border-gray-300 text-center">
-        {contest.duration}
+      <td className="p-4 text-center">
+        <div className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-300">
+          <ClockIcon className="w-3.5 h-3.5 text-slate-500" />
+          <span>{contest.duration}</span>
+        </div>
       </td>
 
-      <td className="p-4 border-b border-gray-300 text-center">
+      <td className="p-4 text-center">
         {contest.status === "ended" ? (
           <Link
             to={`/contest/${contest.id}/standings`}
-            className="text-blue-500 hover:underline text-center"
+            className="inline-flex text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
           >
-            {t("contest.final-results")}
+            {__("contest.final-results") || "Final Standings"}
           </Link>
         ) : (
-          <div className="flex flex-col items-center">
-            <span className="text-gray-600">
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-xs font-medium text-slate-400">
               {contest.status === "started" && (
-                <div>
-                  <div>
-                    <Link
-                      to={`/contest/${contest.id}/standings`}
-                      className="text-blue-500 hover:underline"
-                    >
-                      {t("contest.online-results")}
-                    </Link>
-                  </div>
-                  <div>{t("contest.running")}</div>
+                <div className="flex flex-col gap-1">
+                  <Link
+                    to={`/contest/${contest.id}/standings`}
+                    className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
+                  >
+                    {__("contest.online-results") || "Online Standings"}
+                  </Link>
+                  <span className="text-emerald-400 font-bold uppercase tracking-wider text-[10px] bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20 self-center">
+                    {__("contest.running") || "Running"}
+                  </span>
                 </div>
               )}
-              {contest.status === "notStarted" && <div>{t("contest.starts-in")}</div>}
+              {contest.status === "notStarted" && (
+                <span className="uppercase tracking-wider text-[10px] text-amber-400 font-bold bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">
+                  {__("contest.starts-in") || "Starts In"}
+                </span>
+              )}
             </span>
-            {contest.status === "started" && (
-              <CountdownTimer
-                dateString={contest.end_date}
-                className="text-gray-400"
-              />
-            )}
-            {contest.status === "notStarted" && (
-              <CountdownTimer
-                dateString={contest.start_date}
-                className="text-gray-400"
-              />
-            )}
+            <CountdownTimer
+              dateString={contest.status === "started" ? contest.end_date : contest.start_date}
+              className="text-xs font-mono font-bold text-slate-200 bg-slate-900 px-2 py-0.5 rounded-lg border border-slate-800"
+            />
           </div>
         )}
       </td>
 
-      <td className="p-4 border-b border-gray-300 text-center">
+      <td className="p-4 text-center">
         {contest.status === "ended" ? (
-          <div className="flex flex-col items-center justify-center">
-            <div className="flex items-center">
-              <UserIcon className="w-4 h-4 text-cyan-600" />
-              <div className="ml-2">
-                x
-                {contest.participants.official.length +
-                  contest.participants.unofficial.length}
-              </div>
-            </div>
+          <div className="inline-flex items-center gap-1.5 text-xs text-slate-400 font-medium bg-slate-900/60 border border-slate-800/80 px-2.5 py-1 rounded-xl">
+            <UserIcon className="w-3.5 h-3.5 text-slate-500" />
+            <span>{totalParticipants}</span>
           </div>
         ) : (
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center gap-2">
             {contest.status === "started" ? (
               <>
-                <div className="w-24">
-                  <Link
-                    to={`/contest/${contest.id}`}
-                    className="flex items-center text-blue-500 px-4 py-2 rounded hover:underline mb-1"
-                  >
-                    <span>{t("contest.enter")}</span>
-                    <ChevronDoubleRightIcon className="w-4 h-4 ml-1" />
-                  </Link>
-                </div>
-                <div className="flex items-center text-xs text-gray-600">
-                  <span>{t("contest.registration-closed")}</span>
-                  <div className="flex items-center">
-                    <UserIcon className="w-4 h-4 text-cyan-600" />
-                    <div className="ml-2">
-                      x
-                      {contest.participants.official.length +
-                        contest.participants.unofficial.length}
-                    </div>
+                <Link
+                  to={`/contest/${contest.id}`}
+                  className="inline-flex items-center justify-center py-1.5 px-3 border border-transparent text-xs font-semibold rounded-xl text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/40 active:bg-indigo-700 transition duration-200"
+                >
+                  <span>{__("contest.enter") || "Enter"}</span>
+                  <ChevronDoubleRightIcon className="w-3.5 h-3.5 ml-1" />
+                </Link>
+                <div className="flex flex-col items-center gap-1">
+                  <span className="text-[10px] text-slate-500 font-medium">
+                    {__("contest.registration-closed") || "Registration Closed"}
+                  </span>
+                  <div className="inline-flex items-center gap-1 text-xs text-slate-400 font-medium bg-slate-900/40 border border-slate-800/40 px-2 py-0.5 rounded-lg">
+                    <UserIcon className="w-3 h-3 text-slate-500" />
+                    <span>{totalParticipants}</span>
                   </div>
                 </div>
               </>
             ) : (
               <>
                 <UserContestRegisterButton contest={contest} />
-                <div className="flex items-center">
-                  <UserIcon className="w-3 h-3 text-cyan-600" />
-                  <div className="ml-2 text-sm">
-                    x
-                    {contest.participants.official.length +
-                      contest.participants.unofficial.length}
+                <div className="flex flex-col items-center gap-1.5 w-full">
+                  <div className="inline-flex items-center gap-1 text-xs text-slate-400 font-medium bg-slate-900/60 border border-slate-800 px-2.5 py-0.5 rounded-lg">
+                    <UserIcon className="w-3 h-3 text-slate-500" />
+                    <span>{totalParticipants}</span>
                   </div>
-                </div>
-                <div className="flex items-center text-xs text-gray-600">
-                  <span>{t("contest.closes-in")}</span>
-                  <CountdownTimer
-                    dateString={contest.start_date}
-                    className="text-gray-400 ml-1"
-                  />
+                  <div className="flex items-center gap-1 text-[10px] font-medium text-slate-500">
+                    <span>{__("contest.closes-in") || "Closes in"}</span>
+                    <CountdownTimer
+                      dateString={contest.start_date}
+                      className="text-slate-400 font-mono"
+                    />
+                  </div>
                 </div>
               </>
             )}
           </div>
         )}
       </td>
-
-    </tr >
+    </tr>
   );
 }

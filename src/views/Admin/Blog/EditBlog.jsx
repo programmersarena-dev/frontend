@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axiosClient from "@/axios";
+import axiosClient from "@/api/axios";
 import Loading from "@/components/core/Loading";
 import { Textarea } from "@/components/ui";
 import { Button, Input, Tabs, Tab } from "@/components/ui";
