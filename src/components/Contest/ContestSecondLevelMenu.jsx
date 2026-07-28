@@ -1,8 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
 import { useStateContext } from "../../contexts/ContextProvider";
+import { useTranslation } from "../../contexts/TranslationContext";
 
 export default function ContestSecondLevelMenu({ contestId }) {
-  const { t } = useStateContext();
+  const { __ } = useTranslation();
   const { currentUser } = useStateContext();
   const location = useLocation();
 
@@ -16,21 +17,21 @@ export default function ContestSecondLevelMenu({ contestId }) {
         to={`/contest/${contestId}`}
         className={`font-semibold ${isActive(`/contest/${contestId}`) ? "bg-gray-300" : ""} p-1 rounded hover:bg-gray-200 text-gray-700 transition duration-300 ease-in-out`}
       >
-        {t("contest.problems")}
+        {__("contest.problems")}
       </Link>
       {currentUser?.email_verified_at && (
         <Link
           to={`/contest/${contestId}/submit`}
           className={`font-semibold ${isActive(`/contest/${contestId}/submit`) ? "bg-gray-300" : ""} p-1 rounded hover:bg-gray-200 text-gray-700 transition duration-300 ease-in-out`}
         >
-          {t("contest.submit")}
+          {__("contest.submit")}
         </Link>
       )}
       <Link
         to={`/contest/${contestId}/standings`}
         className={`font-semibold ${isActive(`/contest/${contestId}/standings`) ? "bg-gray-300" : ""} p-1 rounded hover:bg-gray-200 text-gray-700 transition duration-300 ease-in-out`}
       >
-        {t("contest.standings")}
+        {__("contest.standings")}
       </Link>
     </div>
   );

@@ -4,7 +4,7 @@ import axiosClient from "@/api/axios";
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const [currentLang, setCurrentLang] = useState("tk");
   const [loading, setLoading] = useState(true);
 
@@ -14,14 +14,14 @@ export const AuthProvider = ({ children }) => {
         const response = await axiosClient.get("/auth/me");
 
         if (response.data && response.data.id) {
-          setUser(response.data);
+          setCurrentUser(response.data);
           if (response.data.locale) {
             setCurrentLang(response.data.locale);
           }
         }
       } catch (error) {
         console.log("Guest session or expired token context.");
-        setUser(null);
+        setCurrentUser(null);
       } finally {
         setLoading(false);
       }
@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, currentLang, setCurrentLang, loading }}>
+    <AuthContext.Provider value={{ currentUser, setCurrentUser, currentLang, setCurrentLang, loading }}>
       {!loading && children}
     </AuthContext.Provider>
   );

@@ -6,11 +6,13 @@ import NotFound from "../../components/core/NotFound";
 import axiosClient from "@/api/axios";
 import StandingsUserSubmissions from "../../components/Contest/StandingsUserSubmissions";
 import CountdownTimer from "../../components/core/CountdownTimer";
+import { useAuth } from "../../contexts/AuthContext";
+import { useTranslation } from "../../contexts/TranslationContext";
 
-const CheckboxFilter = ({ checked, onChange, t }) => (
+const CheckboxFilter = ({ checked, onChange, __ }) => (
   <div className="flex items-center space-x-2 py-2">
     <input type="checkbox" checked={checked} onChange={onChange} />
-    <label className="text-gray-800">{t("contest.show-unofficial")}</label>
+    <label className="text-gray-800">{__("contest.show-unofficial")}</label>
   </div>
 );
 
@@ -38,7 +40,7 @@ const rankedStandings = (data) => {
   });
 };
 
-const StandingsTable = ({ data, currentUser, onClick, contestId, contestType, t }) => {
+const StandingsTable = ({ data, currentUser, onClick, contestId, contestType, __ }) => {
   const halfParticipants = data.standings.length / 2;
   const oneSixth = halfParticipants / 6;
 
@@ -48,7 +50,7 @@ const StandingsTable = ({ data, currentUser, onClick, contestId, contestType, t 
         <tr>
           <th className="py-3 w-8 font-semibold tracking-wider">&#x2116;</th>
           <th className="py-3 w-48 font-semibold tracking-wider text-start pl-3">
-            {t("contest.user")}
+            {__("contest.user")}
           </th>
           <th className="py-3 w-10 font-semibold tracking-wider">=</th>
           {data.problemScores?.map((score, index) => (
@@ -171,7 +173,7 @@ const StandingsTable = ({ data, currentUser, onClick, contestId, contestType, t 
               colSpan="100%"
               className="py-6 text-center text-gray-600 bg-gray-100"
             >
-              {t("contest.participants-not-found")}
+              {__("contest.participants-not-found")}
             </td>
           </tr>
         )}
@@ -181,7 +183,8 @@ const StandingsTable = ({ data, currentUser, onClick, contestId, contestType, t 
 };
 
 export default function ContestStandings() {
-  const { t, currentUser } = useStateContext();
+  const { user } = useAuth();
+  const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [meta, setMeta] = useState({});
@@ -242,21 +245,21 @@ export default function ContestStandings() {
         <Link to={`/contest/${data.contest.id}`} className="text-2xl font-bold">
           {data.contest.name}
         </Link>
-        <div>{t("contest.standings")}</div>
+        <div>{__("contest.standings")}</div>
         <CountdownTimer
           dateString={data.contest.end_date}
           className="text-gray-400"
         />
       </div>
       <div className="overflow-x-auto">
-        <CheckboxFilter checked={checkbox} onChange={toggleCheckbox} t={t} />
+        <CheckboxFilter checked={checkbox} onChange={toggleCheckbox} __={__} />
         <StandingsTable
           data={data}
-          currentUser={currentUser}
+          currentUser={user}
           onClick={fetchSubmissions}
           contestId={id}
           contestType={data.contest.type}
-          t={t}
+          __={__}
         />
       </div>
     </div>

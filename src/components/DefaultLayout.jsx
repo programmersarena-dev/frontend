@@ -22,7 +22,7 @@ export default function DefaultLayout() {
   }, [location]);
 
   return (
-    <div className="min-h-screen bg-[#09090b]">
+    <div className="min-h-screen">
       <Outlet />
     </div>
   );

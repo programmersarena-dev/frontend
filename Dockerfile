@@ -1,11 +1,14 @@
 # Stage 1: Build React App
-FROM node:20 as build
+FROM node:20-alpine as build
+
+ARG VITE_API_BASE_URL
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 COPY . .
-RUN npm run build
+RUN npx vite build
 
 # Stage 2: Serve with Nginx
 FROM nginx:alpine

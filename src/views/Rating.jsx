@@ -5,9 +5,12 @@ import Loading from "../components/core/Loading";
 import PaginationLinks from "../components/core/PaginationLinks";
 import { useStateContext } from "../contexts/ContextProvider";
 import ReactCountryFlag from "react-world-flags";
+import { useTranslation } from "../contexts/TranslationContext";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Rating() {
-  const { currentUser, t } = useStateContext();
+  const { currentUser } = useAuth();
+  const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [meta, setMeta] = useState({});
@@ -43,8 +46,8 @@ export default function Rating() {
           <thead className="bg-gray-800 text-white">
             <tr>
               <th className="py-2 w-32">#</th>
-              <th className="py-2 px-4 text-left">{t("rating.user")}</th>
-              <th className="py-2 w-40">{t("rating.participation-number")}</th>
+              <th className="py-2 px-4 text-left">{__("rating.user")}</th>
+              <th className="py-2 w-40">{__("rating.participation-number")}</th>
               <th className="py-2 w-40">=</th>
             </tr>
           </thead>
@@ -78,7 +81,7 @@ export default function Rating() {
                   colSpan="4"
                   className="py-4 text-center bg-gray-200 text-gray-600"
                 >
-                  {t("rating.users-not-found")}
+                  {__("rating.users-not-found")}
                 </td>
               </tr>
             )}

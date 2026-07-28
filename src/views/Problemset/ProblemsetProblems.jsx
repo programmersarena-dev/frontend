@@ -6,9 +6,10 @@ import PaginationLinks from "../../components/core/PaginationLinks";
 import ProblemListSidebar from "../../components/Problemset/ProblemListSidebar";
 import { Link } from "react-router-dom";
 import { useStateContext } from "../../contexts/ContextProvider";
+import { useTranslation } from "../../contexts/TranslationContext";
 
 export default function ProblemsetProblems() {
-  const { t } = useStateContext();
+  const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [problems, setProblems] = useState([]);
   const [meta, setMeta] = useState({});
@@ -73,7 +74,7 @@ export default function ProblemsetProblems() {
                   #
                 </th>
                 <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-                  {t("problem.name")}
+                  {__("problem.name")}
                 </th>
                 <th className="w-6 px-6 py-3 text-xs font-medium uppercase tracking-wider text-center">
                   <button
@@ -159,7 +160,7 @@ export default function ProblemsetProblems() {
                     colSpan="4"
                     className="py-4 text-center bg-gray-200 text-gray-600"
                   >
-                    {t("problem.not-found")}
+                    {__("problem.not-found")}
                   </td>
                 </tr>
               )}

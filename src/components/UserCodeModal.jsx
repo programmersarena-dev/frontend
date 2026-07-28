@@ -6,15 +6,18 @@ import { darcula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import SubmissionVerdict from "./Submissions/SubmissionVerdict";
 import { Link } from "react-router-dom";
 import LanguageMapper from "./Problemset/LanguageMapper";
+import { useTranslation } from "../contexts/TranslationContext";
+import { useToast } from "../contexts/ToastContext";
 
 const UserCodeModal = ({ isOpen, onClose, userSubmission }) => {
-  const { showToast, t } = useStateContext();
+  const { addToast } = useToast();
+  const { __ } = useTranslation();
 
   const copyToClipboard = (clipboardData, showText) => {
     navigator.clipboard
       .writeText(clipboardData)
       .then(() => {
-        showToast(showText);
+        addToast(showText);
       })
       .catch((err) => {
         console.error("Failed to copy to clipboard:", err);
@@ -43,12 +46,12 @@ const UserCodeModal = ({ isOpen, onClose, userSubmission }) => {
                   onClick={() =>
                     copyToClipboard(
                       userSubmission.code,
-                      t("submission.copy-code")
+                      __("submission.copy-code")
                     )
                   }
                 >
                   <ClipboardIcon className="w-4 h-4" />
-                  <span>{t("submission.code")}</span>
+                  <span>{__("submission.code")}</span>
                 </button>
                 <span>|</span>
                 <Link
@@ -56,7 +59,7 @@ const UserCodeModal = ({ isOpen, onClose, userSubmission }) => {
                   className="flex items-center text-indigo-600 hover:underline"
                 >
                   <LinkIcon className="w-4 h-4" />
-                  <span>{t("submission.ref")}</span>
+                  <span>{__("submission.ref")}</span>
                 </Link>
               </h2>
               <button

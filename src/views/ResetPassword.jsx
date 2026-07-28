@@ -68,18 +68,18 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-900 transition-colors duration-300">
-      <div className="w-full max-w-md space-y-8 bg-slate-950 p-8 rounded-3xl shadow-2xl border border-slate-800/60">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 transition-colors duration-300">
+      <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-3xl shadow-xl border border-slate-200/80">
         <div className="flex flex-col items-center justify-center">
           <img className="h-20 w-auto object-contain mb-4" src="/logo.png" alt="ProgrammersArena Logo" />
-          <h2 className="text-center text-3xl font-extrabold text-slate-100 tracking-tight">
+          <h2 className="text-center text-3xl font-extrabold text-slate-900 tracking-tight">
             {__("auth.new-password-title") || "Choose a new password"}
           </h2>
-          <p className="mt-2 text-center text-sm text-slate-400">
+          <p className="mt-2 text-center text-sm text-slate-500">
             {__("auth.back-to")}{" "}
             <Link
               to="/login"
-              className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors focus:outline-none focus:underline"
+              className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors focus:outline-none focus:underline"
             >
               {__("auth.login-text") || "Login here"}
             </Link>
@@ -89,7 +89,7 @@ export default function ResetPassword() {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label htmlFor="password-input" className="block text-sm font-medium text-slate-300 mb-1">
+              <label htmlFor="password-input" className="block text-sm font-medium text-slate-700 mb-1">
                 {__("auth.new-password") || "New Password"}
               </label>
               <input
@@ -100,17 +100,19 @@ export default function ResetPassword() {
                 disabled={loading}
                 value={password}
                 onChange={handleInputChange(setPassword, "password")}
-                className={`block w-full px-4 py-2.5 bg-slate-900 border ${errors.password ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500" : "border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500"
-                  } placeholder-slate-600 text-slate-200 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
+                className={`block w-full px-4 py-2.5 bg-slate-50 border ${errors.password
+                    ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
+                    : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
+                  } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
                 placeholder="••••••••"
               />
               {errors.password && (
-                <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.password}</p>
+                <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.password}</p>
               )}
             </div>
 
             <div>
-              <label htmlFor="password-confirmation-input" className="block text-sm font-medium text-slate-300 mb-1">
+              <label htmlFor="password-confirmation-input" className="block text-sm font-medium text-slate-700 mb-1">
                 {__("auth.confirm-new-password") || "Confirm New Password"}
               </label>
               <input
@@ -121,12 +123,14 @@ export default function ResetPassword() {
                 disabled={loading}
                 value={passwordConfirmation}
                 onChange={handleInputChange(setPasswordConfirmation, "password_confirmation")}
-                className={`block w-full px-4 py-2.5 bg-slate-900 border ${errors.password_confirmation ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500" : "border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500"
-                  } placeholder-slate-600 text-slate-200 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
+                className={`block w-full px-4 py-2.5 bg-slate-50 border ${errors.password_confirmation
+                    ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
+                    : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
+                  } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
                 placeholder="••••••••"
               />
               {errors.password_confirmation && (
-                <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.password_confirmation}</p>
+                <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.password_confirmation}</p>
               )}
             </div>
           </div>
@@ -135,7 +139,7 @@ export default function ResetPassword() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/40 active:bg-indigo-700 transition duration-200 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+              className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/40 active:bg-indigo-700 transition duration-200 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed shadow-sm"
             >
               {loading && (
                 <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">

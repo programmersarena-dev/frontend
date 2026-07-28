@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import axiosClient from "@/api/axios";
 import Loading from "../../components/core/Loading";
 import PaginationLinks from "../../components/core/PaginationLinks";
-import { useStateContext } from "../../contexts/ContextProvider";
+import { useTranslation } from "../../contexts/TranslationContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function ProblemsetStandings() {
-  const { currentUser, t } = useStateContext();
+  const { currentUser } = useAuth();
+  const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [meta, setMeta] = useState({});
@@ -43,13 +45,13 @@ export default function ProblemsetStandings() {
           <thead className="bg-gray-800 text-white">
             <tr>
               <th className="py-2 w-32">#</th>
-              <th className="py-2">{t("problem.user")}</th>
-              <th className="py-2 w-40">{t("problem.count-solved")}</th>
+              <th className="py-2">{__("problem.user")}</th>
+              <th className="py-2 w-40">{__("problem.count-solved")}</th>
             </tr>
           </thead>
           <tbody>
             {users.length > 0 && users.map((user, index) => (
-              <tr key={index} className={`${user.name === currentUser.name ? 'text-center bg-gray-100' : 'text-center'}`}>
+              <tr key={index} className={`${user.name === currentUser?.name ? 'text-center bg-gray-100' : 'text-center'}`}>
                 <td className="border px-4 py-2">{(meta.current_page - 1) * meta.per_page + index + 1}</td>
                 <td className="border px-4 py-2">
                   <a href={`/profile/${user.name}`}>{user.name}</a>
@@ -63,7 +65,7 @@ export default function ProblemsetStandings() {
                   colSpan="3"
                   className="py-4 text-center bg-gray-200 text-gray-600"
                 >
-                  {t("problem.user-not-found")}
+                  {__("problem.user-not-found")}
                 </td>
               </tr>
             )}

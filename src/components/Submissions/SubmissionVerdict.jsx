@@ -1,45 +1,84 @@
-import React from "react";
+import React, { useMemo } from "react";
 import ProgressBar from "../core/ProgressBar";
-import { useStateContext } from "../../contexts/ContextProvider";
+import { useTranslation } from "../../contexts/TranslationContext";
 
-export default function SubmissionVerdict({ verdict, className }) {
-  const { t } = useStateContext();
-  return (
-    <>
-      {!parseInt(verdict) && verdict !== "0" && (
-        <div
-          className={`font-semibold ${verdict === "Accepted"
-            ? "text-green-800"
-            : verdict?.startsWith("WA")
-              ? "text-red-800"
-              : verdict?.startsWith("TL")
-                ? "text-yellow-800"
-                : verdict?.startsWith("Compiling")
-                  ? "text-blue-800"
-                  : "text-gray-800"
-            } ${className}`}
-        >
-          {verdict === "Accepted"
-            ? t("submission.accepted")
-            : verdict?.startsWith("WA")
-              ? t("submission.wrong-answer") + ", test-" + verdict.split("-")[1]
-              : verdict?.startsWith("TL")
-                ? t("submission.time-limit") + ", test - " + verdict.split(" - ")[1]
-                : verdict?.startsWith("CE")
-                  ? t("submission.compilation-error")
-                  : verdict?.startsWith("Compiling")
-                    ? (verdict.split("-").length > 1 ? t("submission.compiling") + ", test-" + verdict.split("-")[1] : t("submission.compiling"))
-                    : verdict}
+function SubmissionVerdict({ verdict, className = "" }) {
+  const { __ } = useTranslation();
+
+  const numericScore = useMemo(() => {
+    if (verdict === null || verdict === undefined || verdict === "") return NaN;
+    const parsed = Number(verdict);
+    return Number.isInteger(parsed) && parsed >= 0 && parsed <= 100 ? parsed : NaN;
+  }, [verdict]);
+
+  const isNumeric = !Number.isNaN(numericScore);
+
+  const getVerdictStyle = (v) => {
+    if (!v) return "text-gray-800";
+    if (v === "Accepted") return "text-green-800";
+    if (v.startsWith("WA")) return "text-red-800";
+    if (v.startsWith("TL")) return "text-yellow-800";
+    if (v.startsWith("Compiling")) return "text-blue-800";
+    if (v.startsWith("CE")) return "text-red-600";
+    return "text-gray-800";
+  };
+
+  const getTestCaseNumber = (v) => {
+    if (!v) return "";
+    const parts = v.split(/[-–—]/).map((p) => p.trim());
+    return parts.length > 1 ? parts[1] : "";
+  };
+
+  const getVerdictLabel = (v) => {
+    if (!v) return "";
+
+    if (v === "Accepted") {
+      return __("submission.accepted");
+    }
+
+    if (v.startsWith("WA")) {
+      const testNum = getTestCaseNumber(v);
+      return testNum
+        ? `${__("submission.wrong-answer")}, test-${testNum}`
+        : __("submission.wrong-answer");
+    }
+
+    if (v.startsWith("TL")) {
+      const testNum = getTestCaseNumber(v);
+      return testNum
+        ? `${__("submission.time-limit")}, test-${testNum}`
+        : __("submission.time-limit");
+    }
+
+    if (v.startsWith("CE")) {
+      return __("submission.compilation-error");
+    }
+
+    if (v.startsWith("Compiling")) {
+      const testNum = getTestCaseNumber(v);
+      return testNum
+        ? `${__("submission.compiling")}, test-${testNum}`
+        : __("submission.compiling");
+    }
+
+    return v;
+  };
+
+  if (isNumeric) {
+    return (
+      <div className="flex items-center justify-center">
+        <div className="w-32 font-semibold">
+          <ProgressBar progress={numericScore} />
         </div>
-      )}
-      {0 <= parseInt(verdict) &&
-        parseInt(verdict) <= 100 && (
-          <div className="flex items-center justify-center">
-            <div className="w-32 font-semibold">
-              <ProgressBar progress={parseInt(verdict)} />
-            </div>
-          </div>
-        )}
-    </>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`font-semibold ${getVerdictStyle(verdict)} ${className}`}>
+      {getVerdictLabel(verdict)}
+    </div>
   );
 }
+
+export default React.memo(SubmissionVerdict);

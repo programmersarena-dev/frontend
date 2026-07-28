@@ -1,8 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
-import { useStateContext } from "../../contexts/ContextProvider";
+import { useTranslation } from "../../contexts/TranslationContext";
 
 export default function ContestSecondLevelMenu() {
-  const { t } = useStateContext();
+  const { __ } = useTranslation();
   const location = useLocation();
 
   const isActive = (path) => {
@@ -15,19 +15,19 @@ export default function ContestSecondLevelMenu() {
         to={`/problemset`}
         className={`font-semibold ${isActive(`/problemset`) ? "bg-gray-300" : ""} p-1 rounded hover:bg-gray-200 text-gray-700 transition duration-300 ease-in-out`}
       >
-        {t("problem.problemset")}
+        {__("problem.problemset")}
       </Link>
       <Link
         to={`/problemset/status`}
         className={`font-semibold ${isActive(`/problemset/status`) ? "bg-gray-300" : ""} p-1 rounded hover:bg-gray-200 text-gray-700 transition duration-300 ease-in-out`}
       >
-        {t("problem.status")}
+        {__("problem.status")}
       </Link>
       <Link
         to={`/problemset/standings`}
         className={`font-semibold ${isActive(`/problemset/standings`) ? "bg-gray-300" : ""} p-1 rounded hover:bg-gray-200 text-gray-700 transition duration-300 ease-in-out`}
       >
-        {t("problem.standings")}
+        {__("problem.standings")}
       </Link>
     </div>
   );

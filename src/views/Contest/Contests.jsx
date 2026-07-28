@@ -51,29 +51,31 @@ export default function Contests() {
   const finishedContests = contests.filter((item) => item.status === "ended");
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-slate-900 transition-colors duration-300">
-      <div className="mx-auto max-w-7xl space-y-10">
+    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 bg-slate-50 transition-colors duration-300">
+      <div className="mx-auto max-w-7xl space-y-8">
 
+        {/* Upcoming Contests Section */}
         {upcomingContests.length > 0 && (
-          <div className="bg-slate-950 p-6 rounded-3xl shadow-2xl border border-slate-800/60 overflow-hidden">
-            <div className="text-xl font-extrabold text-slate-100 tracking-tight mb-4 px-2">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden">
+            <div className="text-xl font-bold text-slate-900 tracking-tight mb-4 px-1 flex items-center gap-2">
+              <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
               {__("contest.upcoming-contests") || "Upcoming Contests"}
             </div>
-            <div className="overflow-x-auto rounded-2xl border border-slate-800">
-              <table className="w-full min-w-max table-auto text-left border-collapse bg-slate-900/50">
+            <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+              <table className="w-full min-w-max table-auto text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-900 border-b border-slate-800">
+                  <tr className="bg-slate-100/70 border-b border-slate-200">
                     {TABLE_HEAD.map((head, index) => (
                       <th
                         key={index}
-                        className="p-4 text-xs font-semibold uppercase tracking-wider text-slate-400 text-center"
+                        className="p-3.5 text-xs font-semibold uppercase tracking-wider text-slate-600 text-center"
                       >
                         {head}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-slate-100">
                   {[...upcomingContests].reverse().map((contest, index) => (
                     <ContestItem key={contest.id || index} contest={contest} index={index} />
                   ))}
@@ -83,26 +85,27 @@ export default function Contests() {
           </div>
         )}
 
+        {/* Finished Contests Section */}
         {finishedContests.length > 0 && (
-          <div className="bg-slate-950 p-6 rounded-3xl shadow-2xl border border-slate-800/60 overflow-hidden">
-            <div className="text-xl font-extrabold text-slate-100 tracking-tight mb-4 px-2">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden">
+            <div className="text-xl font-bold text-slate-900 tracking-tight mb-4 px-1">
               {__("contest.finished-contests") || "Finished Contests"}
             </div>
-            <div className="overflow-x-auto rounded-2xl border border-slate-800">
-              <table className="w-full min-w-max table-auto text-left border-collapse bg-slate-900/50">
+            <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+              <table className="w-full min-w-max table-auto text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-900 border-b border-slate-800">
+                  <tr className="bg-slate-100/70 border-b border-slate-200">
                     {TABLE_HEAD.map((head, index) => (
                       <th
                         key={index}
-                        className="p-4 text-xs font-semibold uppercase tracking-wider text-slate-400 text-center"
+                        className="p-3.5 text-xs font-semibold uppercase tracking-wider text-slate-600 text-center"
                       >
                         {head}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-slate-100">
                   {finishedContests.map((contest, index) => (
                     <ContestItem key={contest.id || index} contest={contest} index={index} />
                   ))}
@@ -112,16 +115,18 @@ export default function Contests() {
           </div>
         )}
 
+        {/* Empty State */}
         {contests.length === 0 && (
-          <div className="w-full max-w-md mx-auto text-center bg-slate-950 p-8 rounded-3xl shadow-2xl border border-slate-800/60">
-            <p className="text-sm text-slate-400 font-medium">
+          <div className="w-full max-w-md mx-auto text-center bg-white p-8 rounded-3xl shadow-sm border border-slate-200/80">
+            <p className="text-sm text-slate-500 font-medium">
               {__("contest.no-contests") || "No contests found."}
             </p>
           </div>
         )}
 
+        {/* Pagination */}
         {contests.length > 0 && (
-          <div className="flex justify-center pt-4">
+          <div className="flex justify-center pt-2">
             <PaginationLinks meta={meta} onPageClick={onPageClick} />
           </div>
         )}

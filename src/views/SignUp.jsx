@@ -86,19 +86,19 @@ export default function SignUp() {
   }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-900 transition-colors duration-300">
-      <div className="w-full max-w-md space-y-8 bg-slate-950 p-8 rounded-3xl shadow-2xl border border-slate-800/60">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 transition-colors duration-300">
+      <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-3xl shadow-xl border border-slate-200/80">
 
         <div className="flex flex-col items-center justify-center">
           <img className="h-20 w-auto object-contain mb-4" src="/logo.png" alt="ProgrammersArena Logo" />
-          <h2 className="text-center text-3xl font-extrabold text-slate-100 tracking-tight">
+          <h2 className="text-center text-3xl font-extrabold text-slate-900 tracking-tight">
             {__("auth.register-text")}
           </h2>
-          <p className="mt-2 text-center text-sm text-slate-400">
+          <p className="mt-2 text-center text-sm text-slate-500">
             {__("auth.or")}{" "}
             <Link
               to="/login"
-              className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors focus:outline-none focus:underline"
+              className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors focus:outline-none focus:underline"
             >
               {__("auth.login-text")}
             </Link>
@@ -109,7 +109,7 @@ export default function SignUp() {
           <div className="grid grid-cols-1 gap-4">
 
             <div>
-              <label htmlFor="handle" className="block text-sm font-medium text-slate-300 mb-1">
+              <label htmlFor="handle" className="block text-sm font-medium text-slate-700 mb-1">
                 {__("auth.handle")}
               </label>
               <input
@@ -120,17 +120,19 @@ export default function SignUp() {
                 disabled={loading}
                 value={formData.handle}
                 onChange={handleChange}
-                className={`block w-full px-4 py-2.5 bg-slate-900 border ${errors.handle ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500" : "border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500"
-                  } placeholder-slate-600 text-slate-200 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
+                className={`block w-full px-4 py-2.5 bg-slate-50 border ${errors.handle
+                    ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
+                    : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
+                  } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
                 placeholder="e.g., prog_tkm"
               />
               {errors.handle && (
-                <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.handle}</p>
+                <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.handle}</p>
               )}
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-1">
+              <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
                 {__("auth.email")}
               </label>
               <input
@@ -142,18 +144,20 @@ export default function SignUp() {
                 disabled={loading}
                 value={formData.email}
                 onChange={handleChange}
-                className={`block w-full px-4 py-2.5 bg-slate-900 border ${errors.email ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500" : "border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500"
-                  } placeholder-slate-600 text-slate-200 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
+                className={`block w-full px-4 py-2.5 bg-slate-50 border ${errors.email
+                    ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
+                    : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
+                  } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
                 placeholder="developer@programmersarena.com"
               />
               {errors.email && (
-                <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.email}</p>
+                <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.email}</p>
               )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="first_name" className="block text-sm font-medium text-slate-300 mb-1">
+                <label htmlFor="first_name" className="block text-sm font-medium text-slate-700 mb-1">
                   {__("auth.first-name")}
                 </label>
                 <input
@@ -164,17 +168,19 @@ export default function SignUp() {
                   disabled={loading}
                   value={formData.first_name}
                   onChange={handleChange}
-                  className={`block w-full px-4 py-2.5 bg-slate-900 border ${errors.first_name ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500" : "border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500"
-                    } placeholder-slate-600 text-slate-200 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
+                  className={`block w-full px-4 py-2.5 bg-slate-50 border ${errors.first_name
+                      ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
+                      : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
+                    } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
                   placeholder="Oguz"
                 />
                 {errors.first_name && (
-                  <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.first_name}</p>
+                  <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.first_name}</p>
                 )}
               </div>
 
               <div>
-                <label htmlFor="last_name" className="block text-sm font-medium text-slate-300 mb-1">
+                <label htmlFor="last_name" className="block text-sm font-medium text-slate-700 mb-1">
                   {__("auth.last-name")}
                 </label>
                 <input
@@ -185,18 +191,20 @@ export default function SignUp() {
                   disabled={loading}
                   value={formData.last_name}
                   onChange={handleChange}
-                  className={`block w-full px-4 py-2.5 bg-slate-900 border ${errors.last_name ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500" : "border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500"
-                    } placeholder-slate-600 text-slate-200 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
+                  className={`block w-full px-4 py-2.5 bg-slate-50 border ${errors.last_name
+                      ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
+                      : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
+                    } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
                   placeholder="Hanow"
                 />
                 {errors.last_name && (
-                  <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.last_name}</p>
+                  <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.last_name}</p>
                 )}
               </div>
             </div>
 
             <div>
-              <label htmlFor="country_id" className="block text-sm font-medium text-slate-300 mb-1">
+              <label htmlFor="country_id" className="block text-sm font-medium text-slate-700 mb-1">
                 {__("auth.country")}
               </label>
               <select
@@ -205,21 +213,21 @@ export default function SignUp() {
                 disabled={loading}
                 value={formData.country_id}
                 onChange={handleChange}
-                className="block w-full px-4 py-2.5 bg-slate-900 border border-slate-700 focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-200 rounded-xl focus:outline-none text-sm transition duration-200 disabled:opacity-50"
+                className="block w-full px-4 py-2.5 bg-slate-50 border border-slate-300 focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 text-slate-900 rounded-xl focus:outline-none text-sm transition duration-200 disabled:opacity-50"
               >
                 {countries.map((country) => (
-                  <option key={country.id} value={country.id} className="bg-slate-950 text-slate-200">
+                  <option key={country.id} value={country.id} className="bg-white text-slate-900">
                     {country.name}
                   </option>
                 ))}
               </select>
               {errors.country_id && (
-                <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.country_id}</p>
+                <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.country_id}</p>
               )}
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-1">
                 {__("auth.password")}
               </label>
               <input
@@ -231,17 +239,19 @@ export default function SignUp() {
                 disabled={loading}
                 value={formData.password}
                 onChange={handleChange}
-                className={`block w-full px-4 py-2.5 bg-slate-900 border ${errors.password ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500" : "border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500"
-                  } placeholder-slate-600 text-slate-200 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
+                className={`block w-full px-4 py-2.5 bg-slate-50 border ${errors.password
+                    ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
+                    : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
+                  } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
                 placeholder="••••••••"
               />
               {errors.password && (
-                <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.password}</p>
+                <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.password}</p>
               )}
             </div>
 
             <div>
-              <label htmlFor="password_confirmation" className="block text-sm font-medium text-slate-300 mb-1">
+              <label htmlFor="password_confirmation" className="block text-sm font-medium text-slate-700 mb-1">
                 {__("auth.confirm-password")}
               </label>
               <input
@@ -253,12 +263,14 @@ export default function SignUp() {
                 disabled={loading}
                 value={formData.password_confirmation}
                 onChange={handleChange}
-                className={`block w-full px-4 py-2.5 bg-slate-900 border ${errors.password_confirmation ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500" : "border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500"
-                  } placeholder-slate-600 text-slate-200 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
+                className={`block w-full px-4 py-2.5 bg-slate-50 border ${errors.password_confirmation
+                    ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
+                    : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
+                  } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
                 placeholder="••••••••"
               />
               {errors.password_confirmation && (
-                <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.password_confirmation}</p>
+                <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.password_confirmation}</p>
               )}
             </div>
           </div>
@@ -267,7 +279,7 @@ export default function SignUp() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/40 active:bg-indigo-700 transition duration-200 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+              className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/40 active:bg-indigo-700 transition duration-200 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed shadow-sm"
             >
               {loading && (
                 <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
@@ -280,7 +292,7 @@ export default function SignUp() {
 
             <Link
               to="/"
-              className="w-full flex justify-center py-2.5 px-4 border border-slate-700 text-sm font-semibold rounded-xl text-slate-300 bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-700/40 transition duration-200 text-center"
+              className="w-full flex justify-center py-2.5 px-4 border border-slate-300 text-sm font-semibold rounded-xl text-slate-700 bg-white hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus:ring-4 focus:ring-slate-200 transition duration-200 text-center shadow-sm"
             >
               {__("auth.back")}
             </Link>

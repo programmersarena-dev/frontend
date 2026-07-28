@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useStateContext } from '../../contexts/ContextProvider';
+import { useTranslation } from '../../contexts/TranslationContext';
 
 export default function ProblemTests({ tests, subtasks }) {
-  const { t } = useStateContext();
+  const { __ } = useTranslation();
   const [openSubtasks, setOpenSubtasks] = useState({});
 
   const toggleSubtask = (index) => {
@@ -13,41 +13,41 @@ export default function ProblemTests({ tests, subtasks }) {
   };
   return (
     <div className="space-y-6">
-      <h3 className="text-xl font-semibold mb-2">{t("submission.tester")}</h3>
+      <h3 className="text-xl font-semibold mb-2">{__("submission.tester")}</h3>
       {!subtasks && tests && tests.length > 0 &&
         tests.map((test, index) => (
           <div key={index} className="bg-white rounded-lg shadow-md p-4">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-lg font-semibold">{t("submission.test")} #{index + 1}</h3>
+              <h3 className="text-lg font-semibold">{__("submission.test")} #{index + 1}</h3>
               <div className="flex space-x-4">
                 <div>
-                  <span className="font-semibold">{t("submission.test-time")}:</span> {test.time} ms
+                  <span className="font-semibold">{__("submission.test-time")}:</span> {test.time} ms
                 </div>
                 <div>
-                  <span className="font-semibold">{t("submission.test-memory")}:</span> {test.memory} KB
+                  <span className="font-semibold">{__("submission.test-memory")}:</span> {test.memory} KB
                 </div>
               </div>
             </div>
             <div className="mb-4">
-              <div className="font-semibold mb-1">{t("submission.test-input")}</div>
+              <div className="font-semibold mb-1">{__("submission.test-input")}</div>
               <pre className="whitespace-pre-wrap bg-gray-100 p-3 rounded-md">
                 {test.input}
               </pre>
             </div>
             <div className="mb-4">
-              <div className="font-semibold mb-1">{t("submission.test-output")}</div>
+              <div className="font-semibold mb-1">{__("submission.test-output")}</div>
               <pre className="whitespace-pre-wrap bg-gray-100 p-3 rounded-md">
                 {test.output}
               </pre>
             </div>
             <div className="mb-4">
-              <div className="font-semibold mb-1">{t("submission.test-expected-output")}</div>
+              <div className="font-semibold mb-1">{__("submission.test-expected-output")}</div>
               <pre className="whitespace-pre-wrap bg-gray-100 p-3 rounded-md">
                 {test.expected_output}
               </pre>
             </div>
             <div>
-              <div className="font-semibold mb-1">{t("submission.test-log")}</div>
+              <div className="font-semibold mb-1">{__("submission.test-log")}</div>
               <div
                 className={`px-4 py-2 rounded-md ${test.log === "OK"
                   ? "bg-green-100 text-green-700"
@@ -69,7 +69,7 @@ export default function ProblemTests({ tests, subtasks }) {
             onClick={() => toggleSubtask(index)}
           >
             <h3 className="text-lg font-semibold">
-              {t("submission.subtask")} #{index}
+              {__("submission.subtask")} #{index}
             </h3>
             <div className="text-gray-500">
               {openSubtasks[index] ? '-' : '+'}

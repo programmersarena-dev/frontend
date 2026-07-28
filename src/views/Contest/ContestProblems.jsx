@@ -4,13 +4,20 @@ import axiosClient from "@/api/axios";
 import { useParams } from "react-router-dom";
 import ProblemItem from "../../components/Contest/ProblemItem";
 import ContestDetails from "../../components/Contest/ContestDetails";
+import { useTranslation } from "../../contexts/TranslationContext";
 
 export default function ContestProblems() {
+  const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
-  const TABLE_HEAD = ["#", "Ady", ""];
   const [problems, setProblems] = useState([]);
   const [contest, setContest] = useState([]);
   const { id } = useParams();
+
+  const TABLE_HEAD = [
+    "#",
+    "Ady",
+    ""
+  ];
 
   useEffect(() => {
     axiosClient

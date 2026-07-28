@@ -1,13 +1,17 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useStateContext } from "../../contexts/ContextProvider";
 import FormatToUTC from "../core/FormatToUTC";
 import axiosClient from "@/api/axios";
 import ContestDetails from "../Contest/ContestDetails";
 import SubmissionVerdict from "../Submissions/SubmissionVerdict";
+import { useAuth } from "../../contexts/AuthContext";
+import { useTranslation } from "../../contexts/TranslationContext";
+import { useToast } from "../../contexts/ToastContext";
 
 export default function ProblemSidebar({ setLoading, problem, id, char, attachments, languages, contest }) {
-  const { showToast, currentUser, t } = useStateContext();
+  const { currentUser } = useAuth();
+  const { __ } = useTranslation();
+  const { addToast } = useToast();
   const [file, setFile] = useState(null);
   const [language, setLanguage] = useState(languages[0]);
   const navigate = useNavigate();
@@ -18,19 +22,19 @@ export default function ProblemSidebar({ setLoading, problem, id, char, attachme
 
     if (!currentUser || !currentUser.name) {
       setLoading(false);
-      showToast("Hasabyňyza giriň");
+      addToast("Hasabyňyza giriň");
       return;
     }
 
     if (!currentUser.email_verified_at) {
       setLoading(false);
-      showToast("Poçtaňyzy tassyklaň");
+      addToast("Poçtaňyzy tassyklaň");
       return;
     }
 
     if (!file || !language) {
       setLoading(false);
-      showToast("Faýl ýa-da dil saýlanylmady");
+      addToast("Faýl ýa-da dil saýlanylmady");
       return;
     }
 
@@ -45,11 +49,11 @@ export default function ProblemSidebar({ setLoading, problem, id, char, attachme
         }
       )
       .then((res) => {
-        showToast("Üstünlikli iberildi");
+        addToast("Üstünlikli iberildi");
         navigate("/problemset/status");
       })
       .catch((err) => {
-        showToast(err.response.data.message);
+        addToast(err.response.data.message);
         setLoading(false);
       });
   };
@@ -85,10 +89,10 @@ export default function ProblemSidebar({ setLoading, problem, id, char, attachme
       {attachments && (
         <div className="border border-gray-300 rounded-xl py-4 px-6 shadow-lg">
           <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2 border-gray-300">
-            {t("problem.attachments")}
+            {__("problem.attachments")}
           </h2>
           <p className="text-gray-800 underline">
-            <button onClick={handleDownload}>{t("problem.download")}</button>
+            <button onClick={handleDownload}>{__("problem.download")}</button>
           </p>
         </div>
       )}
@@ -98,7 +102,7 @@ export default function ProblemSidebar({ setLoading, problem, id, char, attachme
         onSubmit={handleSubmit}
       >
         <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2 border-gray-300">
-          {t("problem.send")}
+          {__("problem.send")}
         </h2>
 
         <div className="mb-6">
@@ -106,7 +110,7 @@ export default function ProblemSidebar({ setLoading, problem, id, char, attachme
             className="block text-sm font-medium text-gray-700 mb-2"
             htmlFor="language"
           >
-            {t("problem.lang")}:
+            {__("problem.lang")}:
           </label>
           <select
             id="language"
@@ -128,7 +132,7 @@ export default function ProblemSidebar({ setLoading, problem, id, char, attachme
             className="block text-sm font-medium text-gray-700 mb-2"
             htmlFor="file"
           >
-            {t("problem.select-file")}:
+            {__("problem.select-file")}:
           </label>
           <input
             id="file"
@@ -145,7 +149,7 @@ export default function ProblemSidebar({ setLoading, problem, id, char, attachme
             type="submit"
             className="w-full bg-blue-600 text-white rounded-lg py-3 font-medium hover:bg-blue-700 transition duration-300"
           >
-            {t("problem.send")}
+            {__("problem.send")}
           </button>
         </div>
       </form>
@@ -153,14 +157,14 @@ export default function ProblemSidebar({ setLoading, problem, id, char, attachme
       {problem.submissions && problem.submissions.length > 0 && (
         <div className="border border-gray-300 rounded-xl py-4 px-6 shadow-lg">
           <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2 border-gray-300">
-            {t("problem.last-submissions")}
+            {__("problem.last-submissions")}
           </h2>
           <div className="text-xs space-y-2">
             <div className="flex justify-between font-medium text-gray-600">
               <div className="w-1/5">#</div>
-              <div className="w-2/5">{t("submission.nav-when")}</div>
-              <div className="w-1/5">{t("submission.nav-lang")}</div>
-              <div className="w-1/5">{t("submission.nav-verdict")}</div>
+              <div className="w-2/5">{__("submission.nav-when")}</div>
+              <div className="w-1/5">{__("submission.nav-lang")}</div>
+              <div className="w-1/5">{__("submission.nav-verdict")}</div>
             </div>
             {problem.submissions.map((submission) => (
               <div
@@ -191,7 +195,7 @@ export default function ProblemSidebar({ setLoading, problem, id, char, attachme
       {problem.tags && problem.tags.length > 0 && (
         <div className="border border-gray-300 rounded-xl py-4 px-6 shadow-lg">
           <h2 className="text-xl font-semibold mb-4 border-b border-gray-800">
-            {t("problem.tags")}
+            {__("problem.tags")}
           </h2>
           <div className="flex flex-wrap justify-center">
             {problem.tags.length > 0 &&

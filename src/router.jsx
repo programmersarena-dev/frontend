@@ -70,26 +70,26 @@ const router = createBrowserRouter([
       </Suspense>
     ),
     children: [
-      // {
-      //   path: "admin",
-      //   element: <AdminGuard />,
-      //   children: [
-      //     { index: true, element: <Navigate to="dashboard" replace /> },
-      //     { path: "dashboard", element: <AdminDashboard /> },
-      //     { path: "files", element: <FileManager /> },
+      {
+        path: "admin",
+        element: <AdminGuard />,
+        children: [
+          { index: true, element: <Navigate to="dashboard" replace /> },
+          { path: "dashboard", element: <AdminDashboard /> },
+          { path: "files", element: <FileManager /> },
 
-      //     { path: "blogs", element: <AdminBlogList /> },
-      //     { path: "blog/add", element: <AdminAddBlog /> },
-      //     { path: "blog/:id/edit", element: <AdminEditBlog /> },
+          { path: "blogs", element: <AdminBlogList /> },
+          { path: "blog/add", element: <AdminAddBlog /> },
+          { path: "blog/:id/edit", element: <AdminEditBlog /> },
 
-      //     { path: "contests", element: <AdminContestList /> },
-      //     { path: "contest/add", element: <AdminAddContest /> },
-      //     { path: "contest/:id/edit", element: <AdminEditContest /> },
-      //     { path: "contest/:id/problems", element: <AdminProblemList /> },
-      //     { path: "contest/:id/problem/add", element: <AdminAddProblem /> },
-      //     { path: "contest/:id/problem/:char", element: <AdminEditProblem /> },
-      //   ],
-      // },
+          { path: "contests", element: <AdminContestList /> },
+          { path: "contest/add", element: <AdminAddContest /> },
+          { path: "contest/:id/edit", element: <AdminEditContest /> },
+          { path: "contest/:id/problems", element: <AdminProblemList /> },
+          { path: "contest/:id/problem/add", element: <AdminAddProblem /> },
+          { path: "contest/:id/problem/:char", element: <AdminEditProblem /> },
+        ],
+      },
 
       {
         element: <GuestGuard />,
@@ -112,47 +112,47 @@ const router = createBrowserRouter([
           { index: true, element: <Navigate to="blogs" replace /> },
           { path: "blogs", element: <Dashboard /> },
           { path: "contests", element: <Contests /> },
-          // { path: "ratings", element: <Rating /> },
+          { path: "ratings", element: <Rating /> },
 
-          // { path: "email/verify", element: <EmailVerification /> },
-          // { path: "resend-verification-email", element: <ResendVerificationEmail /> },
+          { path: "email/verify", element: <EmailVerification /> },
+          { path: "resend-verification-email", element: <ResendVerificationEmail /> },
 
-          // {
-          //   path: "contest/:id",
-          //   element: <ContestComponent />,
-          //   children: [
-          //     { index: true, element: <ContestProblems /> },
-          //     { path: "submit", element: <ContestSubmit /> },
-          //     { path: "standings", element: <ContestStandings /> },
-          //     { path: "problem/:char", element: <Problem /> },
-          //     { path: "problem/:char/submissions", element: <ProblemsetStatus /> },
-          //     { path: "submission/:submissionId", element: <Submission /> },
-          //   ],
-          // },
+          {
+            path: "contest/:id",
+            element: <ContestComponent />,
+            children: [
+              { index: true, element: <ContestProblems /> },
+              { path: "submit", element: <ContestSubmit /> },
+              { path: "standings", element: <ContestStandings /> },
+              { path: "problem/:char", element: <Problem /> },
+              { path: "problem/:char/submissions", element: <ProblemsetStatus /> },
+              { path: "submission/:submissionId", element: <Submission /> },
+            ],
+          },
 
-          // {
-          //   path: "problemset",
-          //   element: <ProblemsetComponent />,
-          //   children: [
-          //     { index: true, element: <ProblemsetProblems /> },
-          //     { path: "problem/:id/:char", element: <Problem /> },
-          //     { path: "status", element: <ProblemsetStatus /> },
-          //     { path: "standings", element: <ProblemsetStandings /> },
-          //     { path: "status/:id/problem/:char", element: <ProblemsetStatus /> },
-          //     { path: "submission/:submissionId", element: <Submission /> },
-          //   ],
-          // },
+          {
+            path: "problemset",
+            element: <ProblemsetComponent />,
+            children: [
+              { index: true, element: <ProblemsetProblems /> },
+              { path: "problem/:id/:char", element: <Problem /> },
+              { path: "status", element: <ProblemsetStatus /> },
+              { path: "standings", element: <ProblemsetStandings /> },
+              { path: "status/:id/problem/:char", element: <ProblemsetStatus /> },
+              { path: "submission/:submissionId", element: <Submission /> },
+            ],
+          },
 
-          // {
-          //   path: "profile",
-          //   element: <ProfileComponent />,
-          //   children: [
-          //     { path: ":username", element: <Profile /> },
-          //     { path: ":username/edit", element: <ProfileEdit /> },
-          //     { path: ":username/submissions", element: <ProfileSubmissions /> },
-          //     { path: ":username/ratings", element: <ProfileRatings /> },
-          //   ],
-          // },
+          {
+            path: "profile",
+            element: <ProfileComponent />,
+            children: [
+              { path: ":username", element: <Profile /> },
+              { path: ":username/edit", element: <ProfileEdit /> },
+              { path: ":username/submissions", element: <ProfileSubmissions /> },
+              { path: ":username/ratings", element: <ProfileRatings /> },
+            ],
+          },
         ],
       },
     ],

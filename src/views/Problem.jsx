@@ -7,19 +7,22 @@ import ProblemSidebar from "../components/Problemset/ProblemSidebar";
 import NotFound from "../components/core/NotFound";
 import PdfViewer from "../components/core/PdfViewer";
 import { DocumentDuplicateIcon } from "@heroicons/react/24/outline";
+import { useTranslation } from "../contexts/TranslationContext";
+import { useToast } from "../contexts/ToastContext";
 
 export default function Problem() {
+  const { __ } = useTranslation();
+  const { addToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [problem, setProblem] = useState({});
   const [file, setFile] = useState(null);
-  const { showToast, t } = useStateContext();
   const { id, char } = useParams();
 
   const copyToClipboard = (clipboardData, showText) => {
     navigator.clipboard
       .writeText(clipboardData)
       .then(() => {
-        showToast(showText);
+        addToast(showText);
       })
       .catch((err) => {
         console.error("Failed to copy to clipboard:", err);
@@ -64,11 +67,11 @@ export default function Problem() {
                 </h1>
                 <div className="text-sm text-gray-600">
                   <p>
-                    {t("problem.time-limit-per-test")}:{" "}
-                    <strong>{problem.time_limit} s</strong>
+                    {__("problem.time-limit-per-test")}:{" "}
+                    <strong>{problem.time_limit/1000} s</strong>
                   </p>
                   <p>
-                    {t("problem.memory-limit-per-test")}:{" "}
+                    {__("problem.memory-limit-per-test")}:{" "}
                     <strong>{problem.memory_limit} MB</strong>
                   </p>
                 </div>
@@ -81,7 +84,7 @@ export default function Problem() {
               </div>
 
               <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">{t("problem.input")}</h2>
+                <h2 className="text-xl font-semibold mb-4">{__("problem.input")}</h2>
                 <div
                   className="bg-gray-100 p-4 rounded"
                   dangerouslySetInnerHTML={{ __html: problem.input }}
@@ -89,7 +92,7 @@ export default function Problem() {
               </div>
 
               <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">{t("problem.output")}</h2>
+                <h2 className="text-xl font-semibold mb-4">{__("problem.output")}</h2>
                 <div
                   className="bg-gray-100 p-4 rounded"
                   dangerouslySetInnerHTML={{ __html: problem.output }}
@@ -97,19 +100,19 @@ export default function Problem() {
               </div>
 
               <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">{t("problem.test-cases")}</h2>
+                <h2 className="text-xl font-semibold mb-4">{__("problem.test-cases")}</h2>
                 <div>
                   {problem.example_test_cases && problem.example_test_cases.map((example_test_case, index) => (
                     <div key={index} className="bg-gray-100 border mb-4 p-2">
                       <div className="mb-4">
                         <div className="flex justify-between items-center">
-                          <h3 className="font-semibold text-lg">{t("problem.input")}</h3>
+                          <h3 className="font-semibold text-lg">{__("problem.input")}</h3>
                           <button
                             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
                             onClick={() =>
                               copyToClipboard(
                                 example_test_case.input,
-                                t("problem.copied-input")
+                                __("problem.copied-input")
                               )
                             }
                           >
@@ -131,13 +134,13 @@ export default function Problem() {
                       </div>
                       <div className="mb-4">
                         <div className="flex justify-between items-center">
-                          <h3 className="font-semibold text-lg">{t("problem.output")}</h3>
+                          <h3 className="font-semibold text-lg">{__("problem.output")}</h3>
                           <button
                             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
                             onClick={() =>
                               copyToClipboard(
                                 example_test_case.output,
-                                t("problem.copied-output")
+                                __("problem.copied-output")
                               )
                             }
                           >
@@ -160,14 +163,14 @@ export default function Problem() {
                     </div>
                   ))}
                   {!problem.example_test_cases && (
-                    <p className="text-gray-600">{t("problem.test-not-found")}</p>
+                    <p className="text-gray-600">{__("problem.test-not-found")}</p>
                   )}
                 </div>
               </div>
 
               {problem.note && (
                 <div className="mb-8">
-                  <h2 className="text-xl font-semibold mb-4">{t("problem.note")}</h2>
+                  <h2 className="text-xl font-semibold mb-4">{__("problem.note")}</h2>
                   <p
                     className="text-gray-800"
                     dangerouslySetInnerHTML={{ __html: problem.note }}
@@ -181,7 +184,7 @@ export default function Problem() {
               {file ? (
                 <PdfViewer file={problem.statement} />
               ) : (
-                <p>{t("problem.loading-pdf")}</p>
+                <p>{__("problem.loading-pdf")}</p>
               )}
             </div>
           )}

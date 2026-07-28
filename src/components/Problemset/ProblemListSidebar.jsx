@@ -1,4 +1,4 @@
-import { useStateContext } from "../../contexts/ContextProvider";
+import { useTranslation } from "../../contexts/TranslationContext";
 
 export default function ProblemListSidebar({
   showTags,
@@ -11,7 +11,7 @@ export default function ProblemListSidebar({
   setDifficultyMax,
   onReload,
 }) {
-  const { t } = useStateContext();
+  const { __ } = useTranslation();
 
   const handleShowTagsChange = () => {
     setShowTags(!showTags);
@@ -29,10 +29,10 @@ export default function ProblemListSidebar({
     <div className="text-xs">
       {/* Filter problems */}
       <div className="bg-white shadow-md rounded-md p-4 mb-4">
-        <div className="text-lg font-medium mb-2">{t("problem.filter")}</div>
+        <div className="text-lg font-medium mb-2">{__("problem.filter")}</div>
         <div className="flex flex-col space-y-2">
           <div className="flex items-center space-x-2">
-            <div className="w-20">{t("problem.difficulty")}:</div>
+            <div className="w-20">{__("problem.difficulty")}:</div>
             <input
               type="number"
               value={difficultyMin}
@@ -51,14 +51,14 @@ export default function ProblemListSidebar({
             onClick={handleDifficultyChange}
             className="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
-            {t("problem.apply")}
+            {__("problem.apply")}
           </button>
         </div>
       </div>
 
       {/* Settings */}
       <div className="bg-white shadow-md rounded-md p-4 mb-4">
-        <div className="text-lg font-medium mb-2">{t("problem.settings")}</div>
+        <div className="text-lg font-medium mb-2">{__("problem.settings")}</div>
         <div className="flex flex-col space-y-2">
           <label className="flex items-center">
             <input
@@ -67,7 +67,7 @@ export default function ProblemListSidebar({
               checked={showTags}
               onChange={handleShowTagsChange}
             />
-            <span className="ml-2">{t("problem.show-tags")}</span>
+            <span className="ml-2">{__("problem.show-tags")}</span>
           </label>
           <label className="flex items-center">
             <input
@@ -76,7 +76,7 @@ export default function ProblemListSidebar({
               checked={hideSolved}
               onChange={handleHideSolvedChange}
             />
-            <span className="ml-2">{t("problem.hide-solved")}</span>
+            <span className="ml-2">{__("problem.hide-solved")}</span>
           </label>
         </div>
       </div>
