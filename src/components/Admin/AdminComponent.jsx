@@ -1,14 +1,19 @@
-import { Disclosure } from "@headlessui/react";
-import { UserIcon } from "@heroicons/react/24/outline";
 import { NavLink, useLocation } from "react-router-dom";
-import { useStateContext } from "../../contexts/ContextProvider";
-import Toast from "../core/Toast";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  HomeIcon,
+  FolderIcon,
+  MegaphoneIcon,
+  TrophyIcon,
+  ArrowRightOnRectangleIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/outline";
 
 const navigation = [
-  { name: "Baş sahypa", to: "/admin/dashboard" },
-  { name: "File Manager", to: "/admin/files" },
-  { name: "Bildirişler", to: "/admin/blogs" },
-  { name: "Bäsleşikler", to: "/admin/contests" },
+  { name: "Baş sahypa", to: "/admin/dashboard", icon: HomeIcon },
+  { name: "File Manager", to: "/admin/files", icon: FolderIcon },
+  { name: "Bildirişler", to: "/admin/blogs", icon: MegaphoneIcon },
+  { name: "Bäsleşikler", to: "/admin/contests", icon: TrophyIcon },
 ];
 
 function classNames(...classes) {
@@ -16,69 +21,104 @@ function classNames(...classes) {
 }
 
 export default function AdminComponent({ children }) {
-  const { currentUser, logout } = useStateContext();
+  const { currentUser, logout } = useAuth();
   const location = useLocation();
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <Disclosure as="nav" className="bg-gray-800 w-64 flex-shrink-0">
-        <div className="flex items-center justify-between p-4">
-          <div className="flex items-center">
-            <img
-              className="h-8 w-8 mr-2"
-              src="/logo.png"
-              alt="ProgrammersArena"
-            />
-            <span className="text-white text-xl font-semibold">Admin</span>
-          </div>
-        </div>
-        <div className="py-2 px-4 space-y-1">
-          {navigation.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={classNames(
-                location.pathname.includes(item.to === '/admin' ? 'dashboard' : item.to.substring(0, 10))
-                  ? "bg-gray-900 text-white"
-                  : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                "block py-2 px-4 text-sm rounded-md"
-              )}
-            >
-              {item.name}
-            </NavLink>
-          ))}
-        </div>
-        <div className="border-t border-gray-700 py-4 px-4">
-          <div className="flex items-center">
-            <UserIcon className="h-6 w-6 text-gray-400" aria-hidden="true" />
-            <span className="ml-2 text-sm font-medium text-white">
-              {currentUser.name}
+    <div className="flex h-screen bg-slate-50 text-slate-800 font-sans antialiased overflow-hidden">
+      {/* Sidebar */}
+      <aside className="w-64 flex flex-col bg-white border-r border-slate-200/80 flex-shrink-0">
+        {/* Brand Header */}
+        <div className="flex items-center gap-3 px-6 py-5 border-b border-slate-100">
+          <img
+            className="h-8 w-8 object-contain"
+            src="/logo.png"
+            alt="ProgrammersArena"
+          />
+          <div className="flex flex-col">
+            <span className="text-sm font-bold text-slate-900 leading-tight">
+              ProgrammersArena
+            </span>
+            <span className="text-xs font-medium text-emerald-600">
+              Admin Dashboard
             </span>
           </div>
-          <div className="mt-2">
+        </div>
+
+        {/* Navigation Links */}
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+          {navigation.map((item) => {
+            const Icon = item.icon;
+            const isActive =
+              location.pathname === item.to ||
+              (item.to !== "/admin/dashboard" && location.pathname.startsWith(item.to));
+
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={classNames(
+                  isActive
+                    ? "bg-slate-100 text-slate-900 font-semibold"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium",
+                  "group flex items-center px-3 py-2.5 text-sm rounded-xl transition-all duration-150"
+                )}
+              >
+                <Icon
+                  className={classNames(
+                    isActive
+                      ? "text-slate-900"
+                      : "text-slate-400 group-hover:text-slate-600",
+                    "mr-3 h-5 w-5 flex-shrink-0 transition-colors"
+                  )}
+                  aria-hidden="true"
+                />
+                {item.name}
+              </NavLink>
+            );
+          })}
+        </nav>
+
+        {/* User Profile & Logout Footer */}
+        <div className="p-3 border-t border-slate-100 bg-slate-50/50">
+          <div className="flex items-center justify-between p-2 rounded-xl bg-white border border-slate-200/60 shadow-sm">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <UserCircleIcon className="h-8 w-8 text-slate-400 flex-shrink-0" />
+              <div className="truncate">
+                <p className="text-xs font-semibold text-slate-800 truncate">
+                  {currentUser?.name || "Admin"}
+                </p>
+                <p className="text-[11px] text-slate-500 truncate">
+                  {currentUser?.email || "Administrator"}
+                </p>
+              </div>
+            </div>
+
             <button
               onClick={logout}
-              className="block w-full py-2 px-4 text-sm text-left text-gray-400 hover:bg-gray-700 hover:text-white"
+              title="Çykmak"
+              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
             >
-              Çykmak
+              <ArrowRightOnRectangleIcon className="h-5 w-5" />
             </button>
           </div>
         </div>
-      </Disclosure>
+      </aside>
 
-      <div className="flex-1 overflow-auto">
-        <main className="p-4">
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+        <main className="flex-1 p-6 md:p-8 w-full mx-auto">
           {children}
         </main>
 
-        <footer className="bg-gray-100 px-4 py-2 mt-auto">
-          <div className="text-center text-gray-500 text-sm">
-            <p>&copy; ProgrammersArena</p>
+        {/* Page Footer */}
+        <footer className="py-4 px-8 border-t border-slate-200/60 bg-white">
+          <div className="flex items-center justify-between text-xs text-slate-400">
+            <p>&copy; {new Date().getFullYear()} ProgrammersArena. Ähli haklary goralan.</p>
+            <p className="font-medium text-slate-500">v1.0.0</p>
           </div>
         </footer>
       </div>
-
-      <Toast />
     </div>
-  )
+  );
 }

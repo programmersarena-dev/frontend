@@ -1,142 +1,188 @@
 import React, { useEffect, useState } from "react";
-import Loading from "@/components/core/Loading";
 import { Link, useParams } from "react-router-dom";
-import axiosClient from "@/api/axios";
 import {
   ArrowLeftIcon,
   PencilIcon,
   PlusIcon,
   TrashIcon,
   UserIcon,
+  DocumentTextIcon,
 } from "@heroicons/react/24/outline";
+
+import axiosClient from "@/api/axios";
+import Loading from "@/components/core/Loading";
 import { useStateContext } from "@/contexts/ContextProvider";
 import AdminPageHeader from "@/components/Admin/PageHeader";
 import AdminComponent from "@/components/Admin/AdminComponent";
 
 export default function ProblemList() {
   const { showToast } = useStateContext();
+  const { id } = useParams();
+
   const [loading, setLoading] = useState(true);
   const [problems, setProblems] = useState([]);
-  const { id } = useParams();
-  const TABLE_HEAD = ["#", "Ady", "Çözen ulanyjylaryň sany", "Üýtget", "Poz"];
+
+  const TABLE_HEAD = [
+    "#",
+    "Ady",
+    "Çözen ulanyjylaryň sany",
+    "Üýtget",
+    "Poz",
+  ];
 
   useEffect(() => {
+    setLoading(true);
     axiosClient
       .get(`/admin/contest/${id}/problems`)
       .then((res) => {
-        setProblems(res.data.data);
-        setLoading(false);
+        setProblems(res.data.data || []);
       })
       .catch((err) => {
-        showToast(err.response.data.message);
-        console.error("Error fetching contests:", err);
+        const message = err?.response?.data?.message || "Näbelli säwlik ýüze çykdy.";
+        showToast(message);
+        console.error("Error fetching problems:", err);
+      })
+      .finally(() => {
         setLoading(false);
       });
   }, [id]);
 
-  const onDeleteClick = (id, char) => {
-    if (window.confirm("Siz çyndanam meseläni pozmak isleýäňizmi?")) {
-      setLoading(true);
-      axiosClient
-        .delete(`/admin/contest/${id}/problem/${char}/delete`)
-        .then((res) => {
-          setProblems(problems.filter((problem) => problem.char !== char));
-          setLoading(false);
-        })
-        .catch((err) => {
-          showToast(err.response.data.message);
-          console.error("Error:", err);
-          setLoading(false);
-          return err;
-        });
-    }
+  const onDeleteClick = (char) => {
+    if (!window.confirm("Siz çyndanam meseläni pozmak isleýäňizmi?")) return;
+
+    setLoading(true);
+    axiosClient
+      .delete(`/admin/contest/${id}/problem/${char}/delete`)
+      .then(() => {
+        setProblems((prev) => prev.filter((problem) => problem.char !== char));
+        showToast("Mesele üstünlikli pozuldy.");
+      })
+      .catch((err) => {
+        const message = err?.response?.data?.message || "Meseläni pozup bolmady.";
+        showToast(message);
+        console.error("Error deleting problem:", err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   if (loading) return <Loading />;
 
   return (
     <AdminComponent>
-      <div className="p-8 min-h-screen">
-        <div className="flex items-center justify-between mb-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+        {/* Top Header & Actions */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <AdminPageHeader title="Meseleler" />
-          <div className="flex space-x-4">
+
+          <div className="flex items-center space-x-3">
             <Link
-              to={`/admin/contests`}
-              className="flex items-center bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-colors duration-200"
+              to="/admin/contests"
+              className="inline-flex items-center px-3.5 py-2 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors shadow-sm"
             >
-              <ArrowLeftIcon className="w-5 h-5 mr-2" />
+              <ArrowLeftIcon className="w-4 h-4 mr-2 text-slate-500" />
               Yza
             </Link>
+
             <Link
               to={`/admin/contest/${id}/problem/add`}
-              className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600 transition-transform transform hover:scale-105"
+              className="inline-flex items-center px-4 py-2 rounded-lg bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-700 transition-colors shadow-sm"
             >
-              <PlusIcon className="w-5 h-5 mr-2" />
+              <PlusIcon className="w-4 h-4 mr-2" />
               Mesele goş
             </Link>
           </div>
         </div>
 
-        <table className="w-full min-w-max table-auto bg-white shadow-md rounded-lg overflow-hidden">
-          <thead className="bg-gray-800 text-white">
-            <tr>
-              {TABLE_HEAD.map((head) => (
-                <th
-                  key={head}
-                  className="border-b border-gray-600 px-6 py-3 text-sm font-semibold text-center"
-                >
-                  {head}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {problems.length > 0 &&
-              problems.map((problem, index) => (
-                <tr
-                  key={index}
-                  className="hover:bg-gray-50 text-center transition-colors duration-200"
-                >
-                  <td className="py-3 px-6 border-b border-gray-200">
-                    {problem.char}
-                  </td>
-                  <td className="py-3 px-6 border-b border-gray-200">
-                    {problem.name}
-                  </td>
-                  <td className="py-3 px-6 border-b border-gray-200 flex items-center justify-center">
-                    <UserIcon className="h-5 w-5 mr-1 text-gray-500" />
-                    {problem.accepted_submissions}
-                  </td>
-                  <td className="py-3 px-6 border-b border-gray-200">
-                    <Link
-                      to={`/admin/contest/${id}/problem/${problem.char}`}
-                      className="text-blue-500 hover:text-blue-700"
-                    >
-                      <PencilIcon className="w-5 h-5 inline" />
-                    </Link>
-                  </td>
-                  <td className="py-3 px-6 border-b border-gray-200">
-                    <button
-                      onClick={() => onDeleteClick(id, problem.char)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <TrashIcon className="w-5 h-5 inline" />
-                    </button>
-                  </td>
+        {/* Problems Table */}
+        <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50/80 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  <th scope="col" className="py-3.5 px-6 text-center w-16">
+                    {TABLE_HEAD[0]}
+                  </th>
+                  <th scope="col" className="py-3.5 px-6">
+                    {TABLE_HEAD[1]}
+                  </th>
+                  <th scope="col" className="py-3.5 px-6 text-center">
+                    {TABLE_HEAD[2]}
+                  </th>
+                  <th scope="col" className="py-3.5 px-6 text-center w-24">
+                    {TABLE_HEAD[3]}
+                  </th>
+                  <th scope="col" className="py-3.5 px-6 text-center w-24">
+                    {TABLE_HEAD[4]}
+                  </th>
                 </tr>
-              ))}
-            {problems.length === 0 && (
-              <tr>
-                <td
-                  colSpan="5"
-                  className="py-4 text-center bg-gray-200 text-gray-600"
-                >
-                  Meseleler tapylmady.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              </thead>
+
+              <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
+                {problems.length > 0 ? (
+                  problems.map((problem) => (
+                    <tr
+                      key={problem.char}
+                      className="hover:bg-slate-50/60 transition-colors duration-150"
+                    >
+                      {/* Character Badge */}
+                      <td className="py-3.5 px-6 text-center">
+                        <span className="inline-flex items-center justify-center h-7 w-7 rounded-md bg-slate-100 font-semibold text-slate-700 text-xs">
+                          {problem.char}
+                        </span>
+                      </td>
+
+                      {/* Problem Name */}
+                      <td className="py-3.5 px-6 font-medium text-slate-900">
+                        {problem.name}
+                      </td>
+
+                      {/* Accepted Submissions Count */}
+                      <td className="py-3.5 px-6 text-center">
+                        <span className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                          <UserIcon className="h-3.5 w-3.5 text-slate-400" />
+                          <span>{problem.accepted_submissions ?? 0}</span>
+                        </span>
+                      </td>
+
+                      {/* Edit Action */}
+                      <td className="py-3.5 px-6 text-center">
+                        <Link
+                          to={`/admin/contest/${id}/problem/${problem.char}`}
+                          className="inline-flex items-center justify-center p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                          title="Üýtget"
+                        >
+                          <PencilIcon className="w-4 h-4" />
+                        </Link>
+                      </td>
+
+                      {/* Delete Action */}
+                      <td className="py-3.5 px-6 text-center">
+                        <button
+                          onClick={() => onDeleteClick(problem.char)}
+                          className="inline-flex items-center justify-center p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                          title="Poz"
+                        >
+                          <TrashIcon className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="py-12 text-center text-slate-500">
+                      <div className="flex flex-col items-center justify-center space-y-2">
+                        <DocumentTextIcon className="w-8 h-8 text-slate-300" />
+                        <span className="text-sm font-medium">Meseleler tapylmady.</span>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </AdminComponent>
   );

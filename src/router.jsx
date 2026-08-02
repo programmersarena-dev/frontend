@@ -49,13 +49,13 @@ import AdminAddProblem from "@/views/Admin/Problem/AddProblem";
 import AdminEditProblem from "@/views/Admin/Problem/EditProblem";
 
 const GuestGuard = () => {
-  const { user } = useAuth();
-  return user ? <Navigate to="/" replace /> : <Outlet />;
+  const { currentUser } = useAuth();
+  return currentUser ? <Navigate to="/" replace /> : <Outlet />;
 };
 
 const AdminGuard = () => {
-  const { user } = useAuth();
-  if (!user || user.user_type !== "admin") {
+  const { currentUser } = useAuth();
+  if (!currentUser || currentUser.user_type !== "admin") {
     return <NotFound />;
   }
   return <Outlet />;

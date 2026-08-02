@@ -8,7 +8,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useTranslation } from "../../contexts/TranslationContext";
 
 export default function SubmissionsList({ submissions = [] }) {
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
   const { __ } = useTranslation();
 
   const [userSubmission, setUserSubmission] = useState(null);
@@ -74,7 +74,7 @@ export default function SubmissionsList({ submissions = [] }) {
                 <SubmissionRow
                   key={submission.id}
                   submission={submission}
-                  currentUsername={user?.name}
+                  currentUsername={currentUser?.name}
                   isLoading={loadingSubmissionId === submission.id}
                   onSubmissionClick={fetchUserCode}
                 />

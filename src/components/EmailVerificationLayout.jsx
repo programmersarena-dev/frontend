@@ -10,7 +10,7 @@ export default function EmailVerificationLayout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axiosClient.get("/me").then(({ data }) => {
+    axiosClient.get("/auth/me").then(({ data }) => {
       setLoading(false);
       setCurrentUser(data);
       if (!current) {

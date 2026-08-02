@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axiosClient from "@/api/axios";
+import axiosClient, { setStoredToken } from "@/api/axios";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "@/contexts/TranslationContext";
 
 export default function SignUp() {
-  const { setUser } = useAuth();
+  const { setCurrentUser } = useAuth();
   const { addToast } = useToast();
   const { __ } = useTranslation();
   const navigate = useNavigate();
@@ -48,9 +48,9 @@ export default function SignUp() {
         setLoading(false);
         addToast(data.message || __("auth.success-register"), "success");
 
-        setUser(data.user);
+        setCurrentUser(data.user);
         if (data.token) {
-          localStorage.setItem("TOKEN", data.token);
+          setStoredToken(data.token);
         }
         navigate("/");
       })

@@ -1,160 +1,184 @@
-import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
-import React from "react";
+import React, { useMemo } from "react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 export default function PaginationLinks({ meta, onPageClick }) {
-  function onClick(ev, link) {
-    ev.preventDefault();
-    if (!link.url) {
-      return;
-    }
-    onPageClick(link);
+  if (!meta || !meta.total || meta.total <= meta.per_page) {
+    return null;
   }
 
-  // Utility function to construct URL with existing query parameters
+  const { current_page: currentPage, last_page: totalPages, from, to, total } = meta;
+
+  // Safely construct URL preserving existing query params
   const constructUrl = (page) => {
-    const url = new URL(meta.path, window.location.origin);
-    const params = new URLSearchParams(window.location.search);
-    params.set("page", page);
-    url.search = params.toString();
-    return url.toString();
+    try {
+      const url = new URL(meta.path || window.location.pathname, window.location.origin);
+      const params = new URLSearchParams(window.location.search);
+      params.set("page", page);
+      url.search = params.toString();
+      return url.toString();
+    } catch (e) {
+      return `?page=${page}`;
+    }
   };
 
-  const renderPageNumbers = () => {
-    const pages = [];
-    const currentPage = meta.current_page;
-    const totalPages = meta.last_page;
-
-    // Add Previous link if not on the first page
-    if (currentPage > 1) {
-      pages.push({
-        label: "Öňki",
-        url: constructUrl(currentPage - 1),
-      });
+  const handleLinkClick = (ev, link) => {
+    ev.preventDefault();
+    if (!link || !link.url || link.active) return;
+    if (onPageClick) {
+      onPageClick(link);
     }
+  };
 
-    // Add first page link if needed
+  // Generate page links list
+  const pages = useMemo(() => {
+    const list = [];
+
+    // Previous link
+    list.push({
+      label: "Öňki",
+      url: currentPage > 1 ? constructUrl(currentPage - 1) : null,
+      isPrev: true,
+    });
+
+    // First page
     if (currentPage > 2) {
-      pages.push({
-        label: "1",
-        url: constructUrl(1),
-      });
+      list.push({ label: "1", url: constructUrl(1) });
       if (currentPage > 3) {
-        pages.push({
-          label: "...",
-          url: null,
-        });
+        list.push({ label: "...", url: null });
       }
     }
 
-    // Add the current and neighboring pages
+    // Previous neighbor page
     if (currentPage > 1) {
-      pages.push({
+      list.push({
         label: (currentPage - 1).toString(),
         url: constructUrl(currentPage - 1),
       });
     }
 
-    pages.push({
+    // Current page
+    list.push({
       label: currentPage.toString(),
       url: constructUrl(currentPage),
       active: true,
     });
 
+    // Next neighbor page
     if (currentPage < totalPages) {
-      pages.push({
+      list.push({
         label: (currentPage + 1).toString(),
         url: constructUrl(currentPage + 1),
       });
     }
 
-    // Add last page link if needed
+    // Last page
     if (currentPage < totalPages - 1) {
       if (currentPage < totalPages - 2) {
-        pages.push({
-          label: "...",
-          url: null,
-        });
+        list.push({ label: "...", url: null });
       }
-      pages.push({
+      list.push({
         label: totalPages.toString(),
         url: constructUrl(totalPages),
       });
     }
 
-    // Add Next link if not on the last page
-    if (currentPage < totalPages) {
-      pages.push({
-        label: "Indiki",
-        url: constructUrl(currentPage + 1),
-      });
-    }
+    // Next link
+    list.push({
+      label: "Indiki",
+      url: currentPage < totalPages ? constructUrl(currentPage + 1) : null,
+      isNext: true,
+    });
 
-    return pages;
-  };
+    return list;
+  }, [currentPage, totalPages, meta.path]);
 
   return (
-    <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 shadow-md mt-4">
+    <div className="flex items-center justify-between border-t border-slate-200 bg-white px-4 py-3 sm:px-6 mt-4">
+      {/* Mobile Controls */}
       <div className="flex flex-1 justify-between sm:hidden">
-        {meta.links[0]?.url && (
-          <a
-            href="#"
-            onClick={(ev) =>
-              onClick(ev, {
-                label: "Öňki",
-                url: constructUrl(meta.current_page - 1),
-              })
-            }
-            className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-          >
-            <ArrowLeftIcon className="w-4 h-4" />
-          </a>
-        )}
-        {meta.links[meta.links.length - 1]?.url && (
-          <a
-            href="#"
-            onClick={(ev) =>
-              onClick(ev, {
-                label: "Indiki",
-                url: constructUrl(meta.current_page + 1),
-              })
-            }
-            className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-          >
-            <ArrowRightIcon className="w-4 h-4" />
-          </a>
-        )}
+        <button
+          type="button"
+          disabled={currentPage <= 1}
+          onClick={(ev) =>
+            handleLinkClick(ev, {
+              label: "Öňki",
+              url: currentPage > 1 ? constructUrl(currentPage - 1) : null,
+            })
+          }
+          className="relative inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+        >
+          <ChevronLeftIcon className="mr-1.5 h-4 w-4 text-slate-500" />
+          Öňki
+        </button>
+
+        <button
+          type="button"
+          disabled={currentPage >= totalPages}
+          onClick={(ev) =>
+            handleLinkClick(ev, {
+              label: "Indiki",
+              url: currentPage < totalPages ? constructUrl(currentPage + 1) : null,
+            })
+          }
+          className="relative ml-3 inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+        >
+          Indiki
+          <ChevronRightIcon className="ml-1.5 h-4 w-4 text-slate-500" />
+        </button>
       </div>
+
+      {/* Desktop Controls */}
       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
         <div>
-          <p className="text-xs text-gray-700">
-            <span className="font-medium">{meta.from}{"-"}{meta.to}{" of "}{meta.total}</span>
+          <p className="text-xs text-slate-600">
+            Görkezilýär <span className="font-semibold text-slate-900">{from || 0}</span> -{" "}
+            <span className="font-semibold text-slate-900">{to || 0}</span> / Jemi{" "}
+            <span className="font-semibold text-slate-900">{total}</span>
           </p>
         </div>
+
         <div>
-          {meta.total > meta.per_page && (
-            <nav
-              className="isolate inline-flex -space-x-px rounded-md shadow-sm"
-              aria-label="Pagination"
-            >
-              {renderPageNumbers().map((link, ind) => (
+          <nav className="isolate inline-flex -space-x-px rounded-lg shadow-sm" aria-label="Pagination">
+            {pages.map((link, ind) => {
+              const isFirst = ind === 0;
+              const isLast = ind === pages.length - 1;
+              const isEllipsis = link.label === "...";
+
+              if (isEllipsis) {
+                return (
+                  <span
+                    key={ind}
+                    className="relative inline-flex items-center px-3.5 py-2 text-xs font-semibold text-slate-400 border border-slate-200 bg-white select-none"
+                  >
+                    ...
+                  </span>
+                );
+              }
+
+              return (
                 <a
-                  href="#"
-                  onClick={(ev) => onClick(ev, link)}
                   key={ind}
+                  href={link.url || "#"}
+                  onClick={(ev) => handleLinkClick(ev, link)}
                   aria-current={link.active ? "page" : undefined}
-                  className={`relative inline-flex items-center px-4 py-2 text-xs font-semibold ${ind === 0 ? "rounded-l-md " : ""
-                    }${ind === renderPageNumbers().length - 1
-                      ? "rounded-r-md "
-                      : ""
-                    }${link.active
-                      ? "bg-gray-800 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                      : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
-                    }`}
-                  dangerouslySetInnerHTML={{ __html: link.label }}
-                ></a>
-              ))}
-            </nav>
-          )}
+                  aria-disabled={!link.url}
+                  className={`relative inline-flex items-center px-3.5 py-2 text-xs font-semibold transition-colors focus:z-10 focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
+                    isFirst ? "rounded-l-lg " : ""
+                  }${isLast ? "rounded-r-lg " : ""}${
+                    link.active
+                      ? "bg-slate-900 text-white border border-slate-900 shadow-sm"
+                      : link.url
+                      ? "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:text-slate-900"
+                      : "bg-slate-50 text-slate-300 border border-slate-200 cursor-not-allowed pointer-events-none"
+                  }`}
+                >
+                  {link.isPrev && <ChevronLeftIcon className="mr-1 h-3.5 w-3.5" />}
+                  {link.label}
+                  {link.isNext && <ChevronRightIcon className="ml-1 h-3.5 w-3.5" />}
+                </a>
+              );
+            })}
+          </nav>
         </div>
       </div>
     </div>

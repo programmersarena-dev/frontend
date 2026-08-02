@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from "react";
 import en from "../lang/en.json";
 import tm from "../lang/tk.json";
 import ru from "../lang/ru.json";
-import axiosClient from "@/api/axios";
+import axiosClient, { clearStoredToken, getStoredToken, setStoredToken } from "@/api/axios";
 
 const StateContext = createContext({
   currentUser: {},
@@ -17,19 +17,13 @@ const StateContext = createContext({
 
 export const ContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState({});
-  const [userToken, _setUserToken] = useState(
-    localStorage.getItem("TOKEN") || ""
-  );
+  const [userToken, _setUserToken] = useState(getStoredToken() || "");
   const [lang, setLang] = useState('tm');
   const translations = { en, tm, ru };
   const [toast, setToast] = useState({ message: "", show: false });
 
   const setUserToken = (token) => {
-    if (token) {
-      localStorage.setItem("TOKEN", token);
-    } else {
-      localStorage.removeItem("TOKEN");
-    }
+    setStoredToken(token);
     _setUserToken(token);
   };
 
@@ -57,6 +51,7 @@ export const ContextProvider = ({ children }) => {
       .then(() => {
         setCurrentUser(null);
         setUserToken(null);
+        clearStoredToken();
         // navigate("/");
       });
   };

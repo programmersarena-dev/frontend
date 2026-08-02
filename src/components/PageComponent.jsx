@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { Disclosure, Menu } from "@headlessui/react";
-import { Bars3Icon, UserIcon, XMarkIcon, ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
+import {
+  Bars3Icon,
+  UserIcon,
+  XMarkIcon,
+  ArrowRightOnRectangleIcon,
+} from "@heroicons/react/24/outline";
 import { Outlet, NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import axiosClient from "@/api/axios";
 import Loading from "@/components/core/Loading";
@@ -9,9 +14,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "@/contexts/TranslationContext";
 
 const availableLanguages = [
-  { code: 'US', label: 'United States', title: 'en' },
-  { code: 'RU', label: 'Russia', title: 'ru' },
-  { code: 'TM', label: 'Turkmenistan', title: 'tk' },
+  { code: "US", label: "United States", title: "en" },
+  { code: "RU", label: "Russia", title: "ru" },
+  { code: "TM", label: "Turkmenistan", title: "tk" },
 ];
 
 function classNames(...classes) {
@@ -66,39 +71,46 @@ export default function PageComponent() {
   if (loading) return <Loading />;
 
   return (
-    <div className="min-h-full bg-slate-50 text-slate-800 selection:bg-emerald-500/20 selection:text-emerald-700 antialiased">
-      <Disclosure as="nav" className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200/80 shadow-sm">
+    <div className="min-h-screen bg-slate-50/50 text-slate-800 antialiased selection:bg-indigo-500/10 selection:text-indigo-600">
+      <Disclosure
+        as="nav"
+        className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/80 backdrop-blur-md transition-colors"
+      >
         {({ open }) => (
           <>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <div className="flex h-16 items-center justify-between">
+              <div className="flex h-16 items-center justify-between gap-4">
+                {/* Brand Logo & Navigation */}
                 <div className="flex items-center gap-8">
-                  <Link to="/" className="flex-shrink-0 transition transform hover:scale-105">
+                  <Link
+                    to="/"
+                    className="flex-shrink-0 transition-opacity hover:opacity-85"
+                  >
                     <img
                       className="h-8 w-auto"
                       src="/logo.png"
                       alt="Programmers Arena"
                     />
                   </Link>
+
                   <div className="hidden md:block">
                     <div className="flex items-center space-x-1">
                       {navigation.map((item) => {
-                        const active = location.pathname === item.to || location.pathname.startsWith(item.to + "/");
+                        const active =
+                          location.pathname === item.to ||
+                          location.pathname.startsWith(item.to + "/");
                         return (
                           <NavLink
                             key={item.name}
                             to={item.to}
                             className={classNames(
                               active
-                                ? "text-emerald-600 bg-emerald-50/60 font-semibold"
-                                : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 font-medium",
-                              "rounded-lg px-4 py-2 text-sm transition-all duration-200 relative group"
+                                ? "bg-slate-100 text-slate-900 font-semibold"
+                                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium",
+                              "rounded-lg px-3.5 py-2 text-sm transition-colors duration-150"
                             )}
                           >
-                            <span>{item.name}</span>
-                            {active && (
-                              <span className="absolute bottom-0 left-4 right-4 h-[2px] bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
-                            )}
+                            {item.name}
                           </NavLink>
                         );
                       })}
@@ -106,65 +118,73 @@ export default function PageComponent() {
                   </div>
                 </div>
 
-                <div className="hidden md:flex items-center gap-6">
+                {/* Right Header Actions (Desktop) */}
+                <div className="hidden md:flex items-center gap-4">
                   {/* Language Selector */}
-                  <ul className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                  <div className="flex items-center gap-1 rounded-lg border border-slate-200/80 bg-slate-50/80 p-1">
                     {availableLanguages.map((language) => (
-                      <li key={language.code}>
-                        <button
-                          className={classNames(
-                            "inline-flex items-center justify-center rounded-lg px-2.5 py-1 transition-all duration-200",
-                            currentLang === language.title
-                              ? "bg-white text-emerald-600 border border-slate-200 shadow-sm"
-                              : "text-slate-400 hover:text-slate-700 border border-transparent"
-                          )}
-                          onClick={() => changeLanguage(language.title)}
-                          disabled={loading}
-                          title={language.label}
-                        >
-                          <ReactCountryFlag code={language.code} style={{ width: '18px', height: '18px', borderRadius: '2px', objectFit: 'cover' }} />
-                        </button>
-                      </li>
+                      <button
+                        key={language.code}
+                        className={classNames(
+                          "flex items-center justify-center rounded-md px-2 py-1 text-xs font-medium transition-all duration-150",
+                          currentLang === language.title
+                            ? "bg-white text-slate-900 shadow-xs border border-slate-200/60"
+                            : "text-slate-500 hover:text-slate-900"
+                        )}
+                        onClick={() => changeLanguage(language.title)}
+                        disabled={loading}
+                        title={language.label}
+                      >
+                        <ReactCountryFlag
+                          code={language.code}
+                          style={{
+                            width: "16px",
+                            height: "12px",
+                            borderRadius: "2px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </button>
                     ))}
-                  </ul>
+                  </div>
 
                   {/* Desktop User Panel */}
-                  <div className="flex items-center">
+                  <div className="flex items-center border-l border-slate-200 pl-4">
                     {currentUser ? (
-                      <Menu as="div" className="relative ml-3">
-                        <div className="flex items-center gap-1 bg-slate-100 border border-slate-200 rounded-xl p-1">
+                      <Menu as="div" className="relative">
+                        <div className="flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-50/80 p-1">
                           <Link
                             to={`/profile/${currentUser.handle || currentUser.name}`}
-                            className="flex items-center gap-2 px-3 py-1.5 text-sm text-slate-700 hover:text-emerald-600 font-medium transition rounded-lg hover:bg-white"
+                            className="flex items-center gap-2 rounded-md px-2.5 py-1 text-sm font-medium text-slate-700 hover:bg-white hover:text-slate-900 transition-colors"
                           >
-                            <div className="w-5 h-5 bg-emerald-100 rounded-md border border-emerald-200 flex items-center justify-center">
-                              <UserIcon className="w-3.5 h-3.5 text-emerald-600" />
+                            <div className="flex h-5 w-5 items-center justify-center rounded-md bg-slate-200/80 text-slate-600">
+                              <UserIcon className="h-3.5 w-3.5" />
                             </div>
                             <span>{currentUser.handle || currentUser.name}</span>
                           </Link>
 
-                          <div className="w-[1px] h-5 bg-slate-300 mx-1" />
+                          <div className="h-4 w-[1px] bg-slate-200" />
 
                           <button
                             onClick={(ev) => logout(ev)}
-                            className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition"
+                            className="rounded-md p-1 text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition-colors"
                             title={__("auth.logout")}
                           >
-                            <ArrowRightOnRectangleIcon className="w-4 h-4" />
+                            <ArrowRightOnRectangleIcon className="h-4 w-4" />
                           </button>
                         </div>
                       </Menu>
                     ) : (
-                      <div className="flex items-center gap-2 bg-slate-100/80 p-1 rounded-xl border border-slate-200">
+                      <div className="flex items-center gap-2">
                         <Link
                           to="/login"
-                          className="px-4 py-1.5 text-sm text-slate-600 hover:text-slate-900 font-medium transition"
+                          className="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
                         >
                           {__("auth.login")}
                         </Link>
                         <Link
                           to="/sign-up"
-                          className="px-4 py-1.5 text-sm bg-slate-900 text-white font-semibold rounded-lg hover:bg-slate-800 shadow-sm transition duration-200"
+                          className="rounded-lg bg-indigo-600 px-3.5 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 transition-colors"
                         >
                           {__("auth.sign-up")}
                         </Link>
@@ -173,26 +193,27 @@ export default function PageComponent() {
                   </div>
                 </div>
 
-                {/* Mobile Menu Trigger */}
-                <div className="-mr-2 flex md:hidden">
-                  <Disclosure.Button className="relative inline-flex items-center justify-center rounded-xl bg-slate-100 p-2 text-slate-500 hover:bg-slate-200 hover:text-slate-900 border border-slate-200 focus:outline-none transition">
-                    <span className="absolute -inset-0.5" />
+                {/* Mobile Hamburger Button */}
+                <div className="flex md:hidden">
+                  <Disclosure.Button className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-slate-50 p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 focus:outline-none transition-colors">
                     <span className="sr-only">{__("auth.open-main-menu")}</span>
                     {open ? (
-                      <XMarkIcon className="block h-5 w-5" aria-hidden="true" />
+                      <XMarkIcon className="h-5 w-5" aria-hidden="true" />
                     ) : (
-                      <Bars3Icon className="block h-5 w-5" aria-hidden="true" />
+                      <Bars3Icon className="h-5 w-5" aria-hidden="true" />
                     )}
                   </Disclosure.Button>
                 </div>
               </div>
             </div>
 
-            {/* Mobile View Panel */}
-            <Disclosure.Panel className="md:hidden bg-white border-b border-slate-200 shadow-lg">
-              <div className="space-y-1 px-3 pb-4 pt-2">
+            {/* Mobile Navigation Drawer */}
+            <Disclosure.Panel className="border-b border-slate-200 bg-white md:hidden">
+              <div className="space-y-1 px-4 pt-2 pb-3">
                 {navigation.map((item) => {
-                  const active = location.pathname === item.to || location.pathname.startsWith(item.to + "/");
+                  const active =
+                    location.pathname === item.to ||
+                    location.pathname.startsWith(item.to + "/");
                   return (
                     <NavLink
                       key={item.name}
@@ -200,9 +221,9 @@ export default function PageComponent() {
                       className={({ isActive }) =>
                         classNames(
                           active || isActive
-                            ? "bg-emerald-50 text-emerald-600 border-l-4 border-emerald-500 font-semibold"
-                            : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
-                          "block px-4 py-2.5 text-base font-medium transition"
+                            ? "bg-slate-100 text-slate-900 font-semibold"
+                            : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium",
+                          "block rounded-lg px-3 py-2 text-base transition-colors"
                         )
                       }
                     >
@@ -212,67 +233,68 @@ export default function PageComponent() {
                 })}
               </div>
 
-              {/* Language Selector Mobile */}
-              <div className="px-4 pb-4 pt-3 border-t border-slate-100">
-                <div className="flex items-center gap-2 justify-center bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+              {/* Mobile Language Switcher */}
+              <div className="border-t border-slate-100 px-4 py-3">
+                <div className="flex items-center justify-center gap-2 rounded-lg border border-slate-200/80 bg-slate-50/80 p-1">
                   {availableLanguages.map((language) => (
                     <button
                       key={language.code}
                       className={classNames(
-                        "flex-1 inline-flex items-center justify-center rounded-lg py-2 transition-all duration-150",
+                        "flex flex-1 items-center justify-center rounded-md py-1.5 transition-all",
                         currentLang === language.title
-                          ? "bg-white text-emerald-600 border border-slate-200 shadow-sm"
-                          : "text-slate-400 hover:text-slate-700"
+                          ? "bg-white text-slate-900 shadow-xs border border-slate-200/60"
+                          : "text-slate-500 hover:text-slate-900"
                       )}
                       onClick={() => changeLanguage(language.title)}
                       disabled={loading}
                     >
-                      <ReactCountryFlag code={language.code} style={{ width: '20px', height: '14px', borderRadius: '1px' }} />
+                      <ReactCountryFlag
+                        code={language.code}
+                        style={{
+                          width: "18px",
+                          height: "13px",
+                          borderRadius: "2px",
+                        }}
+                      />
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Authentication Mobile */}
-              <div className="border-t border-slate-100 pb-4 pt-4 bg-slate-50/50">
+              {/* Mobile User Panel */}
+              <div className="border-t border-slate-100 bg-slate-50/50 p-4">
                 {currentUser ? (
-                  <div>
-                    <div className="flex items-center px-5">
-                      <div className="flex-shrink-0">
-                        <div className="w-9 h-9 bg-emerald-100 rounded-xl border border-emerald-200 flex items-center justify-center">
-                          <UserIcon className="w-5 h-5 text-emerald-600" />
-                        </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-xs">
+                        <UserIcon className="h-5 w-5" />
                       </div>
-                      <div className="ml-3">
-                        <Link 
-                          to={`/profile/${currentUser.handle || currentUser.name}`}
-                          className="text-base font-medium text-slate-800 hover:text-emerald-600 block transition"
-                        >
-                          {currentUser.handle || currentUser.name}
-                        </Link>
-                      </div>
-                    </div>
-                    <div className="mt-3 space-y-1 px-3">
-                      <Disclosure.Button
-                        as="button"
-                        onClick={(ev) => logout(ev)}
-                        className="w-full text-left block rounded-xl px-4 py-2.5 text-base font-medium text-slate-500 hover:bg-rose-50 hover:text-rose-600 transition"
+                      <Link
+                        to={`/profile/${currentUser.handle || currentUser.name}`}
+                        className="text-base font-medium text-slate-900 hover:text-indigo-600 transition-colors"
                       >
-                        {__("auth.logout")}
-                      </Disclosure.Button>
+                        {currentUser.handle || currentUser.name}
+                      </Link>
                     </div>
+                    <Disclosure.Button
+                      as="button"
+                      onClick={(ev) => logout(ev)}
+                      className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2 text-center text-sm font-medium text-slate-600 hover:bg-rose-50 hover:text-rose-600 transition-colors shadow-xs"
+                    >
+                      {__("auth.logout")}
+                    </Disclosure.Button>
                   </div>
                 ) : (
-                  <div className="space-y-2 px-4">
+                  <div className="flex flex-col gap-2">
                     <NavLink
                       to="/login"
-                      className="block text-center rounded-xl px-4 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-100 border border-slate-200 transition"
+                      className="block rounded-lg border border-slate-200 bg-white px-4 py-2 text-center text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors shadow-xs"
                     >
                       {__("auth.login")}
                     </NavLink>
                     <NavLink
                       to="/sign-up"
-                      className="block text-center bg-slate-900 text-white rounded-xl px-4 py-2.5 text-base font-semibold hover:bg-slate-800 transition shadow-sm"
+                      className="block rounded-lg bg-indigo-600 px-4 py-2 text-center text-sm font-semibold text-white hover:bg-indigo-500 transition-colors shadow-xs"
                     >
                       {__("auth.sign-up")}
                     </NavLink>
@@ -284,18 +306,23 @@ export default function PageComponent() {
         )}
       </Disclosure>
 
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 selection:bg-emerald-500/20">
+      {/* Main Page Body */}
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <Outlet />
       </main>
 
-      <footer className="text-center mt-16 pb-8 text-slate-500 text-xs max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <hr className="border-slate-200 mb-6" />
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500">
+      {/* Footer */}
+      <footer className="mx-auto max-w-7xl px-4 pb-8 pt-12 sm:px-6 lg:px-8">
+        <div className="border-t border-slate-200/80 pt-6 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p>&copy; {new Date().getFullYear()} ProgrammersArena. All rights reserved.</p>
-          <div className="flex gap-4 text-slate-400">
-            <span className="hover:text-slate-600 cursor-pointer transition">Terms</span>
+          <div className="flex items-center gap-4 text-slate-400">
+            <span className="hover:text-slate-600 cursor-pointer transition-colors">
+              Terms
+            </span>
             <span>&bull;</span>
-            <span className="hover:text-slate-600 cursor-pointer transition">Privacy</span>
+            <span className="hover:text-slate-600 cursor-pointer transition-colors">
+              Privacy
+            </span>
           </div>
         </div>
       </footer>

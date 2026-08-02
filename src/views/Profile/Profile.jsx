@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from "react";
 import axiosClient from "@/api/axios";
 import { Link, useParams } from "react-router-dom";
-import Loading from "../../components/core/Loading";
-import NotFound from "../../components/core/NotFound";
-import { useStateContext } from "../../contexts/ContextProvider";
+import Loading from "@/components/core/Loading";
+import NotFound from "@/components/core/NotFound";
 import {
   CheckCircleIcon,
   UserIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import FormatToUTC from "../../components/core/FormatToUTC";
+import FormatToUTC from "@/components/core/FormatToUTC";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function Profile() {
-  const { currentUser } = useStateContext();
+  const { currentUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({});
   const { username } = useParams();
-  const { showToast } = useStateContext();
+  const { addToast } = useToast();
 
   useEffect(() => {
     axiosClient
@@ -35,10 +36,10 @@ export default function Profile() {
     axiosClient
       .post("/email/resend")
       .then(() => {
-        showToast("E-poçta salgyňyza üstünlikli iberildi");
+        addToast("E-poçta salgyňyza üstünlikli iberildi");
       })
       .catch(() => {
-        showToast("Ýalňyşlyk ýüze çykdy");
+        addToast("Ýalňyşlyk ýüze çykdy");
       });
   };
 

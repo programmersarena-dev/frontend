@@ -183,7 +183,7 @@ const StandingsTable = ({ data, currentUser, onClick, contestId, contestType, __
 };
 
 export default function ContestStandings() {
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
   const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
@@ -255,7 +255,7 @@ export default function ContestStandings() {
         <CheckboxFilter checked={checkbox} onChange={toggleCheckbox} __={__} />
         <StandingsTable
           data={data}
-          currentUser={user}
+          currentUser={currentUser}
           onClick={fetchSubmissions}
           contestId={id}
           contestType={data.contest.type}

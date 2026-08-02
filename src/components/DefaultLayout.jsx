@@ -5,12 +5,12 @@ import Loading from "@/components/core/Loading";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function DefaultLayout() {
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
     const fetchUserActivity = () => {
-      if (user) axiosClient.get("/auth/activity");
+      if (currentUser) axiosClient.post("/auth/activity");
     };
     fetchUserActivity();
     const intervalId = setInterval(fetchUserActivity, 60000);

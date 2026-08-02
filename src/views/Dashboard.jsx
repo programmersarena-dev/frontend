@@ -3,7 +3,7 @@ import axiosClient from "@/api/axios";
 import Loading from "@/components/core/Loading.jsx";
 import FormatToUTC from "@/components/core/FormatToUTC.jsx";
 import PaginationLinks from "@/components/core/PaginationLinks.jsx";
-import { CalendarDaysIcon } from "@heroicons/react/24/outline";
+import { CalendarDaysIcon, NewspaperIcon } from "@heroicons/react/24/outline";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
@@ -23,7 +23,7 @@ export default function Dashboard() {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching contests:", error);
+        console.error("Error fetching blogs:", error);
         setLoading(false);
       });
   };
@@ -37,63 +37,50 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-10 transition-colors duration-300">
+    <div className="min-h-screen bg-slate-50/50 py-8 transition-colors duration-300">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-        {/* Header Hero Banner */}
-        <div className="mb-8 rounded-3xl bg-white p-8 border border-slate-200/80 shadow-sm relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-50/50 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
-          <div className="relative z-10">
-            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-              Latest updates
-            </h1>
-            <p className="mt-2 text-slate-600 font-medium max-w-xl">
-              Stay on top of announcements, contest news, and platform updates.
-            </p>
-          </div>
-        </div>
-
-        {/* Blog Cards Grid */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          {blogs.map((blog, index) => (
-            <article
-              key={index}
-              className="flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md hover:border-indigo-200"
-            >
-              <div>
-                <h2 className="mb-3 text-xl font-bold text-slate-900 tracking-tight hover:text-indigo-600 transition-colors">
-                  {blog.title}
-                </h2>
-                <div
-                  className="text-slate-600 mb-6 text-sm leading-relaxed overflow-hidden max-h-24 line-clamp-3"
-                  dangerouslySetInnerHTML={{ __html: blog.description }}
-                />
-              </div>
-
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-medium text-slate-500">
-                <div className="inline-flex items-center gap-1.5 bg-slate-100/80 border border-slate-200 px-2.5 py-1 rounded-xl text-slate-700">
-                  <CalendarDaysIcon className="h-4 w-4 text-slate-500" />
-                  <span>
-                    <FormatToUTC dateTime={blog.createdAt} />
-                  </span>
+        {/* Blog Cards (1 Item Per Row) */}
+        {blogs.length > 0 ? (
+          <div className="space-y-4">
+            {blogs.map((blog) => (
+              <article
+                key={blog.id}
+                className="group flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-6 shadow-xs hover:border-slate-300 hover:shadow-sm transition-all duration-200"
+              >
+                <div>
+                  <h2 className="mb-2 text-lg font-semibold text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors">
+                    {blog.title}
+                  </h2>
+                  <div
+                    className="text-slate-600 text-sm leading-relaxed line-clamp-3 prose prose-slate max-w-none mb-5"
+                    dangerouslySetInnerHTML={{ __html: blog.description }}
+                  />
                 </div>
-              </div>
-            </article>
-          ))}
-        </div>
 
-        {/* Empty State */}
-        {blogs.length === 0 && (
-          <div className="w-full max-w-md mx-auto text-center bg-white p-8 rounded-3xl shadow-sm border border-slate-200/80">
-            <p className="text-sm text-slate-500 font-medium">
-              No updates or announcements available.
+                <div className="pt-4 border-t border-slate-100 flex items-center text-xs font-medium text-slate-400">
+                  <div className="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-100 px-2.5 py-1 rounded-md text-slate-600">
+                    <CalendarDaysIcon className="h-3.5 w-3.5 text-slate-400" />
+                    <FormatToUTC dateTime={blog.createdAt} />
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          /* Empty State */
+          <div className="text-center py-16 bg-white rounded-xl border border-dashed border-slate-200">
+            <NewspaperIcon className="mx-auto h-10 w-10 text-slate-300" />
+            <h3 className="mt-2 text-sm font-semibold text-slate-900">No updates yet</h3>
+            <p className="mt-1 text-sm text-slate-500">
+              Check back later for new announcements or contest news.
             </p>
           </div>
         )}
 
         {/* Pagination */}
         {blogs.length > 0 && (
-          <div className="mt-10 flex justify-center">
+          <div className="mt-8 flex justify-center">
             <PaginationLinks meta={meta} onPageClick={onPageClick} />
           </div>
         )}

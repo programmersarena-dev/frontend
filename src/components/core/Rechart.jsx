@@ -10,16 +10,20 @@ import {
 } from "recharts";
 
 export default function Rechart({ data }) {
-  data = data.map((item) => ({
-    month: new Date(0, item.month - 1).toLocaleString("default", {
-      month: "long",
-    }),
-    total: item.total,
-  }));
+  const chartData = data.map((item) => {
+    const [year, month] = item.year_month.split("-");
+    
+    const date = new Date(Number(year), Number(month) - 1);
+
+    return {
+      month: date.toLocaleString("default", { month: "short", year: "numeric" }),
+      total: item.total,
+    };
+  });
 
   return (
     <ResponsiveContainer width="100%" height={400}>
-      <LineChart data={data}>
+      <LineChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="month" />
         <YAxis />

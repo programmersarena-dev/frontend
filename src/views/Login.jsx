@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axiosClient from "@/api/axios";
+import axiosClient, { setStoredToken } from "@/api/axios";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslation } from "@/contexts/TranslationContext";
@@ -38,6 +38,7 @@ export default function Login() {
       .then(({ data }) => {
         addToast("success", data.message || __("auth.success-msg") || "Welcome back!");
         setCurrentUser(data.user);
+        setStoredToken(data.token);
 
         if (data.user?.user_type === "admin") {
           navigate("/admin");

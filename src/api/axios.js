@@ -1,5 +1,28 @@
 import axios from "axios";
 
+const TOKEN_STORAGE_KEY = "ACCESS_TOKEN";
+const LEGACY_TOKEN_STORAGE_KEY = "TOKEN";
+
+export const getStoredToken = () => {
+  const token = localStorage.getItem(TOKEN_STORAGE_KEY) || localStorage.getItem(LEGACY_TOKEN_STORAGE_KEY);
+  return token && token !== "undefined" ? token : null;
+};
+
+export const setStoredToken = (token) => {
+  if (token) {
+    localStorage.setItem(TOKEN_STORAGE_KEY, token);
+    localStorage.setItem(LEGACY_TOKEN_STORAGE_KEY, token);
+  } else {
+    localStorage.removeItem(TOKEN_STORAGE_KEY);
+    localStorage.removeItem(LEGACY_TOKEN_STORAGE_KEY);
+  }
+};
+
+export const clearStoredToken = () => {
+  localStorage.removeItem(TOKEN_STORAGE_KEY);
+  localStorage.removeItem(LEGACY_TOKEN_STORAGE_KEY);
+};
+
 const axiosClient = axios.create({
   baseURL: `${import.meta.env.VITE_API_BASE_URL}/api/v1`,
   withCredentials: true,
@@ -11,9 +34,8 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("ACCESS_TOKEN");
-    // Ensure we aren't appending 'undefined' or empty strings
-    if (token && token !== "undefined") {
+    const token = getStoredToken();
+    if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
 
@@ -53,17 +75,17 @@ axiosClient.interceptors.response.use(
         );
 
         if (response.status === 200) {
-          const { token } = response.data; // Fixed key matching backend signature ['token' => ...]
+          const token = response.data?.token || response.data?.access_token || response.data?.accessToken;
 
           if (token) {
-            localStorage.setItem("ACCESS_TOKEN", token);
+            setStoredToken(token);
             originalRequest.headers.Authorization = `Bearer ${token}`;
             return axiosClient(originalRequest); // Retry original request cleanly
           }
         }
       } catch (refreshError) {
         // Clear state and force redirect only if refreshing completely fails
-        localStorage.removeItem("ACCESS_TOKEN");
+        clearStoredToken();
 
         // Only redirect if we are not already on the login page to avoid infinite reloading
         // if (window.location.pathname !== "/login") {

@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useStateContext } from "../../contexts/ContextProvider";
 import { useTranslation } from "../../contexts/TranslationContext";
@@ -7,32 +8,51 @@ export default function ContestSecondLevelMenu({ contestId }) {
   const { currentUser } = useStateContext();
   const location = useLocation();
 
-  const isActive = (path) => {
-    return location.pathname === path;
-  };
+  // Define navigation items dynamically
+  const navItems = useMemo(() => {
+    const items = [
+      {
+        label: __("contest.problems") || "Problems",
+        path: `/contest/${contestId}`,
+        show: true,
+      },
+      {
+        label: __("contest.submit") || "Submit",
+        path: `/contest/${contestId}/submit`,
+        show: Boolean(currentUser?.email_verified_at),
+      },
+      {
+        label: __("contest.standings") || "Standings",
+        path: `/contest/${contestId}/standings`,
+        show: true,
+      },
+    ];
+
+    return items.filter((item) => item.show);
+  }, [contestId, currentUser?.email_verified_at, __]);
 
   return (
-    <div className="flex space-x-4 px-6 text-sm">
-      <Link
-        to={`/contest/${contestId}`}
-        className={`font-semibold ${isActive(`/contest/${contestId}`) ? "bg-gray-300" : ""} p-1 rounded hover:bg-gray-200 text-gray-700 transition duration-300 ease-in-out`}
-      >
-        {__("contest.problems")}
-      </Link>
-      {currentUser?.email_verified_at && (
-        <Link
-          to={`/contest/${contestId}/submit`}
-          className={`font-semibold ${isActive(`/contest/${contestId}/submit`) ? "bg-gray-300" : ""} p-1 rounded hover:bg-gray-200 text-gray-700 transition duration-300 ease-in-out`}
-        >
-          {__("contest.submit")}
-        </Link>
-      )}
-      <Link
-        to={`/contest/${contestId}/standings`}
-        className={`font-semibold ${isActive(`/contest/${contestId}/standings`) ? "bg-gray-300" : ""} p-1 rounded hover:bg-gray-200 text-gray-700 transition duration-300 ease-in-out`}
-      >
-        {__("contest.standings")}
-      </Link>
-    </div>
+    <nav className="border-b border-slate-200 bg-white/50 backdrop-blur-sm">
+      <div className="flex space-x-1 px-4 sm:px-6">
+        {navItems.map((item) => {
+          const isActive = location.pathname === item.path;
+
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              aria-current={isActive ? "page" : undefined}
+              className={`relative inline-flex items-center px-3.5 py-2.5 text-sm font-medium border-b-2 transition-all duration-200 ease-in-out ${
+                isActive
+                  ? "border-emerald-600 text-emerald-600 font-semibold"
+                  : "border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300"
+              }`}
+            >
+              {item.label}
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
   );
 }

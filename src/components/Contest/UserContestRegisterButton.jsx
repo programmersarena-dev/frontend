@@ -7,7 +7,7 @@ import { CheckIcon, ChevronDoubleRightIcon, XMarkIcon, UserPlusIcon } from '@her
 import axiosClient from "@/api/axios";
 
 export default function UserContestRegisterButton({ contest, setContest }) {
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
   const { addToast } = useToast();
   const { __ } = useTranslation();
   const navigate = useNavigate();
@@ -19,8 +19,8 @@ export default function UserContestRegisterButton({ contest, setContest }) {
 
   const register = () => {
     if (window.confirm("Siz çyndanam bäsleşige ýazylmakçymy?")) {
-      if (!user.name) return addToast("error", "Hasabyňyza giriň");
-      if (!user.email_verified_at) return addToast("error", "Poçtaňyzy tassyklaň");
+      if (!currentUser.name) return addToast("error", "Hasabyňyza giriň");
+      if (!currentUser.email_verified_at) return addToast("error", "Poçtaňyzy tassyklaň");
 
       setLoading(true);
       const data = new FormData();
@@ -33,7 +33,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
         .then(() => {
           addToast("success", "Bäsleşige üstünlikli ýazyldyňyz");
           setIsRegistered(true);
-          if (contest.type === 'Duel') setCurrentDuo([user.name, opponent === '' ? currentDuo[1] : opponent + '|X']);
+          if (contest.type === 'Duel') setCurrentDuo([currentUser.name, opponent === '' ? currentDuo[1] : opponent + '|X']);
           navigate("/contests");
         })
         .catch((error) => {
@@ -47,8 +47,8 @@ export default function UserContestRegisterButton({ contest, setContest }) {
 
   const unregister = () => {
     if (window.confirm("Siz çyndanam bäsleşikden çykmakçymy?")) {
-      if (!user.name) return addToast("error", "Hasabyňyza giriň");
-      if (!user.email_verified_at) return addToast("error", "Poçtaňyzy tassyklaň");
+      if (!currentUser.name) return addToast("error", "Hasabyňyza giriň");
+      if (!currentUser.email_verified_at) return addToast("error", "Poçtaňyzy tassyklaň");
 
       setLoading(true);
       axiosClient
@@ -74,17 +74,17 @@ export default function UserContestRegisterButton({ contest, setContest }) {
         contest.participants?.official?.find(
           (duel) =>
             Array.isArray(duel) &&
-            (duel.includes(user.name) || duel.includes(user.name + '|X'))
+            (duel.includes(currentUser.name) || duel.includes(currentUser.name + '|X'))
         ) ||
         contest.participants?.unofficial?.find(
           (duel) =>
             Array.isArray(duel) &&
-            (duel.includes(user.name) || duel.includes(user.name + '|X'))
+            (duel.includes(currentUser.name) || duel.includes(currentUser.name + '|X'))
         ) ||
         null;
 
       if (duel) {
-        if (duel[1]?.split('|')[0] === user.name) {
+        if (duel[1]?.split('|')[0] === currentUser.name) {
           [duel[0], duel[1]] = [duel[1], duel[0]];
         }
 
