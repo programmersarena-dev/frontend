@@ -38,13 +38,24 @@ axiosClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
+
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
 
 axiosClient.interceptors.response.use(
   (response) => response,
@@ -55,21 +66,26 @@ axiosClient.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // Safeguard: Do not try to refresh if the /me call fails as a deliberate guest
-    // or if the refresh endpoint itself returns a 401.
     const isRefreshRequest = originalRequest.url.includes("/auth/refresh");
 
-    if (
-      error.response.status === 401 &&
-      !originalRequest._retry &&
-      !isRefreshRequest
-    ) {
+    if (error.response.status === 401 && !originalRequest._retry && !isRefreshRequest) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return axiosClient(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
+      }
+
       originalRequest._retry = true;
+      isRefreshing = true;
 
       try {
-        // Use a clean relative fallback instance request utilizing the existing baseURL config
         const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/refresh`, // Fixed path alignment matching v1 prefix
+          `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/refresh`,
           {},
           { withCredentials: true }
         );
@@ -79,19 +95,18 @@ axiosClient.interceptors.response.use(
 
           if (token) {
             setStoredToken(token);
+            axiosClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             originalRequest.headers.Authorization = `Bearer ${token}`;
-            return axiosClient(originalRequest); // Retry original request cleanly
+            processQueue(null, token);
+            return axiosClient(originalRequest);
           }
         }
       } catch (refreshError) {
-        // Clear state and force redirect only if refreshing completely fails
+        processQueue(refreshError, null);
         clearStoredToken();
-
-        // Only redirect if we are not already on the login page to avoid infinite reloading
-        // if (window.location.pathname !== "/login") {
-        //   window.location.href = "/login";
-        // }
         return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
     }
 

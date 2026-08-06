@@ -2,11 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosClient from "@/api/axios";
 import Loading from "../components/core/Loading";
-import { useStateContext } from "../contexts/ContextProvider";
 import ProblemSidebar from "../components/Problemset/ProblemSidebar";
 import NotFound from "../components/core/NotFound";
 import PdfViewer from "../components/core/PdfViewer";
-import { DocumentDuplicateIcon } from "@heroicons/react/24/outline";
+import {
+  DocumentDuplicateIcon,
+  CheckIcon,
+  ClockIcon,
+  CpuChipIcon,
+} from "@heroicons/react/24/outline";
 import { useTranslation } from "../contexts/TranslationContext";
 import { useToast } from "../contexts/ToastContext";
 
@@ -14,15 +18,19 @@ export default function Problem() {
   const { __ } = useTranslation();
   const { addToast } = useToast();
   const [loading, setLoading] = useState(true);
-  const [problem, setProblem] = useState({});
-  const [file, setFile] = useState(null);
+  const [problem, setProblem] = useState(null);
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [copiedKey, setCopiedKey] = useState(null);
   const { id, char } = useParams();
 
-  const copyToClipboard = (clipboardData, showText) => {
+  const copyToClipboard = (text, toastMessage, key) => {
+    if (!text) return;
     navigator.clipboard
-      .writeText(clipboardData)
+      .writeText(text)
       .then(() => {
-        addToast(showText);
+        addToast(toastMessage);
+        setCopiedKey(key);
+        setTimeout(() => setCopiedKey(null), 2000);
       })
       .catch((err) => {
         console.error("Failed to copy to clipboard:", err);
@@ -30,176 +38,238 @@ export default function Problem() {
   };
 
   useEffect(() => {
+    setLoading(true);
     axiosClient
       .get(`/problemset/problem/${id}/${char}`)
-      .then((res) => {
-        setProblem(res.data.data);
-        setLoading(false);
+      .then(async (res) => {
+        const data = res.data.data;
+        setProblem(data);
+
+        // Fetch PDF safely after problem payload is returned
+        if (data?.statement) {
+          try {
+            const response = await fetch(data.statement);
+            const blob = await response.blob();
+            setPdfUrl(URL.createObjectURL(blob));
+          } catch (err) {
+            console.error("Failed to load PDF statement:", err);
+          }
+        }
       })
       .catch((error) => {
         console.error("Error fetching problem:", error);
+      })
+      .finally(() => {
         setLoading(false);
       });
-
-    const fetchPdf = async () => {
-      const response = await fetch(problem.statement);
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      setFile(url);
-    };
-
-    fetchPdf();
-  }, []);
+  }, [id, char]);
 
   if (loading) return <Loading />;
-
-  if (!problem.name) return <NotFound />;
+  if (!problem || !problem.name) return <NotFound />;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-2">
-          {!problem.statement && (
+    <div className="container mx-auto max-w-7xl px-4 py-8">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        {/* Main Problem Content */}
+        <div className="space-y-8 lg:col-span-2">
+          {!problem.statement ? (
             <>
-              <div className="mb-8 text-center">
-                <h1 className="text-3xl font-bold mb-4 text-gray-800">
+              {/* Header Info */}
+              <div className="rounded-2xl border border-slate-200/80 bg-white p-6 text-center shadow-sm">
+                <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
                   {char}. {problem.name}
                 </h1>
-                <div className="text-sm text-gray-600">
-                  <p>
+
+                <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-xs font-medium text-slate-600">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1.5 text-slate-700">
+                    <ClockIcon className="h-4 w-4 text-slate-400" />
                     {__("problem.time-limit-per-test")}:{" "}
-                    <strong>{problem.time_limit/1000} s</strong>
-                  </p>
-                  <p>
+                    <strong className="text-slate-900">
+                      {(problem.time_limit / 1000).toFixed(1)} s
+                    </strong>
+                  </span>
+
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1.5 text-slate-700">
+                    <CpuChipIcon className="h-4 w-4 text-slate-400" />
                     {__("problem.memory-limit-per-test")}:{" "}
-                    <strong>{problem.memory_limit} MB</strong>
+                    <strong className="text-slate-900">
+                      {problem.memory_limit} MB
+                    </strong>
+                  </span>
+                </div>
+              </div>
+
+              {/* Problem Description */}
+              {problem.description && (
+                <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+                  <div
+                    className="prose prose-slate max-w-none text-justify text-sm leading-relaxed text-slate-700"
+                    dangerouslySetInnerHTML={{ __html: problem.description }}
+                  />
+                </section>
+              )}
+
+              {/* Input Specification */}
+              {problem.input && (
+                <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+                  <h2 className="mb-3 text-lg font-bold tracking-tight text-slate-900">
+                    {__("problem.input")}
+                  </h2>
+                  <div
+                    className="prose prose-slate max-w-none text-sm text-slate-700"
+                    dangerouslySetInnerHTML={{ __html: problem.input }}
+                  />
+                </section>
+              )}
+
+              {/* Output Specification */}
+              {problem.output && (
+                <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+                  <h2 className="mb-3 text-lg font-bold tracking-tight text-slate-900">
+                    {__("problem.output")}
+                  </h2>
+                  <div
+                    className="prose prose-slate max-w-none text-sm text-slate-700"
+                    dangerouslySetInnerHTML={{ __html: problem.output }}
+                  />
+                </section>
+              )}
+
+              {/* Test Cases / Examples */}
+              <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+                <h2 className="mb-4 text-lg font-bold tracking-tight text-slate-900">
+                  {__("problem.test-cases")}
+                </h2>
+
+                {problem.example_test_cases &&
+                  problem.example_test_cases.length > 0 ? (
+                  <div className="space-y-6">
+                    {problem.example_test_cases.map((testCase, index) => (
+                      <div
+                        key={index}
+                        className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50/50"
+                      >
+                        {/* Input Block */}
+                        <div className="border-b border-slate-200/80 p-4">
+                          <div className="mb-2 flex items-center justify-between">
+                            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                              {__("problem.input")}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                copyToClipboard(
+                                  testCase.input,
+                                  __("problem.copied-input"),
+                                  `in-${index}`
+                                )
+                              }
+                              className="inline-flex items-center gap-1 rounded-md bg-white px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100"
+                              title="Copy Input"
+                            >
+                              {copiedKey === `in-${index}` ? (
+                                <>
+                                  <CheckIcon className="h-3.5 w-3.5 text-emerald-600" />
+                                  <span className="text-emerald-600">Copied</span>
+                                </>
+                              ) : (
+                                <>
+                                  <DocumentDuplicateIcon className="h-3.5 w-3.5 text-slate-400" />
+                                  <span>Copy</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                          <pre className="overflow-x-auto rounded-lg bg-white p-3 font-mono text-xs text-slate-800 ring-1 ring-inset ring-slate-200/70 whitespace-pre-wrap">
+                            {testCase.input}
+                          </pre>
+                        </div>
+
+                        {/* Output Block */}
+                        <div className="p-4">
+                          <div className="mb-2 flex items-center justify-between">
+                            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                              {__("problem.output")}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                copyToClipboard(
+                                  testCase.output,
+                                  __("problem.copied-output"),
+                                  `out-${index}`
+                                )
+                              }
+                              className="inline-flex items-center gap-1 rounded-md bg-white px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100"
+                              title="Copy Output"
+                            >
+                              {copiedKey === `out-${index}` ? (
+                                <>
+                                  <CheckIcon className="h-3.5 w-3.5 text-emerald-600" />
+                                  <span className="text-emerald-600">Copied</span>
+                                </>
+                              ) : (
+                                <>
+                                  <DocumentDuplicateIcon className="h-3.5 w-3.5 text-slate-400" />
+                                  <span>Copy</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                          <pre className="overflow-x-auto rounded-lg bg-white p-3 font-mono text-xs text-slate-800 ring-1 ring-inset ring-slate-200/70 whitespace-pre-wrap">
+                            {testCase.output}
+                          </pre>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-slate-500">
+                    {__("problem.test-not-found")}
                   </p>
-                </div>
-              </div>
-              <div className="mb-8">
-                <div
-                  className="text-gray-800 text-justify leading-relaxed"
-                  dangerouslySetInnerHTML={{ __html: problem.description }}
-                />
-              </div>
+                )}
+              </section>
 
-              <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">{__("problem.input")}</h2>
-                <div
-                  className="bg-gray-100 p-4 rounded"
-                  dangerouslySetInnerHTML={{ __html: problem.input }}
-                ></div>
-              </div>
-
-              <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">{__("problem.output")}</h2>
-                <div
-                  className="bg-gray-100 p-4 rounded"
-                  dangerouslySetInnerHTML={{ __html: problem.output }}
-                ></div>
-              </div>
-
-              <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">{__("problem.test-cases")}</h2>
-                <div>
-                  {problem.example_test_cases && problem.example_test_cases.map((example_test_case, index) => (
-                    <div key={index} className="bg-gray-100 border mb-4 p-2">
-                      <div className="mb-4">
-                        <div className="flex justify-between items-center">
-                          <h3 className="font-semibold text-lg">{__("problem.input")}</h3>
-                          <button
-                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
-                            onClick={() =>
-                              copyToClipboard(
-                                example_test_case.input,
-                                __("problem.copied-input")
-                              )
-                            }
-                          >
-                            <DocumentDuplicateIcon className="w-5 h-5" />
-                          </button>
-                        </div>
-                        <pre className="bg-white p-4 rounded mt-2 text-gray-800">
-                          {example_test_case &&
-                            example_test_case.input &&
-                            example_test_case.input
-                              .split("\n")
-                              .map((line, index) => (
-                                <React.Fragment key={index}>
-                                  {line}
-                                  <br />
-                                </React.Fragment>
-                              ))}
-                        </pre>
-                      </div>
-                      <div className="mb-4">
-                        <div className="flex justify-between items-center">
-                          <h3 className="font-semibold text-lg">{__("problem.output")}</h3>
-                          <button
-                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
-                            onClick={() =>
-                              copyToClipboard(
-                                example_test_case.output,
-                                __("problem.copied-output")
-                              )
-                            }
-                          >
-                            <DocumentDuplicateIcon className="w-5 h-5" />
-                          </button>
-                        </div>
-                        <pre className="bg-white p-4 rounded mt-2 text-gray-800">
-                          {example_test_case &&
-                            example_test_case.output &&
-                            example_test_case.output
-                              .split("\n")
-                              .map((line, index) => (
-                                <React.Fragment key={index}>
-                                  {line}
-                                  <br />
-                                </React.Fragment>
-                              ))}
-                        </pre>
-                      </div>
-                    </div>
-                  ))}
-                  {!problem.example_test_cases && (
-                    <p className="text-gray-600">{__("problem.test-not-found")}</p>
-                  )}
-                </div>
-              </div>
-
+              {/* Note Section */}
               {problem.note && (
-                <div className="mb-8">
-                  <h2 className="text-xl font-semibold mb-4">{__("problem.note")}</h2>
-                  <p
-                    className="text-gray-800"
+                <section className="rounded-2xl border border-amber-200/80 bg-amber-50/30 p-6 shadow-sm">
+                  <h2 className="mb-3 text-lg font-bold tracking-tight text-slate-900">
+                    {__("problem.note")}
+                  </h2>
+                  <div
+                    className="prose prose-slate max-w-none text-sm text-slate-700"
                     dangerouslySetInnerHTML={{ __html: problem.note }}
-                  ></p>
-                </div>
+                  />
+                </section>
               )}
             </>
-          )}
-          {problem.statement && (
-            <div>
-              {file ? (
-                <PdfViewer file={problem.statement} />
+          ) : (
+            /* Statement PDF Viewer Container */
+            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+              {pdfUrl ? (
+                <PdfViewer file={pdfUrl} />
               ) : (
-                <p>{__("problem.loading-pdf")}</p>
+                <div className="flex h-64 items-center justify-center p-8 text-center text-sm text-slate-500">
+                  {__("problem.loading-pdf")}
+                </div>
               )}
             </div>
           )}
         </div>
 
-        <ProblemSidebar
-          setLoading={setLoading}
-          problem={problem}
-          id={id}
-          char={char}
-          attachments={problem.statement ? true : false}
-          languages={problem.acceptableLanguages}
-          contest={problem.contest}
-        />
+        {/* Sidebar */}
+        <div>
+          <ProblemSidebar
+            setLoading={setLoading}
+            problem={problem}
+            id={id}
+            char={char}
+            attachments={Boolean(problem.statement)}
+            languages={problem.acceptableLanguages}
+            contest={problem.contest}
+          />
+        </div>
       </div>
     </div>
   );
-}
+};
