@@ -38,7 +38,6 @@ export const AuthProvider = ({ children }) => {
           }
         }
       } catch (error) {
-        console.log("Guest session or expired token context.");
         setCurrentUser(null);
       } finally {
         setLoading(false);
@@ -46,6 +45,15 @@ export const AuthProvider = ({ children }) => {
     };
 
     initializeUser();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserActivity = () => {
+      if (currentUser) axiosClient.post("/auth/activity");
+    };
+    fetchUserActivity();
+    const intervalId = setInterval(fetchUserActivity, 60000);
+    return () => clearInterval(intervalId);
   }, []);
 
   return (

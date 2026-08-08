@@ -3,15 +3,14 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import axiosClient from "@/api/axios";
 import { XMarkIcon, ArrowDownTrayIcon, TagIcon, FolderArrowDownIcon } from "@heroicons/react/24/outline";
 import { Textarea, Input } from "@/components/ui";
-import Loading from "../../../components/core/Loading";
-import ProblemTags from "../../../components/Problemset/ProblemTags";
-import { useStateContext } from "../../../contexts/ContextProvider";
+import Loading from "@/components/core/Loading";
+import ProblemTags from "@/components/Problemset/ProblemTags";
+import { useToast } from "@/contexts/ToastContext";
 import AdminPageHeader from "@/components/Admin/PageHeader";
-import AdminComponent from "@/components/Admin/AdminComponent";
 import ReactCountryFlag from "react-world-flags";
 
 export default function EditProblem() {
-  const { showToast } = useStateContext();
+  const { addToast } = useToast();
   const { id, char } = useParams();
   const navigate = useNavigate();
 
@@ -123,7 +122,7 @@ export default function EditProblem() {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
-        showToast(res.data.message);
+        addToast(res.data.message);
         navigate(`/admin/contest/${id}/problems`);
       })
       .catch((err) => {
@@ -162,7 +161,7 @@ export default function EditProblem() {
   ];
 
   return (
-    <AdminComponent>
+    <>
       <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8 flex items-center justify-between border-b border-slate-200 pb-5">
@@ -377,6 +376,6 @@ export default function EditProblem() {
           </div>
         </div>
       </div>
-    </AdminComponent>
+    </>
   );
 }

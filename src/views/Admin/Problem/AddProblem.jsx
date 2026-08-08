@@ -12,7 +12,6 @@ import {
 import { Textarea, Button, Input } from "@/components/ui";
 import ProblemTags from "@/components/Problemset/ProblemTags";
 import AdminPageHeader from "@/components/Admin/PageHeader";
-import AdminComponent from "@/components/Admin/AdminComponent";
 import ReactCountryFlag from "react-world-flags";
 
 const LANGUAGES = [
@@ -133,7 +132,7 @@ export default function AddProblem() {
   };
 
   return (
-    <AdminComponent>
+    <>
       <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8 border-b border-slate-200 pb-5">
@@ -377,6 +376,6 @@ export default function AddProblem() {
           </div>
         </div>
       </div>
-    </AdminComponent>
+    </>
   );
 }

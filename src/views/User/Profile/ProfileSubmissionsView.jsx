@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axiosClient from "@/api/axios";
-import Loading from "../../components/core/Loading";
-import PaginationLinks from "../../components/core/PaginationLinks";
+import Loading from "@/components/core/Loading";
+import PaginationLinks from "@/components/core/PaginationLinks";
 import { useLocation, useParams } from "react-router-dom";
-import ProfileMenu from "../../components/Profile/ProfileMenu";
-import SubmissionsList from "../../components/Submissions/SubmissionsList";
+import SubmissionsList from "@/components/Submissions/SubmissionsList";
 
-export default function ProfileSubmissions() {
+export default function ProfileSubmissionsView() {
   const [loading, setLoading] = useState(true);
   const [submissions, setSubmissions] = useState([]);
   const [meta, setMeta] = useState({});
@@ -41,7 +40,7 @@ export default function ProfileSubmissions() {
       const compilingOrRunningSubmissions = submissions.filter(
         (submission) =>
           submission.verdict === "Compiling" ||
-          submission.verdict.startsWith("Running")
+          submission.verdict?.startsWith("Running")
       );
 
       compilingOrRunningSubmissions.forEach((submission) => {
@@ -74,12 +73,13 @@ export default function ProfileSubmissions() {
   }
 
   return (
-    <div>
+    <div className="px-4 py-10 space-y-6">
       <SubmissionsList submissions={submissions} />
 
-      {/* Pagination Links */}
       {submissions.length > 0 && (
-        <PaginationLinks meta={meta} onPageClick={onPageClick} />
+        <div className="flex justify-center pt-2">
+          <PaginationLinks meta={meta} onPageClick={onPageClick} />
+        </div>
       )}
     </div>
   );

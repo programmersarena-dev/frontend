@@ -5,6 +5,7 @@ import {
   UserIcon,
   XMarkIcon,
   ArrowRightOnRectangleIcon,
+  ShieldCheckIcon,
 } from "@heroicons/react/24/outline";
 import { Outlet, NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import axiosClient from "@/api/axios";
@@ -23,7 +24,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function PageComponent() {
+export default function PageLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -36,6 +37,8 @@ export default function PageComponent() {
     { name: __("navigation.archive"), to: "/problemset" },
     { name: __("navigation.ratings"), to: "/ratings" },
   ];
+
+  const isAdmin = currentUser?.user_type === "admin";
 
   const changeLanguage = (language) => {
     setLoading(true);
@@ -71,7 +74,7 @@ export default function PageComponent() {
   if (loading) return <Loading />;
 
   return (
-    <div className="min-h-screen bg-slate-50/50 text-slate-800 antialiased selection:bg-indigo-500/10 selection:text-indigo-600">
+    <div className="min-h-screen bg-white text-slate-800 antialiased selection:bg-indigo-500/10 selection:text-indigo-600">
       <Disclosure
         as="nav"
         className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/80 backdrop-blur-md transition-colors"
@@ -80,7 +83,6 @@ export default function PageComponent() {
           <>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="flex h-16 items-center justify-between gap-4">
-                {/* Brand Logo & Navigation */}
                 <div className="flex items-center gap-8">
                   <Link
                     to="/"
@@ -118,9 +120,7 @@ export default function PageComponent() {
                   </div>
                 </div>
 
-                {/* Right Header Actions (Desktop) */}
                 <div className="hidden md:flex items-center gap-4">
-                  {/* Language Selector */}
                   <div className="flex items-center gap-1 rounded-lg border border-slate-200/80 bg-slate-50/80 p-1">
                     {availableLanguages.map((language) => (
                       <button
@@ -148,7 +148,16 @@ export default function PageComponent() {
                     ))}
                   </div>
 
-                  {/* Desktop User Panel */}
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      className="inline-flex items-center gap-1 rounded-lg border border-rose-100 bg-rose-50 px-2.5 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-100 transition-colors"
+                    >
+                      <ShieldCheckIcon className="h-3.5 w-3.5" />
+                      Admin
+                    </Link>
+                  )}
+
                   <div className="flex items-center border-l border-slate-200 pl-4">
                     {currentUser ? (
                       <Menu as="div" className="relative">
@@ -193,7 +202,6 @@ export default function PageComponent() {
                   </div>
                 </div>
 
-                {/* Mobile Hamburger Button */}
                 <div className="flex md:hidden">
                   <Disclosure.Button className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-slate-50 p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 focus:outline-none transition-colors">
                     <span className="sr-only">{__("auth.open-main-menu")}</span>
@@ -207,7 +215,6 @@ export default function PageComponent() {
               </div>
             </div>
 
-            {/* Mobile Navigation Drawer */}
             <Disclosure.Panel className="border-b border-slate-200 bg-white md:hidden">
               <div className="space-y-1 px-4 pt-2 pb-3">
                 {navigation.map((item) => {
@@ -231,9 +238,18 @@ export default function PageComponent() {
                     </NavLink>
                   );
                 })}
+
+                {isAdmin && (
+                  <NavLink
+                    to="/admin"
+                    className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-base font-medium text-rose-600 hover:bg-rose-50 transition-colors"
+                  >
+                    <ShieldCheckIcon className="h-4 w-4" />
+                    Admin
+                  </NavLink>
+                )}
               </div>
 
-              {/* Mobile Language Switcher */}
               <div className="border-t border-slate-100 px-4 py-3">
                 <div className="flex items-center justify-center gap-2 rounded-lg border border-slate-200/80 bg-slate-50/80 p-1">
                   {availableLanguages.map((language) => (
@@ -261,7 +277,6 @@ export default function PageComponent() {
                 </div>
               </div>
 
-              {/* Mobile User Panel */}
               <div className="border-t border-slate-100 bg-slate-50/50 p-4">
                 {currentUser ? (
                   <div className="space-y-3">
@@ -306,12 +321,10 @@ export default function PageComponent() {
         )}
       </Disclosure>
 
-      {/* Main Page Body */}
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Outlet />
       </main>
-
-      {/* Footer */}
+      
       <footer className="mx-auto max-w-7xl px-4 pb-8 pt-12 sm:px-6 lg:px-8">
         <div className="border-t border-slate-200/80 pt-6 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p>&copy; {new Date().getFullYear()} ProgrammersArena. All rights reserved.</p>

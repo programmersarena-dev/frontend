@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
-export default function PaginationLinks({ meta, onPageClick }) {
+export default function PaginationLinks({ meta, onPageClick, onPageChange }) {
   if (!meta || !meta.total || meta.total <= meta.per_page) {
     return null;
   }
@@ -24,8 +24,21 @@ export default function PaginationLinks({ meta, onPageClick }) {
   const handleLinkClick = (ev, link) => {
     ev.preventDefault();
     if (!link || !link.url || link.active) return;
+
+    // Call the page change callback with the link
     if (onPageClick) {
       onPageClick(link);
+    }
+
+    // Scroll to top after page change
+    if (onPageChange) {
+      onPageChange();
+    } else {
+      // Default scroll behavior if no callback provided
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     }
   };
 
@@ -162,15 +175,13 @@ export default function PaginationLinks({ meta, onPageClick }) {
                   onClick={(ev) => handleLinkClick(ev, link)}
                   aria-current={link.active ? "page" : undefined}
                   aria-disabled={!link.url}
-                  className={`relative inline-flex items-center px-3.5 py-2 text-xs font-semibold transition-colors focus:z-10 focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
-                    isFirst ? "rounded-l-lg " : ""
-                  }${isLast ? "rounded-r-lg " : ""}${
-                    link.active
+                  className={`relative inline-flex items-center px-3.5 py-2 text-xs font-semibold transition-colors focus:z-10 focus:outline-none focus:ring-2 focus:ring-emerald-500 ${isFirst ? "rounded-l-lg " : ""
+                    }${isLast ? "rounded-r-lg " : ""}${link.active
                       ? "bg-slate-900 text-white border border-slate-900 shadow-sm"
                       : link.url
-                      ? "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:text-slate-900"
-                      : "bg-slate-50 text-slate-300 border border-slate-200 cursor-not-allowed pointer-events-none"
-                  }`}
+                        ? "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:text-slate-900"
+                        : "bg-slate-50 text-slate-300 border border-slate-200 cursor-not-allowed pointer-events-none"
+                    }`}
                 >
                   {link.isPrev && <ChevronLeftIcon className="mr-1 h-3.5 w-3.5" />}
                   {link.label}

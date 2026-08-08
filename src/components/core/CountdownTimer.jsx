@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useStateContext } from "@/contexts/ContextProvider";
 import { useTranslation } from "@/contexts/TranslationContext";
 
 const CountdownTimer = ({ dateString, className }) => {

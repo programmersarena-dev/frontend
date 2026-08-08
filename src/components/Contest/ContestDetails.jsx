@@ -1,39 +1,55 @@
 import CountdownTimer from "../core/CountdownTimer";
 import { Link, useParams } from "react-router-dom";
-import { ClockIcon } from "@heroicons/react/24/outline";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 export default function ContestDetails({ contest }) {
   const { id } = useParams();
+  const { __ } = useTranslation();
   const contestId = id || contest?.id;
 
   if (!contest) return null;
 
+  const isEnded = contest.status === "ended" || contest.status === "past";
+  const isStarted = contest.status === "started";
+
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all">
-      {/* Contest Header / Link */}
-      <h3 className="text-lg font-semibold text-slate-900 tracking-tight leading-snug">
+    <div className="border border-slate-100 rounded-xl p-4 space-y-3">
+      {/* Contest Name */}
+      <h3 className="text-[15px] font-medium text-slate-900 leading-snug">
         <Link
           to={`/contest/${contestId}`}
-          className="hover:text-emerald-600 transition-colors duration-150"
+          className="hover:text-indigo-600 transition-colors"
         >
           {contest.name}
         </Link>
       </h3>
 
-      {/* Divider */}
-      <div className="my-4 h-px bg-slate-100" />
-
-      {/* Countdown Timer Block */}
-      <div className="flex items-center justify-between gap-2 rounded-xl bg-slate-50/80 px-3.5 py-2.5 text-xs sm:text-sm font-medium text-slate-600 border border-slate-100">
-        <div className="flex items-center gap-1.5 text-slate-400">
-          <ClockIcon className="h-4 w-4 shrink-0 text-slate-500" />
-          <span>Ends in:</span>
+      {/* Status */}
+      {isEnded ? (
+        <div className="flex items-center justify-between">
+          <span className="text-[10.5px] font-medium text-slate-400 uppercase tracking-wide">
+            {__("contest.ended") || "Ended"}
+          </span>
+          <Link
+            to={`/contest/${contestId}/standings`}
+            className="text-xs font-medium text-slate-500 hover:text-indigo-600 transition-colors"
+          >
+            {__("contest.final-results") || "Final standings"}
+          </Link>
         </div>
-        <CountdownTimer
-          dateString={contest.end_date}
-          className="font-mono text-slate-800 font-semibold"
-        />
-      </div>
+      ) : (
+        <div className="flex items-center justify-between">
+          <span className="text-[10.5px] font-medium text-slate-400 uppercase tracking-wide">
+            {isStarted
+              ? __("contest.ends-in") || "Ends in"
+              : __("contest.starts-in") || "Starts in"}
+          </span>
+          <CountdownTimer
+            dateString={isStarted ? contest.end_date : contest.start_date}
+            className="text-xs font-mono font-semibold text-slate-800"
+          />
+        </div>
+      )}
     </div>
   );
 }

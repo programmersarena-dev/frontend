@@ -11,7 +11,6 @@ import {
   NewspaperIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
-import AdminComponent from "../../../components/Admin/AdminComponent";
 import PageHeader from "../../../components/Admin/PageHeader";
 
 export default function BlogList() {
@@ -62,7 +61,7 @@ export default function BlogList() {
   }
 
   return (
-    <AdminComponent>
+    <>
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <PageHeader title="Bildirişler" />
@@ -138,6 +137,6 @@ export default function BlogList() {
           </div>
         )}
       </div>
-    </AdminComponent>
+    </>
   );
 }

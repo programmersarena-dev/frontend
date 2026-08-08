@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axiosClient from "@/api/axios";
 import Loading from "./Loading";
-import { useStateContext } from "../../contexts/ContextProvider";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function EmailVerification() {
-  const { showToast } = useStateContext();
+  const { addToast } = useToast();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -14,17 +14,17 @@ export default function EmailVerification() {
     const verificationUrl = query.get("url");
 
     if (!verificationUrl) {
-      showToast("Nädogry ssylka.");
+      addToast("Nädogry ssylka.");
       return;
     }
 
     axiosClient
       .get(verificationUrl)
       .then((response) => {
-        showToast("E-poçta üstünlikli tassyklanyldy!");
+        addToast("E-poçta üstünlikli tassyklanyldy!");
       })
       .catch((error) => {
-        showToast("E-poçta barlag şowsuz. Gaýtadan synanyşmagyňyzy haýyş edýäris.");
+        addToast("E-poçta barlag şowsuz. Gaýtadan synanyşmagyňyzy haýyş edýäris.");
       });
     return navigate("/");
   }, [location.search, navigate]);

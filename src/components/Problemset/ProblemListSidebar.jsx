@@ -26,30 +26,32 @@ export default function ProblemListSidebar({
   };
 
   return (
-    <div className="text-xs">
+    <div className="text-sm space-y-6">
       {/* Filter problems */}
-      <div className="bg-white shadow-md rounded-md p-4 mb-4">
-        <div className="text-lg font-medium mb-2">{__("problem.filter")}</div>
-        <div className="flex flex-col space-y-2">
-          <div className="flex items-center space-x-2">
-            <div className="w-20">{__("problem.difficulty")}:</div>
+      <div>
+        <div className="text-[11px] font-medium uppercase tracking-wider text-zinc-400 mb-3">
+          {__("problem.filter")}
+        </div>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="text-zinc-500 w-16">{__("problem.difficulty")}</span>
             <input
               type="number"
               value={difficultyMin}
               onChange={(e) => setDifficultyMin(e.target.value)}
-              className="w-12 border border-gray-300 rounded-md py-1 px-2"
+              className="w-14 bg-zinc-100 rounded py-1 px-2 text-zinc-800 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:bg-white transition-colors"
             />
-            <span className="mx-2">-</span>
+            <span className="text-zinc-300">–</span>
             <input
               type="number"
               value={difficultyMax}
               onChange={(e) => setDifficultyMax(e.target.value)}
-              className="w-12 border border-gray-300 rounded-md py-1 px-2"
+              className="w-14 bg-zinc-100 rounded py-1 px-2 text-zinc-800 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:bg-white transition-colors"
             />
           </div>
           <button
             onClick={handleDifficultyChange}
-            className="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full bg-teal-600 text-white py-1.5 rounded text-xs font-medium hover:bg-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:ring-offset-1 transition-colors"
           >
             {__("problem.apply")}
           </button>
@@ -57,26 +59,28 @@ export default function ProblemListSidebar({
       </div>
 
       {/* Settings */}
-      <div className="bg-white shadow-md rounded-md p-4 mb-4">
-        <div className="text-lg font-medium mb-2">{__("problem.settings")}</div>
-        <div className="flex flex-col space-y-2">
-          <label className="flex items-center">
+      <div>
+        <div className="text-[11px] font-medium uppercase tracking-wider text-zinc-400 mb-3">
+          {__("problem.settings")}
+        </div>
+        <div className="space-y-2.5">
+          <label className="flex items-center gap-2 cursor-pointer text-zinc-600 hover:text-zinc-900 transition-colors">
             <input
               type="checkbox"
-              className="form-checkbox h-5 w-5 text-indigo-600"
+              className="h-3.5 w-3.5 rounded-sm accent-teal-600"
               checked={showTags}
               onChange={handleShowTagsChange}
             />
-            <span className="ml-2">{__("problem.show-tags")}</span>
+            {__("problem.show-tags")}
           </label>
-          <label className="flex items-center">
+          <label className="flex items-center gap-2 cursor-pointer text-zinc-600 hover:text-zinc-900 transition-colors">
             <input
               type="checkbox"
-              className="form-checkbox h-5 w-5 text-indigo-600"
+              className="h-3.5 w-3.5 rounded-sm accent-teal-600"
               checked={hideSolved}
               onChange={handleHideSolvedChange}
             />
-            <span className="ml-2">{__("problem.hide-solved")}</span>
+            {__("problem.hide-solved")}
           </label>
         </div>
       </div>

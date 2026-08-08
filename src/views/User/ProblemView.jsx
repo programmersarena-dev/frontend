@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosClient from "@/api/axios";
-import Loading from "../components/core/Loading";
-import ProblemSidebar from "../components/Problemset/ProblemSidebar";
-import NotFound from "../components/core/NotFound";
-import PdfViewer from "../components/core/PdfViewer";
+import Loading from "@/components/core/Loading";
+import ProblemSidebar from "@/components/Problemset/ProblemSidebar";
+import NotFound from "@/components/core/NotFound";
+import PdfViewer from "@/components/core/PdfViewer";
 import {
   DocumentDuplicateIcon,
   CheckIcon,
   ClockIcon,
   CpuChipIcon,
 } from "@heroicons/react/24/outline";
-import { useTranslation } from "../contexts/TranslationContext";
-import { useToast } from "../contexts/ToastContext";
+import { useTranslation } from "@/contexts/TranslationContext";
+import { useToast } from "@/contexts/ToastContext";
 
-export default function Problem() {
+export default function ProblemView() {
   const { __ } = useTranslation();
   const { addToast } = useToast();
   const [loading, setLoading] = useState(true);
@@ -45,7 +45,6 @@ export default function Problem() {
         const data = res.data.data;
         setProblem(data);
 
-        // Fetch PDF safely after problem payload is returned
         if (data?.statement) {
           try {
             const response = await fetch(data.statement);
@@ -70,11 +69,9 @@ export default function Problem() {
   return (
     <div className="container mx-auto max-w-7xl px-4 py-8">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        {/* Main Problem Content */}
         <div className="space-y-8 lg:col-span-2">
           {!problem.statement ? (
             <>
-              {/* Header Info */}
               <div className="rounded-2xl border border-slate-200/80 bg-white p-6 text-center shadow-sm">
                 <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
                   {char}. {problem.name}
@@ -99,7 +96,6 @@ export default function Problem() {
                 </div>
               </div>
 
-              {/* Problem Description */}
               {problem.description && (
                 <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
                   <div
@@ -109,7 +105,6 @@ export default function Problem() {
                 </section>
               )}
 
-              {/* Input Specification */}
               {problem.input && (
                 <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
                   <h2 className="mb-3 text-lg font-bold tracking-tight text-slate-900">
@@ -122,7 +117,6 @@ export default function Problem() {
                 </section>
               )}
 
-              {/* Output Specification */}
               {problem.output && (
                 <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
                   <h2 className="mb-3 text-lg font-bold tracking-tight text-slate-900">
@@ -135,7 +129,6 @@ export default function Problem() {
                 </section>
               )}
 
-              {/* Test Cases / Examples */}
               <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
                 <h2 className="mb-4 text-lg font-bold tracking-tight text-slate-900">
                   {__("problem.test-cases")}
@@ -149,7 +142,6 @@ export default function Problem() {
                         key={index}
                         className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50/50"
                       >
-                        {/* Input Block */}
                         <div className="border-b border-slate-200/80 p-4">
                           <div className="mb-2 flex items-center justify-between">
                             <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -185,7 +177,6 @@ export default function Problem() {
                           </pre>
                         </div>
 
-                        {/* Output Block */}
                         <div className="p-4">
                           <div className="mb-2 flex items-center justify-between">
                             <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -230,7 +221,6 @@ export default function Problem() {
                 )}
               </section>
 
-              {/* Note Section */}
               {problem.note && (
                 <section className="rounded-2xl border border-amber-200/80 bg-amber-50/30 p-6 shadow-sm">
                   <h2 className="mb-3 text-lg font-bold tracking-tight text-slate-900">
@@ -244,7 +234,6 @@ export default function Problem() {
               )}
             </>
           ) : (
-            /* Statement PDF Viewer Container */
             <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
               {pdfUrl ? (
                 <PdfViewer file={pdfUrl} />
@@ -257,7 +246,6 @@ export default function Problem() {
           )}
         </div>
 
-        {/* Sidebar */}
         <div>
           <ProblemSidebar
             setLoading={setLoading}

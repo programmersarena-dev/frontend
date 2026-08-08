@@ -3,13 +3,12 @@ import axiosClient from "@/api/axios";
 import { useNavigate } from "react-router-dom";
 import { Textarea } from "@/components/ui";
 import { Button, Input, Tabs, Tab } from "@/components/ui";
-import { useStateContext } from "../../../contexts/ContextProvider";
+import { useToast } from "@/contexts/ToastContext";
 import AdminPageHeader from "@/components/Admin/PageHeader";
-import AdminComponent from "@/components/Admin/AdminComponent";
 import ReactCountryFlag from "react-world-flags";
 
 export default function AddBlog() {
-  const { showToast } = useStateContext();
+  const { addToast } = useToast();
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState("tm");
@@ -41,7 +40,7 @@ export default function AddBlog() {
         navigate("/admin/blogs");
       })
       .catch((err) => {
-        showToast("Error creating blog", "error");
+        addToast("Error creating blog", "error");
         console.error("Error creating blog:", err);
       });
   };
@@ -51,7 +50,7 @@ export default function AddBlog() {
   };
 
   return (
-    <AdminComponent>
+    <>
       <AdminPageHeader title="Täze bildiriş goş" />
       <div className="bg-white p-6 rounded-lg shadow-md">
 
@@ -86,6 +85,6 @@ export default function AddBlog() {
           <Button text="Goş" onClick={onSaveClick} />
         </div>
       </div>
-    </AdminComponent>
+    </>
   );
 }

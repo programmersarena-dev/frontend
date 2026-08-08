@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Loading from "../../components/core/Loading";
+import Loading from "@/components/core/Loading";
 import axiosClient from "@/api/axios";
-import { useStateContext } from "../../contexts/ContextProvider";
+import { useToast } from "@/contexts/ToastContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "@/contexts/TranslationContext";
 
-export default function ContestSubmit() {
-  const { showToast, t, currentUser } = useStateContext();
+export default function ContestSubmitView() {
+  const { currentUser } = useAuth();
+  const { __ } = useTranslation();
+  const { addToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [problems, setProblems] = useState([]);
   const [acceptableLanguages, setAcceptableLanguages] = useState([]);
@@ -51,12 +55,12 @@ export default function ContestSubmit() {
       )
       .then((res) => {
         setLoading(false);
-        showToast("Üstünlikli iberildi");
+        addToast("Üstünlikli iberildi");
         navigate("/problemset/status");
       })
       .catch((err) => {
         setLoading(false);
-        showToast(err.response.data.message);
+        addToast(err.response.data.message);
         console.error("Failed to fetch submissions:", err);
         setLoading(false);
       });
@@ -69,11 +73,11 @@ export default function ContestSubmit() {
 
   return (
     <div className="container mx-auto px-4">
-      <h2 className="text-2xl font-semibold mb-6">{t("contest.submit")}</h2>
+      <h2 className="text-2xl font-semibold mb-6">{__("contest.submit")}</h2>
       <form className="space-y-6" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="problem" className="block text-sm font-medium text-gray-700 mb-2">
-            {t("contest.problem")}:
+            {__("contest.problem")}:
           </label>
           <select
             name="problem"
@@ -93,7 +97,7 @@ export default function ContestSubmit() {
         </div>
         <div>
           <label htmlFor="language" className="block text-sm font-medium text-gray-700 mb-2">
-            {t("contest.language")}:
+            {__("contest.language")}:
           </label>
           <select
             name="language"
@@ -108,7 +112,7 @@ export default function ContestSubmit() {
         </div>
         <div>
           <label htmlFor="code" className="block text-sm font-medium text-gray-700 mb-2">
-            {t("contest.code")}:
+            {__("contest.code")}:
           </label>
           <textarea
             name="code"
@@ -120,7 +124,7 @@ export default function ContestSubmit() {
         </div>
         <div>
           <label htmlFor="file" className="block text-sm font-medium text-gray-700 mb-2">
-            {t("contest.or-choose-file")}:
+            {__("contest.or-choose-file")}:
           </label>
           <input
             type="file"
@@ -133,7 +137,7 @@ export default function ContestSubmit() {
           type="submit"
           className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md shadow hover:bg-indigo-700 transition duration-200"
         >
-          {t("contest.send")}
+          {__("contest.send")}
         </button>
       </form>
     </div>

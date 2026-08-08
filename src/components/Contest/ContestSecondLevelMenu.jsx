@@ -1,14 +1,13 @@
 import { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useStateContext } from "../../contexts/ContextProvider";
-import { useTranslation } from "../../contexts/TranslationContext";
+import { useTranslation } from "@/contexts/TranslationContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function ContestSecondLevelMenu({ contestId }) {
   const { __ } = useTranslation();
-  const { currentUser } = useStateContext();
+  const { currentUser } = useAuth();
   const location = useLocation();
 
-  // Define navigation items dynamically
   const navItems = useMemo(() => {
     const items = [
       {
@@ -32,8 +31,8 @@ export default function ContestSecondLevelMenu({ contestId }) {
   }, [contestId, currentUser?.email_verified_at, __]);
 
   return (
-    <nav className="border-b border-slate-200 bg-white/50 backdrop-blur-sm">
-      <div className="flex space-x-1 px-4 sm:px-6">
+    <nav className="border-b border-zinc-200 bg-white">
+      <div className="flex px-2 sm:px-4">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
 
@@ -42,10 +41,10 @@ export default function ContestSecondLevelMenu({ contestId }) {
               key={item.path}
               to={item.path}
               aria-current={isActive ? "page" : undefined}
-              className={`relative inline-flex items-center px-3.5 py-2.5 text-sm font-medium border-b-2 transition-all duration-200 ease-in-out ${
+              className={`relative inline-flex items-center px-3 py-2.5 text-sm border-b-2 -mb-px transition-colors duration-150 ${
                 isActive
-                  ? "border-emerald-600 text-emerald-600 font-semibold"
-                  : "border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300"
+                  ? "border-teal-600 text-zinc-900 font-medium"
+                  : "border-transparent text-zinc-500 hover:text-zinc-800"
               }`}
             >
               {item.label}

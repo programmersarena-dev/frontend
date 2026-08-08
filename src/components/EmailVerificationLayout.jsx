@@ -2,10 +2,10 @@ import { Outlet, useNavigate } from "react-router-dom";
 import axiosClient from "@/api/axios";
 import { useEffect, useState } from "react";
 import Loading from "./core/Loading";
-import { useStateContext } from "../contexts/ContextProvider";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function EmailVerificationLayout() {
-  const { setCurrentUser } = useStateContext();
+  const { setCurrentUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosClient from "@/api/axios";
-import Loading from "../../components/core/Loading";
-import ProblemItem from "../../components/Contest/ProblemItem";
-import ContestDetails from "../../components/Contest/ContestDetails";
-import { useTranslation } from "../../contexts/TranslationContext";
+import Loading from "../../../components/core/Loading";
+import ProblemItem from "../../../components/Contest/ProblemItem";
+import ContestDetails from "../../../components/Contest/ContestDetails";
+import { useTranslation } from "../../../contexts/TranslationContext";
 
-export default function ContestProblems() {
+export default function ContestProblemsView() {
   const { __ } = useTranslation();
   const { id } = useParams();
   

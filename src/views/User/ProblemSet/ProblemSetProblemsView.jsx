@@ -9,14 +9,13 @@ import {
   ArrowUpCircleIcon
 } from "@heroicons/react/24/outline";
 import axiosClient from "@/api/axios";
-import Loading from "../../components/core/Loading";
-import PaginationLinks from "../../components/core/PaginationLinks";
-import ProblemListSidebar from "../../components/Problemset/ProblemListSidebar";
+import Loading from "@/components/core/Loading";
+import PaginationLinks from "@/components/core/PaginationLinks";
+import ProblemListSidebar from "@/components/Problemset/ProblemListSidebar";
 import { Link } from "react-router-dom";
-import { useStateContext } from "../../contexts/ContextProvider";
-import { useTranslation } from "../../contexts/TranslationContext";
+import { useTranslation } from "@/contexts/TranslationContext";
 
-export default function ProblemsetProblems() {
+export default function ProblemSetProblemsView() {
   const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [problems, setProblems] = useState([]);
@@ -76,7 +75,7 @@ export default function ProblemsetProblems() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+    <div className="px-4">
       <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
         {/* Main Content Area */}
         <div className="flex-1 min-w-0">

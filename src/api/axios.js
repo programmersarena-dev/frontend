@@ -104,6 +104,7 @@ axiosClient.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError, null);
         clearStoredToken();
+        delete axiosClient.defaults.headers.common['Authorization'];
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

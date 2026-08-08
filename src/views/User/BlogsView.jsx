@@ -5,7 +5,7 @@ import FormatToUTC from "@/components/core/FormatToUTC.jsx";
 import PaginationLinks from "@/components/core/PaginationLinks.jsx";
 import { CalendarDaysIcon, NewspaperIcon } from "@heroicons/react/24/outline";
 
-export default function Dashboard() {
+export default function BlogsView() {
   const [loading, setLoading] = useState(true);
   const [blogs, setBlogs] = useState([]);
   const [meta, setMeta] = useState({});
@@ -37,10 +37,9 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50/50 py-8 transition-colors duration-300">
+    <div className="min-h-screen py-8 transition-colors duration-300">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-        {/* Blog Cards (1 Item Per Row) */}
         {blogs.length > 0 ? (
           <div className="space-y-4">
             {blogs.map((blog) => (
@@ -68,7 +67,6 @@ export default function Dashboard() {
             ))}
           </div>
         ) : (
-          /* Empty State */
           <div className="text-center py-16 bg-white rounded-xl border border-dashed border-slate-200">
             <NewspaperIcon className="mx-auto h-10 w-10 text-slate-300" />
             <h3 className="mt-2 text-sm font-semibold text-slate-900">No updates yet</h3>
@@ -78,9 +76,8 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Pagination */}
         {blogs.length > 0 && (
-          <div className="mt-8 flex justify-center">
+          <div className="mt-8">
             <PaginationLinks meta={meta} onPageClick={onPageClick} />
           </div>
         )}

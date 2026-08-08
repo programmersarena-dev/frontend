@@ -11,12 +11,11 @@ import {
 
 import axiosClient from "@/api/axios";
 import Loading from "@/components/core/Loading";
-import { useStateContext } from "@/contexts/ContextProvider";
+import { useToast } from "@/contexts/ToastContext";
 import AdminPageHeader from "@/components/Admin/PageHeader";
-import AdminComponent from "@/components/Admin/AdminComponent";
 
 export default function ProblemList() {
-  const { showToast } = useStateContext();
+  const { addToast } = useToast();
   const { id } = useParams();
 
   const [loading, setLoading] = useState(true);
@@ -39,7 +38,7 @@ export default function ProblemList() {
       })
       .catch((err) => {
         const message = err?.response?.data?.message || "Näbelli säwlik ýüze çykdy.";
-        showToast(message);
+        addToast(message);
         console.error("Error fetching problems:", err);
       })
       .finally(() => {
@@ -55,11 +54,11 @@ export default function ProblemList() {
       .delete(`/admin/contest/${id}/problem/${char}/delete`)
       .then(() => {
         setProblems((prev) => prev.filter((problem) => problem.char !== char));
-        showToast("Mesele üstünlikli pozuldy.");
+        addToast("Mesele üstünlikli pozuldy.");
       })
       .catch((err) => {
         const message = err?.response?.data?.message || "Meseläni pozup bolmady.";
-        showToast(message);
+        addToast(message);
         console.error("Error deleting problem:", err);
       })
       .finally(() => {
@@ -70,7 +69,7 @@ export default function ProblemList() {
   if (loading) return <Loading />;
 
   return (
-    <AdminComponent>
+    <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         {/* Top Header & Actions */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -184,6 +183,6 @@ export default function ProblemList() {
           </div>
         </div>
       </div>
-    </AdminComponent>
+    </>
   );
 }

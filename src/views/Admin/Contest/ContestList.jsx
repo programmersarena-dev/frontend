@@ -14,7 +14,6 @@ import {
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import AdminPageHeader from "@/components/Admin/PageHeader";
-import AdminComponent from "@/components/Admin/AdminComponent";
 
 export default function ContestList() {
   const [loading, setLoading] = useState(true);
@@ -133,7 +132,7 @@ export default function ContestList() {
   }
 
   return (
-    <AdminComponent>
+    <>
       <div className="space-y-6">
         {/* Header & Primary Action */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200/80 pb-5">
@@ -301,6 +300,6 @@ export default function ContestList() {
           </div>
         )}
       </div>
-    </AdminComponent>
+    </>
   );
 }

@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import axiosClient from "@/api/axios";
 import Loading from "@/components/core/Loading";
 import AdminPageHeader from "@/components/Admin/PageHeader";
-import AdminComponent from "@/components/Admin/AdminComponent";
 import AdminContestTypeList from "@/components/Admin/AdminContestTypeList";
 import AdminContestAuthorList from "@/components/Admin/AdminContestAuthorList";
 import AdminContestOfficialCheckBox from "../../../components/Admin/AdminContestOfficialCheckBox";
@@ -74,7 +73,7 @@ export default function EditContest() {
   if (loading) return <Loading />;
 
   return (
-    <AdminComponent>
+    <>
       <div className="p-8 min-h-screen">
         <div className="flex justify-between mb-6">
           <AdminPageHeader title="Bäsleşigi üýtget" />
@@ -169,6 +168,6 @@ export default function EditContest() {
           </div>
         </div>
       </div>
-    </AdminComponent>
+    </>
   );
 }

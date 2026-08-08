@@ -8,7 +8,6 @@ import {
   FolderPlusIcon,
   ArrowLeftIcon,
 } from '@heroicons/react/24/outline';
-import AdminComponent from '../../components/Admin/AdminComponent';
 import axiosClient from '@/api/axios';
 
 export default function FileManager() {
@@ -115,7 +114,7 @@ export default function FileManager() {
   };
 
   return (
-    <AdminComponent>
+    <>
       <div className="max-w-8xl mx-auto p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
         {/* Header */}
         <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
@@ -213,6 +212,6 @@ export default function FileManager() {
           </main>
         </div>
       </div>
-    </AdminComponent>
+    </>
   );
 }

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axiosClient from "@/api/axios";
-import { useStateContext } from "../../../contexts/ContextProvider";
+import { useToast } from "@/contexts/ToastContext";
 
 const ListImages = ({ onDelete }) => {
-  const { showToast } = useStateContext();
+  const { addToast } = useToast();
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hoveredImage, setHoveredImage] = useState(null);
@@ -41,8 +41,8 @@ const ListImages = ({ onDelete }) => {
     const fullUrl = `${import.meta.env.VITE_API_BASE_URL}${imagePath}`;
     navigator.clipboard
       .writeText(fullUrl)
-      .then(() => showToast("Image URL copied to clipboard!"))
-      .catch(() => showToast("Failed to copy URL."));
+      .then(() => addToast("Image URL copied to clipboard!"))
+      .catch(() => addToast("Failed to copy URL."));
   };
 
   if (loading) return <p>Loading images...</p>;

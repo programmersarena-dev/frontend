@@ -4,7 +4,6 @@ import axiosClient from "@/api/axios";
 import Loading from "@/components/core/Loading";
 import { Textarea } from "@/components/ui";
 import { Button, Input, Tabs, Tab } from "@/components/ui";
-import AdminComponent from "@/components/Admin/AdminComponent";
 import AdminPageHeader from "@/components/Admin/PageHeader";
 import ReactCountryFlag from "react-world-flags";
 
@@ -70,7 +69,7 @@ export default function EditBlog() {
   }
 
   return (
-    <AdminComponent>
+    <>
       <AdminPageHeader title="Bildirişi üýtget" />
       <div className="bg-white p-6 rounded-lg shadow-md">
 
@@ -105,6 +104,6 @@ export default function EditBlog() {
           <Button text="Üýtget" onClick={onSaveClick} />
         </div>
       </div>
-    </AdminComponent>
+    </>
   );
 }

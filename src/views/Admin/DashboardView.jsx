@@ -3,7 +3,6 @@ import axiosClient from "@/api/axios";
 import Loading from "@/components/core/Loading";
 import { CheckCircleIcon, UsersIcon } from "@heroicons/react/24/outline";
 import Rechart from "@/components/core/Rechart";
-import AdminComponent from "@/components/Admin/AdminComponent";
 
 const SummaryCard = ({ icon, title, count }) => (
   <div className="p-6 bg-white rounded-lg shadow-md flex flex-col items-center">
@@ -22,7 +21,7 @@ const ChartCard = ({ title, data }) => (
   </div>
 );
 
-export default function Dashboard() {
+export default function DashboardView() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState();
 
@@ -42,7 +41,7 @@ export default function Dashboard() {
   if (loading) return <Loading />;
 
   return (
-    <AdminComponent>
+    <>
     {data && (
       <div className="p-8 min-h-screen">
           <h1 className="text-2xl font-bold mb-6">Baş sahypa</h1>
@@ -78,6 +77,6 @@ export default function Dashboard() {
         </div>
       </div>
     )}
-    </AdminComponent>
+    </>
   );
 }

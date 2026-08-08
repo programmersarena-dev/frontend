@@ -1,8 +1,8 @@
 import React from "react";
 import { Outlet, useParams } from "react-router-dom";
-import ContestSecondLevelMenu from "./Contest/ContestSecondLevelMenu";
+import ContestSecondLevelMenu from "@/components/Contest/ContestSecondLevelMenu";
 
-export default function ContestComponent() {
+export default function ContestLayout() {
   const { id } = useParams();
 
   return (

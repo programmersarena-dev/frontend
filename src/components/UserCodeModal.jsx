@@ -1,5 +1,4 @@
 import { ClipboardIcon, LinkIcon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { useStateContext } from "../contexts/ContextProvider";
 import ProblemTests from "./Problemset/ProblemTests";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { darcula } from 'react-syntax-highlighter/dist/esm/styles/prism';

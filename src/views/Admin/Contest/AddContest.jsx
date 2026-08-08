@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "@/api/axios";
 import AdminPageHeader from "@/components/Admin/PageHeader";
-import AdminComponent from "@/components/Admin/AdminComponent";
 import AdminContestOfficialCheckBox from "@/components/Admin/AdminContestOfficialCheckBox";
 import AdminContestTypeList from "@/components/Admin/AdminContestTypeList";
 import Loading from "@/components/core/Loading";
@@ -71,7 +70,7 @@ export default function AddContest() {
   if (loading) return <Loading />;
 
   return (
-    <AdminComponent>
+    <>
       <div className="p-8 min-h-screen">
         <div className="flex justify-between mb-6">
           <AdminPageHeader title="Bäsleşik goş" />
@@ -159,6 +158,6 @@ export default function AddContest() {
           </div>
         </div>
       </div>
-    </AdminComponent>
+    </>
   );
 }
