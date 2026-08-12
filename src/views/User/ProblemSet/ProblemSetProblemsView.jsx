@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { 
-  BoltIcon, 
-  CheckIcon, 
+import {
+  BoltIcon,
+  CheckIcon,
   UserIcon,
-  CheckCircleIcon, 
+  CheckCircleIcon,
   XCircleIcon,
   InboxIcon,
   ArrowUpCircleIcon
@@ -30,7 +30,7 @@ export default function ProblemSetProblemsView() {
     getProblems(link.url);
   };
 
-  const getProblems = (url = "/problemset") => {
+  const getProblems = (url = "/problems") => {
     let params = {};
     if (hideSolved) {
       params.hideSolved = "true";
@@ -90,9 +90,8 @@ export default function ProblemSetProblemsView() {
                       <button
                         onClick={() => handleSortOrderChange("rating")}
                         title="Difficulty order"
-                        className={`inline-flex items-center gap-1 hover:text-slate-800 transition-colors focus:outline-none ${
-                          order.includes("RATING") ? "text-indigo-600 font-bold" : ""
-                        }`}
+                        className={`inline-flex items-center gap-1 hover:text-slate-800 transition-colors focus:outline-none ${order.includes("RATING") ? "text-indigo-600 font-bold" : ""
+                          }`}
                       >
                         <BoltIcon className="w-4 h-4 text-amber-500" />
                         <span>Rating</span>
@@ -103,9 +102,8 @@ export default function ProblemSetProblemsView() {
                       <button
                         onClick={() => handleSortOrderChange("solved")}
                         title="Solved count order"
-                        className={`inline-flex items-center gap-1 hover:text-slate-800 transition-colors focus:outline-none ${
-                          order.includes("SOLVED") ? "text-indigo-600 font-bold" : ""
-                        }`}
+                        className={`inline-flex items-center gap-1 hover:text-slate-800 transition-colors focus:outline-none ${order.includes("SOLVED") ? "text-indigo-600 font-bold" : ""
+                          }`}
                       >
                         <CheckIcon className="w-4 h-4 text-emerald-500" />
                         <span>Solved</span>
@@ -123,13 +121,12 @@ export default function ProblemSetProblemsView() {
                       return (
                         <tr
                           key={`${problem.contest_id}-${problem.char}`}
-                          className={`group hover:bg-slate-50/60 transition-colors ${
-                            problem.solved === 1
-                              ? "bg-emerald-50/20"
-                              : problem.solved === -1
+                          className={`group hover:bg-slate-50/60 transition-colors ${problem.solved === 1
+                            ? "bg-emerald-50/20"
+                            : problem.solved === -1
                               ? "bg-rose-50/20"
                               : ""
-                          }`}
+                            }`}
                         >
                           {/* Problem Code */}
                           <td className="px-5 py-4 text-center font-mono text-xs font-semibold text-slate-500">
@@ -137,7 +134,7 @@ export default function ProblemSetProblemsView() {
                               to={problemUrl}
                               className="px-2 py-1 rounded bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
                             >
-                              {problem.contest_id}{problem.char}
+                              {problem.contest_id}/{problem.char}
                             </Link>
                           </td>
 
@@ -216,7 +213,7 @@ export default function ProblemSetProblemsView() {
 
           {/* Pagination */}
           {problems.length > 0 && (
-            <div className="mt-6 flex justify-center sm:justify-start">
+            <div className="mt-6 sm:justify-start">
               <PaginationLinks meta={meta} onPageClick={onPageClick} />
             </div>
           )}

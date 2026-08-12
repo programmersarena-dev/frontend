@@ -2,24 +2,26 @@ import React, { useMemo } from "react";
 import ProgressBar from "../core/ProgressBar";
 import { useTranslation } from "../../contexts/TranslationContext";
 
-function SubmissionVerdict({ verdict, className = "" }) {
+function SubmissionStatus({ status, className = "" }) {
   const { __ } = useTranslation();
 
   const numericScore = useMemo(() => {
-    if (verdict === null || verdict === undefined || verdict === "") return NaN;
-    const parsed = Number(verdict);
+    if (status === null || status === undefined || status === "") return NaN;
+    const parsed = Number(status);
     return Number.isInteger(parsed) && parsed >= 0 && parsed <= 100 ? parsed : NaN;
-  }, [verdict]);
+  }, [status]);
 
   const isNumeric = !Number.isNaN(numericScore);
 
-  const getVerdictStyle = (v) => {
+  const getStatusStyle = (v) => {
     if (!v) return "text-gray-800";
-    if (v === "Accepted") return "text-green-800";
+    if (v === "AC") return "text-green-800";
     if (v.startsWith("WA")) return "text-red-800";
-    if (v.startsWith("TL")) return "text-yellow-800";
+    if (v.startsWith("TLE")) return "text-yellow-800";
+    if (v.startsWith("MLE")) return "text-yellow-800";
     if (v.startsWith("Compiling")) return "text-blue-800";
     if (v.startsWith("CE")) return "text-red-600";
+    if (v.startsWith("RE")) return "text-red-600";
     return "text-gray-800";
   };
 
@@ -29,10 +31,10 @@ function SubmissionVerdict({ verdict, className = "" }) {
     return parts.length > 1 ? parts[1] : "";
   };
 
-  const getVerdictLabel = (v) => {
+  const getStatusLabel = (v) => {
     if (!v) return "";
 
-    if (v === "Accepted") {
+    if (v === "AC") {
       return __("submission.accepted");
     }
 
@@ -75,10 +77,10 @@ function SubmissionVerdict({ verdict, className = "" }) {
   }
 
   return (
-    <div className={`font-semibold ${getVerdictStyle(verdict)} ${className}`}>
-      {getVerdictLabel(verdict)}
+    <div className={`font-semibold ${getStatusStyle(status)} ${className}`}>
+      {getStatusLabel(status)}
     </div>
   );
 }
 
-export default React.memo(SubmissionVerdict);
+export default React.memo(SubmissionStatus);

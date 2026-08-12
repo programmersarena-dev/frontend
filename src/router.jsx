@@ -8,7 +8,9 @@ import SignUp from "@/views/Auth/SignUp";
 import ResetPassword from "@/views/Auth/ResetPassword";
 import RequestReset from "@/views/Auth/RequestReset";
 
+import GuestLayout from "@/layouts/GuestLayout";
 import UserLayout from "@/layouts/UserLayout";
+import AdminLayout from "@/layouts/AdminLayout";
 
 import BlogsView from "@/views/User/BlogsView";
 import ProblemView from "@/views/User/ProblemView";
@@ -35,26 +37,20 @@ import ProfileSubmissionsView from "@/views/User/Profile/ProfileSubmissionsView"
 import EmailVerification from "@/components/core/EmailVerification";
 import ResendVerificationEmail from "@/components/core/ResendVerificationEmail";
 import NotFound from "@/components/core/NotFound";
-import GuestComponent from "@/components/GuestComponent";
-
-import AdminLayout from "@/layouts/AdminLayout";
 
 import AdminDashboardView from "@/views/Admin/DashboardView";
-import FileManager from "@/views/Admin/FileManager";
+import AdminFileManagerView from "@/views/Admin/FileManagerView";
 import AdminBlogList from "@/views/Admin/Blog/BlogList";
 import AdminAddBlog from "@/views/Admin/Blog/AddBlog";
 import AdminEditBlog from "@/views/Admin/Blog/EditBlog";
-import AdminContestList from "@/views/Admin/Contest/ContestList";
-import AdminAddContest from "@/views/Admin/Contest/AddContest";
-import AdminEditContest from "@/views/Admin/Contest/EditContest";
-import AdminProblemList from "@/views/Admin/Problem/ProblemList";
-import AdminAddProblem from "@/views/Admin/Problem/AddProblem";
-import AdminEditProblem from "@/views/Admin/Problem/EditProblem";
 
-const GuestGuard = () => {
-  const { currentUser } = useAuth();
-  return currentUser ? <Navigate to="/" replace /> : <Outlet />;
-};
+import AdminContestListView from "@/views/Admin/Contest/ContestListView";
+import AdminContestCreateView from "@/views/Admin/Contest/ContestCreateView";
+import AdminContestEditView from "@/views/Admin/Contest/ContestEditView";
+
+import AdminProblemListView from "@/views/Admin/Problem/ProblemListView";
+import AdminProblemCreateView from "@/views/Admin/Problem/ProblemCreateView";
+import AdminProblemEditView from "@/views/Admin/Problem/ProblemEditView";
 
 const router = createBrowserRouter([
   {
@@ -63,33 +59,29 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="dashboard" replace /> },
       { path: "dashboard", element: <AdminDashboardView /> },
-      { path: "files", element: <FileManager /> },
+      { path: "files", element: <AdminFileManagerView /> },
 
       { path: "blogs", element: <AdminBlogList /> },
       { path: "blog/add", element: <AdminAddBlog /> },
       { path: "blog/:id/edit", element: <AdminEditBlog /> },
 
-      { path: "contests", element: <AdminContestList /> },
-      { path: "contest/add", element: <AdminAddContest /> },
-      { path: "contest/:id/edit", element: <AdminEditContest /> },
-      { path: "contest/:id/problems", element: <AdminProblemList /> },
-      { path: "contest/:id/problem/add", element: <AdminAddProblem /> },
-      { path: "contest/:id/problem/:char", element: <AdminEditProblem /> },
+      { path: "contests", element: <AdminContestListView /> },
+      { path: "contest/add", element: <AdminContestCreateView /> },
+      { path: "contest/:id/edit", element: <AdminContestEditView /> },
+
+      { path: "contest/:id/problems", element: <AdminProblemListView /> },
+      { path: "contest/:id/problem/add", element: <AdminProblemCreateView /> },
+      { path: "contest/:id/problem/:char", element: <AdminProblemEditView /> },
     ],
   },
 
   {
-    element: <GuestGuard />,
+    element: <GuestLayout />,
     children: [
-      {
-        element: <GuestComponent />,
-        children: [
-          { path: "login", element: <Login /> },
-          { path: "sign-up", element: <SignUp /> },
-          { path: "request-reset", element: <RequestReset /> },
-          { path: "reset-password", element: <ResetPassword /> },
-        ],
-      },
+      { path: "login", element: <Login /> },
+      { path: "sign-up", element: <SignUp /> },
+      { path: "request-reset", element: <RequestReset /> },
+      { path: "reset-password", element: <ResetPassword /> },
     ],
   },
 
@@ -130,10 +122,10 @@ const router = createBrowserRouter([
         path: "profile",
         element: <ProfileLayout />,
         children: [
-          { path: ":username", element: <ProfileView /> },
-          { path: ":username/edit", element: <ProfileEditView /> },
-          { path: ":username/submissions", element: <ProfileSubmissionsView /> },
-          { path: ":username/ratings", element: <ProfileRatingsView /> },
+          { path: ":handle", element: <ProfileView /> },
+          { path: ":handle/edit", element: <ProfileEditView /> },
+          { path: ":handle/submissions", element: <ProfileSubmissionsView /> },
+          { path: ":handle/ratings", element: <ProfileRatingsView /> },
         ],
       },
 

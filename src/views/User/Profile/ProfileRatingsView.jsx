@@ -16,12 +16,12 @@ const COLUMNS = [
 export default function ProfileRatingsView() {
   const [loading, setLoading] = useState(true);
   const [ratings, setRatings] = useState({});
-  const { username } = useParams();
+  const { handle } = useParams();
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "ascending" });
 
   useEffect(() => {
     axiosClient
-      .get(`/profile/${username}/ratings`)
+      .get(`/profile/${handle}/ratings`)
       .then((res) => {
         setRatings(res.data);
         setLoading(false);
@@ -29,7 +29,7 @@ export default function ProfileRatingsView() {
       .catch(() => {
         setLoading(false);
       });
-  }, [username]);
+  }, [handle]);
 
   const handleSort = (key) => {
     if (!key) return;
@@ -69,9 +69,8 @@ export default function ProfileRatingsView() {
             <button
               key={col.key}
               onClick={() => handleSort(col.key)}
-              className={`inline-flex items-center gap-1 text-xs font-medium transition-colors ${
-                active ? "text-indigo-600" : "text-slate-400 hover:text-slate-600"
-              }`}
+              className={`inline-flex items-center gap-1 text-xs font-medium transition-colors ${active ? "text-indigo-600" : "text-slate-400 hover:text-slate-600"
+                }`}
             >
               {col.label}
               {active &&
@@ -112,13 +111,12 @@ export default function ProfileRatingsView() {
                   <span title="Ýeri">#{userContest.rank}</span>
                   <span title="Işlän mesele sany">{userContest.solved}</span>
                   <span
-                    className={`font-semibold ${
-                      isPositive
+                    className={`font-semibold ${isPositive
                         ? "text-emerald-600"
                         : isNegative
-                        ? "text-rose-500"
-                        : "text-slate-400"
-                    }`}
+                          ? "text-rose-500"
+                          : "text-slate-400"
+                      }`}
                   >
                     {isPositive ? "+" : ""}
                     {userContest.rating}

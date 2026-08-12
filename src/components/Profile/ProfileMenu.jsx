@@ -11,27 +11,26 @@ const TABS = [
 
 export default function ProfileMenu() {
   const { currentUser } = useAuth();
-  const { username } = useParams();
+  const { handle } = useParams();
   const { pathname } = useLocation();
 
-  const canEdit = currentUser?.name === username && currentUser?.email_verified_at;
+  const canEdit = currentUser?.name === handle && currentUser?.email_verified_at;
 
   return (
     <div className="mb-6">
-      <h2 className="text-sm font-semibold text-slate-900 mb-3">{username}</h2>
+      <h2 className="text-sm font-semibold text-slate-900 mb-3">{handle}</h2>
       <nav className="flex gap-5 border-b border-slate-100">
         {TABS.filter((tab) => !tab.ownerOnly || canEdit).map((tab) => {
-          const to = `/profile/${username}${tab.path}`;
+          const to = `/profile/${handle}${tab.path}`;
           const isActive = pathname === to;
           return (
             <Link
               key={tab.path}
               to={to}
-              className={`relative pb-2.5 text-xs font-medium transition-colors ${
-                isActive
+              className={`relative pb-2.5 text-xs font-medium transition-colors ${isActive
                   ? "text-indigo-600"
                   : "text-slate-500 hover:text-slate-800"
-              }`}
+                }`}
             >
               {tab.label}
               {isActive && (

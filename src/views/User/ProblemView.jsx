@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosClient from "@/api/axios";
 import Loading from "@/components/core/Loading";
-import ProblemSidebar from "@/components/Problemset/ProblemSidebar";
 import NotFound from "@/components/core/NotFound";
 import PdfViewer from "@/components/core/PdfViewer";
 import {
@@ -13,12 +12,14 @@ import {
 } from "@heroicons/react/24/outline";
 import { useTranslation } from "@/contexts/TranslationContext";
 import { useToast } from "@/contexts/ToastContext";
+import ProblemSidebar from "@/components/User/Problem/ProblemSidebar";
 
 export default function ProblemView() {
   const { __ } = useTranslation();
   const { addToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [problem, setProblem] = useState(null);
+  const [contest, setContest] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [copiedKey, setCopiedKey] = useState(null);
   const { id, char } = useParams();
@@ -40,10 +41,11 @@ export default function ProblemView() {
   useEffect(() => {
     setLoading(true);
     axiosClient
-      .get(`/problemset/problem/${id}/${char}`)
+      .get(`/problems/problem/${id}/${char}`)
       .then(async (res) => {
-        const data = res.data.data;
-        setProblem(data);
+        const data = res.data;
+        setProblem(data.problem);
+        setContest(data.contest);
 
         if (data?.statement) {
           try {
@@ -129,97 +131,99 @@ export default function ProblemView() {
                 </section>
               )}
 
-              <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
-                <h2 className="mb-4 text-lg font-bold tracking-tight text-slate-900">
-                  {__("problem.test-cases")}
-                </h2>
+              {contest.type !== "IOI" && (
+                <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+                  <h2 className="mb-4 text-lg font-bold tracking-tight text-slate-900">
+                    {__("problem.test-cases")}
+                  </h2>
 
-                {problem.example_test_cases &&
-                  problem.example_test_cases.length > 0 ? (
-                  <div className="space-y-6">
-                    {problem.example_test_cases.map((testCase, index) => (
-                      <div
-                        key={index}
-                        className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50/50"
-                      >
-                        <div className="border-b border-slate-200/80 p-4">
-                          <div className="mb-2 flex items-center justify-between">
-                            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-                              {__("problem.input")}
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                copyToClipboard(
-                                  testCase.input,
-                                  __("problem.copied-input"),
-                                  `in-${index}`
-                                )
-                              }
-                              className="inline-flex items-center gap-1 rounded-md bg-white px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100"
-                              title="Copy Input"
-                            >
-                              {copiedKey === `in-${index}` ? (
-                                <>
-                                  <CheckIcon className="h-3.5 w-3.5 text-emerald-600" />
-                                  <span className="text-emerald-600">Copied</span>
-                                </>
-                              ) : (
-                                <>
-                                  <DocumentDuplicateIcon className="h-3.5 w-3.5 text-slate-400" />
-                                  <span>Copy</span>
-                                </>
-                              )}
-                            </button>
+                  {problem.example_test_cases &&
+                    problem.example_test_cases.length > 0 ? (
+                    <div className="space-y-6">
+                      {problem.example_test_cases.map((testCase, index) => (
+                        <div
+                          key={index}
+                          className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50/50"
+                        >
+                          <div className="border-b border-slate-200/80 p-4">
+                            <div className="mb-2 flex items-center justify-between">
+                              <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                                {__("problem.input")}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  copyToClipboard(
+                                    testCase.input,
+                                    __("problem.copied-input"),
+                                    `in-${index}`
+                                  )
+                                }
+                                className="inline-flex items-center gap-1 rounded-md bg-white px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100"
+                                title="Copy Input"
+                              >
+                                {copiedKey === `in-${index}` ? (
+                                  <>
+                                    <CheckIcon className="h-3.5 w-3.5 text-emerald-600" />
+                                    <span className="text-emerald-600">Copied</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <DocumentDuplicateIcon className="h-3.5 w-3.5 text-slate-400" />
+                                    <span>Copy</span>
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                            <pre className="overflow-x-auto rounded-lg bg-white p-3 font-mono text-xs text-slate-800 ring-1 ring-inset ring-slate-200/70 whitespace-pre-wrap">
+                              {testCase.input}
+                            </pre>
                           </div>
-                          <pre className="overflow-x-auto rounded-lg bg-white p-3 font-mono text-xs text-slate-800 ring-1 ring-inset ring-slate-200/70 whitespace-pre-wrap">
-                            {testCase.input}
-                          </pre>
-                        </div>
 
-                        <div className="p-4">
-                          <div className="mb-2 flex items-center justify-between">
-                            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-                              {__("problem.output")}
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                copyToClipboard(
-                                  testCase.output,
-                                  __("problem.copied-output"),
-                                  `out-${index}`
-                                )
-                              }
-                              className="inline-flex items-center gap-1 rounded-md bg-white px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100"
-                              title="Copy Output"
-                            >
-                              {copiedKey === `out-${index}` ? (
-                                <>
-                                  <CheckIcon className="h-3.5 w-3.5 text-emerald-600" />
-                                  <span className="text-emerald-600">Copied</span>
-                                </>
-                              ) : (
-                                <>
-                                  <DocumentDuplicateIcon className="h-3.5 w-3.5 text-slate-400" />
-                                  <span>Copy</span>
-                                </>
-                              )}
-                            </button>
+                          <div className="p-4">
+                            <div className="mb-2 flex items-center justify-between">
+                              <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                                {__("problem.output")}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  copyToClipboard(
+                                    testCase.output,
+                                    __("problem.copied-output"),
+                                    `out-${index}`
+                                  )
+                                }
+                                className="inline-flex items-center gap-1 rounded-md bg-white px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100"
+                                title="Copy Output"
+                              >
+                                {copiedKey === `out-${index}` ? (
+                                  <>
+                                    <CheckIcon className="h-3.5 w-3.5 text-emerald-600" />
+                                    <span className="text-emerald-600">Copied</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <DocumentDuplicateIcon className="h-3.5 w-3.5 text-slate-400" />
+                                    <span>Copy</span>
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                            <pre className="overflow-x-auto rounded-lg bg-white p-3 font-mono text-xs text-slate-800 ring-1 ring-inset ring-slate-200/70 whitespace-pre-wrap">
+                              {testCase.output}
+                            </pre>
                           </div>
-                          <pre className="overflow-x-auto rounded-lg bg-white p-3 font-mono text-xs text-slate-800 ring-1 ring-inset ring-slate-200/70 whitespace-pre-wrap">
-                            {testCase.output}
-                          </pre>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-slate-500">
-                    {__("problem.test-not-found")}
-                  </p>
-                )}
-              </section>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-slate-500">
+                      {__("problem.test-not-found")}
+                    </p>
+                  )}
+                </section>
+              )}
 
               {problem.note && (
                 <section className="rounded-2xl border border-amber-200/80 bg-amber-50/30 p-6 shadow-sm">
@@ -253,8 +257,8 @@ export default function ProblemView() {
             id={id}
             char={char}
             attachments={Boolean(problem.statement)}
-            languages={problem.acceptableLanguages}
-            contest={problem.contest}
+            languages={contest.acceptable_languages}
+            contest={contest}
           />
         </div>
       </div>

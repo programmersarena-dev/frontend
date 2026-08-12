@@ -108,7 +108,7 @@ export default function RatingsView() {
                         <span
                           className={`font-medium group-hover:underline ${tier.color}`}
                         >
-                          {user.name}
+                          {user.handle}
                         </span>
                       </Link>
                     </td>

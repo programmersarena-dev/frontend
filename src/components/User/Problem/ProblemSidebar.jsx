@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import FormatToUTC from "../core/FormatToUTC";
+import FormatToUTC from "@/components/core/FormatToUTC";
 import axiosClient from "@/api/axios";
-import ContestDetails from "../Contest/ContestDetails";
-import SubmissionVerdict from "../Submissions/SubmissionVerdict";
-import { useAuth } from "../../contexts/AuthContext";
-import { useTranslation } from "../../contexts/TranslationContext";
-import { useToast } from "../../contexts/ToastContext";
+import ContestDetails from "@/components/Contest/ContestDetails";
+import SubmissionStatus from "@/components/Submissions/SubmissionStatus";
+import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "@/contexts/TranslationContext";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function ProblemSidebar({ setLoading, problem, id, char, attachments, languages, contest }) {
   const { currentUser } = useAuth();
@@ -40,7 +40,7 @@ export default function ProblemSidebar({ setLoading, problem, id, char, attachme
 
     axiosClient
       .post(
-        `/problemset/problem/${id}/${char}/submit`,
+        `/submissions/problem/${problem.code}/submit`,
         { file, language },
         {
           headers: {
@@ -61,7 +61,7 @@ export default function ProblemSidebar({ setLoading, problem, id, char, attachme
   const handleDownload = async () => {
     try {
       const response = await axiosClient.get(
-        `/problemset/problem/${id}/${char}/attachments`,
+        `/problems/problem/${id}/${char}/attachments`,
         {
           responseType: "blob",
         }
@@ -184,7 +184,7 @@ export default function ProblemSidebar({ setLoading, problem, id, char, attachme
                 </div>
                 <div className="w-1/5 text-gray-800">{submission.language}</div>
                 <div className="w-1/5 text-sm">
-                  <SubmissionVerdict verdict={submission.verdict} className="text-xs" />
+                  <SubmissionStatus status={submission.status} className="text-xs" />
                 </div>
               </div>
             ))}

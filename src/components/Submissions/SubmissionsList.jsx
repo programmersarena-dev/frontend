@@ -1,8 +1,8 @@
 import React, { useState, useCallback, memo } from "react";
 import FormatToUTC from "../core/FormatToUTC";
-import UserCodeModal from "../UserCodeModal";
+import UserCodeModal from "@/components/Submissions/UserCodeModal";
 import axiosClient from "@/api/axios";
-import SubmissionVerdict from "./SubmissionVerdict";
+import SubmissionStatus from "./SubmissionStatus";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useTranslation } from "../../contexts/TranslationContext";
@@ -21,7 +21,7 @@ export default function SubmissionsList({ submissions = [] }) {
     axiosClient
       .get(`/submissions/submission/${submissionId}`)
       .then((res) => {
-        setUserSubmission(res.data);
+        setUserSubmission(res.data.data);
         setIsModalOpen(true);
       })
       .catch((err) => {
@@ -122,14 +122,13 @@ const SubmissionRow = memo(function SubmissionRow({
     : `/problemset/problem/${problem.id || problem.code}`;
 
   const problemDisplayName = problem.name
-    ? `${problem.contest_id ? `${problem.contest_id}${problem.char || ''} - ` : ''}${problem.name}`
+    ? `${problem.contest_id ? `${problem.contest_id}/${problem.char || ''} - ` : ''}${problem.name}`
     : (submission.problem_id || "Problem");
 
   return (
     <tr
-      className={`group transition-colors duration-100 hover:bg-zinc-50 ${
-        isCurrentUser ? "relative bg-teal-50/40" : ""
-      }`}
+      className={`group transition-colors duration-100 hover:bg-zinc-50 ${isCurrentUser ? "relative bg-teal-50/40" : ""
+        }`}
     >
       {/* Submission ID */}
       <td className="py-2 px-2 truncate relative">
@@ -154,11 +153,11 @@ const SubmissionRow = memo(function SubmissionRow({
       {/* Username / Profile Link */}
       <td className="py-2 px-2 truncate font-medium">
         <Link
-          to={`/profile/${submission.username}`}
+          to={`/profile/${submission.handle}`}
           className="text-zinc-800 hover:text-teal-700 transition-colors"
-          title={submission.username}
+          title={submission.handle}
         >
-          {submission.username}
+          {submission.handle}
         </Link>
       </td>
 
@@ -180,17 +179,17 @@ const SubmissionRow = memo(function SubmissionRow({
 
       {/* Verdict */}
       <td className="py-2 px-2 truncate">
-        <SubmissionVerdict verdict={submission.verdict || submission.status} />
+        <SubmissionStatus status={submission.status} />
       </td>
 
       {/* Execution Time */}
       <td className="py-2 px-2 truncate text-right text-xs font-mono tabular-nums text-zinc-500">
-        {submission.time != null ? `${submission.time}ms` : "–"}
+        {submission.time != null ? `${submission.time} ms` : "–"}
       </td>
 
       {/* Memory Consumption */}
       <td className="py-2 px-2 truncate text-right text-xs font-mono tabular-nums text-zinc-500">
-        {submission.memory != null ? `${submission.memory}KB` : "–"}
+        {submission.memory != null ? `${submission.memory} KB` : "–"}
       </td>
     </tr>
   );

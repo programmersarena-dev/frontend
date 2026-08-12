@@ -81,13 +81,12 @@ const StandingsTable = ({ data, currentUser, onClick, contestId, contestType, __
       <tbody className="divide-y divide-slate-100">
         {data.standings?.length > 0 ? (
           rankedStandings(data).map((user, index) => {
-            const isCurrentUser = user.username === currentUser.name;
+            const isCurrentUser = user.handle === currentUser.handle;
             return (
               <tr
                 key={index}
-                className={`${tierClass(index, oneSixth)} ${
-                  isCurrentUser ? "bg-indigo-50/50" : "hover:bg-slate-50/70"
-                } transition-colors`}
+                className={`${tierClass(index, oneSixth)} ${isCurrentUser ? "bg-indigo-50/50" : "hover:bg-slate-50/70"
+                  } transition-colors`}
               >
                 <td className="py-2.5 px-2 text-center font-mono text-xs text-slate-500">
                   {user.rank}
@@ -96,25 +95,25 @@ const StandingsTable = ({ data, currentUser, onClick, contestId, contestType, __
                   {isDuel ? (
                     <span className="inline-flex items-center gap-1.5">
                       <Link
-                        to={`/profile/${user.username}`}
+                        to={`/profile/${user.handle}`}
                         className="font-medium text-slate-900 hover:text-indigo-600 transition-colors"
                       >
-                        {user.username}
+                        {user.handle}
                       </Link>
                       <span className="text-slate-300 text-xs">vs</span>
                       <Link
-                        to={`/profile/${user.username2}`}
+                        to={`/profile/${user.handle2}`}
                         className="font-medium text-slate-900 hover:text-indigo-600 transition-colors"
                       >
-                        {user.username2}
+                        {user.handle2}
                       </Link>
                     </span>
                   ) : (
                     <Link
-                      to={`/profile/${user.username}`}
+                      to={`/profile/${user.handle}`}
                       className="font-medium text-slate-900 hover:text-indigo-600 transition-colors"
                     >
-                      {user.username}
+                      {user.handle}
                     </Link>
                   )}
                 </td>
@@ -168,9 +167,8 @@ const StandingsTable = ({ data, currentUser, onClick, contestId, contestType, __
                       ) : problem.score !== 0 ? (
                         <div>
                           <div
-                            className={`font-mono font-semibold text-xs ${
-                              problem.score < 0 ? "text-slate-400" : "text-emerald-600"
-                            }`}
+                            className={`font-mono font-semibold text-xs ${problem.score < 0 ? "text-slate-400" : "text-emerald-600"
+                              }`}
                           >
                             {problem.score}
                           </div>
@@ -220,7 +218,7 @@ export default function ContestStandingsView() {
       .catch((err) => console.error("Failed to fetch submissions:", err));
   };
 
-  const getStandings = (url = `/contest/${id}/standings`) => {
+  const getStandings = (url = `/contests/${id}/standings`) => {
     url += checkbox ? "?unofficial=true" : "?unofficial=false";
     setLoading(true);
     axiosClient
@@ -270,7 +268,7 @@ export default function ContestStandingsView() {
           className="text-xs font-mono text-slate-500"
         />
       </div>
-      
+
       <div className="flex justify-end border-b border-slate-100">
         <CheckboxFilter checked={checkbox} onChange={toggleCheckbox} __={__} />
       </div>

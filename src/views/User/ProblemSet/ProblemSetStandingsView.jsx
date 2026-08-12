@@ -18,7 +18,7 @@ export default function ProblemSetStandingsView() {
   };
 
   const getStandings = (url) => {
-    url = url || "/problemset/standings";
+    url = url || "/problems/standings";
     axiosClient
       .get(url)
       .then((res) => {
@@ -63,9 +63,8 @@ export default function ProblemSetStandingsView() {
                 return (
                   <tr
                     key={user.id ?? index}
-                    className={`relative transition-colors duration-100 hover:bg-zinc-50 ${
-                      isCurrentUser ? "bg-teal-50/40" : ""
-                    }`}
+                    className={`relative transition-colors duration-100 hover:bg-zinc-50 ${isCurrentUser ? "bg-teal-50/40" : ""
+                      }`}
                   >
                     <td className="py-2 px-2 relative">
                       {isCurrentUser && (
@@ -83,11 +82,11 @@ export default function ProblemSetStandingsView() {
                         to={`/profile/${user.handle}`}
                         className="font-medium text-zinc-800 hover:text-teal-700 transition-colors"
                       >
-                        {user.name}
+                        {user.handle}
                       </Link>
                     </td>
                     <td className="py-2 px-2 text-right font-mono tabular-nums text-zinc-500">
-                      {user.acceptedProblemsCount}
+                      {user.accepted_problems_count}
                     </td>
                   </tr>
                 );

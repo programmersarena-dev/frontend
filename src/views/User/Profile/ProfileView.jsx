@@ -18,12 +18,12 @@ export default function ProfileView() {
   const { currentUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({});
-  const { username } = useParams();
+  const { handle } = useParams();
   const { addToast } = useToast();
 
   useEffect(() => {
     axiosClient
-      .get(`/profile/${username}`)
+      .get(`/profile/${handle}`)
       .then((res) => {
         setUser(res.data.data);
         setLoading(false);
@@ -32,7 +32,7 @@ export default function ProfileView() {
         console.error("Error fetching profile:", error);
         setLoading(false);
       });
-  }, [username]);
+  }, [handle]);
 
   const handleResend = () => {
     axiosClient
@@ -53,7 +53,7 @@ export default function ProfileView() {
     return <NotFound />;
   }
 
-  const isOwnProfile = currentUser?.handle === username;
+  const isOwnProfile = currentUser?.handle === handle;
 
   return (
     <div className="max-w-lg mx-auto px-4 py-10">
@@ -77,9 +77,8 @@ export default function ProfileView() {
 
           <div className="flex justify-center items-center gap-1.5 mt-1.5">
             <span
-              className={`h-1.5 w-1.5 rounded-full ${
-                user.is_online === 1 ? "bg-emerald-500" : "bg-slate-300"
-              }`}
+              className={`h-1.5 w-1.5 rounded-full ${user.is_online === 1 ? "bg-emerald-500" : "bg-slate-300"
+                }`}
             />
             <span className="text-xs text-slate-400">
               {user.is_online === 1 ? "Onlaýn" : "Oflaýn"}
@@ -112,14 +111,14 @@ export default function ProfileView() {
             Profil maglumatlar
           </div>
           <div>
-            <Stat label="Ady">{user.firstName || "—"}</Stat>
-            <Stat label="Familiýasy">{user.lastName || "—"}</Stat>
+            <Stat label="Ady">{user.first_name || "—"}</Stat>
+            <Stat label="Familiýasy">{user.last_name || "—"}</Stat>
             {user.country && <Stat label="Ýurdy">{user.country}</Stat>}
             <Stat label="Reýtingi">
               <span className="font-mono">{user.current_rating || "0"}</span>
             </Stat>
             <Stat label="Işlän mesele sany">
-              <span className="font-mono">{user.acceptedProblemsCount ?? 0}</span>
+              <span className="font-mono">{user.accepted_problems_count ?? 0}</span>
             </Stat>
           </div>
         </div>

@@ -13,7 +13,7 @@ export default function ContestDetails({ contest }) {
   const isStarted = contest.status === "started";
 
   return (
-    <div className="border border-slate-100 rounded-xl p-4 space-y-3">
+    <div className="w-full mx-auto bg-white border border-gray-200 rounded-xl py-6 px-8 shadow-lg space-y-6">
       {/* Contest Name */}
       <h3 className="text-[15px] font-medium text-slate-900 leading-snug">
         <Link

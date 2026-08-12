@@ -10,14 +10,14 @@ export default function ProfileSubmissionsView() {
   const [submissions, setSubmissions] = useState([]);
   const [meta, setMeta] = useState({});
   const location = useLocation();
-  const { username } = useParams();
+  const { handle } = useParams();
 
   const onPageClick = (link) => {
     getSubmissions(link.url);
   };
 
   const getSubmissions = (url) => {
-    url = url || `/profile/${username}/submissions`;
+    url = url || `/profile/${handle}/submissions`;
     axiosClient
       .get(url)
       .then((res) => {

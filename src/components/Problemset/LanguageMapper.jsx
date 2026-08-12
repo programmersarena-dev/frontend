@@ -1,4 +1,4 @@
-export default function LanguageMapper({language}) {
+export default function LanguageMapper({ language = 'gcc' }) {
   if (language.startsWith('gcc')) return 'cpp';
   else if (language.startsWith('python')) return 'python';
   else if (language.startsWith('php')) return 'php';

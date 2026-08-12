@@ -9,7 +9,7 @@ import { useTranslation } from "../../../contexts/TranslationContext";
 export default function ContestProblemsView() {
   const { __ } = useTranslation();
   const { id } = useParams();
-  
+
   const [loading, setLoading] = useState(true);
   const [problems, setProblems] = useState([]);
   const [contest, setContest] = useState(null);
@@ -25,7 +25,7 @@ export default function ContestProblemsView() {
     setLoading(true);
 
     axiosClient
-      .get(`/contest/${id}/problems`)
+      .get(`/contests/${id}`)
       .then((res) => {
         if (isMounted) {
           setProblems(res.data.problems || []);
@@ -58,9 +58,8 @@ export default function ContestProblemsView() {
                     {TABLE_HEAD.map((head, index) => (
                       <th
                         key={index}
-                        className={`py-3.5 px-6 font-semibold ${
-                          index === 0 ? "w-16 text-center" : ""
-                        } ${index === TABLE_HEAD.length - 1 ? "text-right" : ""}`}
+                        className={`py-3.5 px-6 font-semibold ${index === 0 ? "w-16 text-center" : ""
+                          } ${index === TABLE_HEAD.length - 1 ? "text-right" : ""}`}
                       >
                         {head}
                       </th>

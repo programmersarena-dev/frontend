@@ -10,7 +10,7 @@ import {
 } from '@heroicons/react/24/outline';
 import axiosClient from '@/api/axios';
 
-export default function FileManager() {
+export default function FileManagerView() {
   const [files, setFiles] = useState([]);
   const [directories, setDirectories] = useState([]);
   const [isUploading, setIsUploading] = useState(false);

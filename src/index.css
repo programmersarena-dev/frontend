@@ -2,17 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Force CKEditor dropdown panels to position above the toolbar */
-.ck-rounded-corners .ck.ck-dropdown__panel,
-.ck.ck-dropdown__panel {
-    top: auto !important;
-    bottom: 100% !important;
-    margin-bottom: 5px !important; /* Space between toolbar and dropdown */
-    margin-top: 0 !important;
+.ck-editor__editable,
+.ck-editor__editable_inline {
+  min-height: 200px !important;
+  cursor: text !important;
+  user-select: text !important;
+  -webkit-user-select: text !important;
 }
 
-/* Ensure the animation/transition originates from the bottom */
-.ck.ck-dropdown__panel_se,
-.ck.ck-dropdown__panel_sw {
-    transform-origin: bottom !important;
+.ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-focused {
+  border: none !important;
+  box-shadow: none !important;
+}rapper {
+  z-index: 99999 !important;
 }

@@ -14,7 +14,7 @@ import Loading from "@/components/core/Loading";
 import { useToast } from "@/contexts/ToastContext";
 import AdminPageHeader from "@/components/Admin/PageHeader";
 
-export default function ProblemList() {
+export default function ProblemListView() {
   const { addToast } = useToast();
   const { id } = useParams();
 
@@ -24,6 +24,8 @@ export default function ProblemList() {
   const TABLE_HEAD = [
     "#",
     "Ady",
+    "Jemi cozuwler",
+    "Nädogry cozuwler",
     "Çözen ulanyjylaryň sany",
     "Üýtget",
     "Poz",
@@ -109,11 +111,17 @@ export default function ProblemList() {
                   <th scope="col" className="py-3.5 px-6 text-center">
                     {TABLE_HEAD[2]}
                   </th>
-                  <th scope="col" className="py-3.5 px-6 text-center w-24">
+                  <th scope="col" className="py-3.5 px-6 text-center">
                     {TABLE_HEAD[3]}
                   </th>
-                  <th scope="col" className="py-3.5 px-6 text-center w-24">
+                  <th scope="col" className="py-3.5 px-6 text-center">
                     {TABLE_HEAD[4]}
+                  </th>
+                  <th scope="col" className="py-3.5 px-6 text-center">
+                    {TABLE_HEAD[5]}
+                  </th>
+                  <th scope="col" className="py-3.5 px-6 text-center">
+                    {TABLE_HEAD[6]}
                   </th>
                 </tr>
               </thead>
@@ -137,11 +145,22 @@ export default function ProblemList() {
                         {problem.name}
                       </td>
 
-                      {/* Accepted Submissions Count */}
                       <td className="py-3.5 px-6 text-center">
                         <span className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
                           <UserIcon className="h-3.5 w-3.5 text-slate-400" />
-                          <span>{problem.accepted_submissions ?? 0}</span>
+                          <span>{problem.submissions_count ?? 0}</span>
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-6 text-center">
+                        <span className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                          <UserIcon className="h-3.5 w-3.5 text-slate-400" />
+                          <span>{problem.wrong_submissions_count ?? 0}</span>
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-6 text-center">
+                        <span className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                          <UserIcon className="h-3.5 w-3.5 text-slate-400" />
+                          <span>{problem.accepted_submissions_count ?? 0}</span>
                         </span>
                       </td>
 

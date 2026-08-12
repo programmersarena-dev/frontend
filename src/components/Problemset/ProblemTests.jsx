@@ -13,17 +13,15 @@ const TestRow = ({ test, testIndex, __ }) => {
   return (
     <div className="border border-slate-100 rounded-lg overflow-hidden">
       <div
-        className={`flex items-center justify-between px-3 py-2 text-xs ${
-          hasDetail ? "cursor-pointer hover:bg-slate-50/70" : ""
-        } transition-colors`}
+        className={`flex items-center justify-between px-3 py-2 text-xs ${hasDetail ? "cursor-pointer hover:bg-slate-50/70" : ""
+          } transition-colors`}
         onClick={() => hasDetail && setOpen((v) => !v)}
       >
         <div className="flex items-center gap-2 min-w-0">
           {hasDetail && (
             <ChevronDownIcon
-              className={`h-3 w-3 text-slate-300 shrink-0 transition-transform ${
-                open ? "rotate-180" : ""
-              }`}
+              className={`h-3 w-3 text-slate-300 shrink-0 transition-transform ${open ? "rotate-180" : ""
+                }`}
             />
           )}
           <span className="font-medium text-slate-600 shrink-0">
@@ -93,8 +91,10 @@ export default function ProblemTests({ tests, subtasks }) {
       </h3>
 
       {tests && tests.length > 0 && tests.map((subtask, index) => {
-        const subTests = subtask.subTaskResults || [];
+        // API shape: { index, points, tests: [...] } — not subTaskResults/point.
+        const subTests = subtask.tests || [];
         const isOpen = !!openSubtasks[index];
+        const displayIndex = (subtask.index ?? index) + 1;
 
         return (
           <div key={index} className="border border-slate-100 rounded-xl overflow-hidden">
@@ -104,16 +104,15 @@ export default function ProblemTests({ tests, subtasks }) {
             >
               <div className="flex items-center gap-2">
                 <ChevronDownIcon
-                  className={`h-3.5 w-3.5 text-slate-300 transition-transform ${
-                    isOpen ? "rotate-180" : ""
-                  }`}
+                  className={`h-3.5 w-3.5 text-slate-300 transition-transform ${isOpen ? "rotate-180" : ""
+                    }`}
                 />
                 <span className="text-sm font-medium text-slate-900">
-                  {__("submission.subtask") || "Subtask"} #{index + 1}
+                  {__("submission.subtask") || "Subtask"} #{displayIndex}
                 </span>
               </div>
               <span className="text-xs font-mono text-slate-400">
-                {subtask.point} {__("submission.points") || "pts"}
+                {subtask.points} {__("submission.points") || "pts"}
               </span>
             </div>
 

@@ -295,7 +295,7 @@ export default function ContestList() {
 
         {/* Pagination */}
         {contests.length > 0 && (
-          <div className="flex justify-center pt-2">
+          <div className="pt-2">
             <PaginationLinks meta={meta} onPageClick={onPageClick} />
           </div>
         )}

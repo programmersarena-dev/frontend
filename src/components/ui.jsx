@@ -1,6 +1,7 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicCustomEditor from "../ckeditor/ClassicCustomEditor";
+import { ClassicEditor } from "ckeditor5";
+import { editorConfig } from "@/ckeditor/editorConfig";
 import { LinkIcon, PhotoIcon, PlusIcon } from "@heroicons/react/24/outline";
 
 export function Tabs({ children }) {
@@ -21,12 +22,22 @@ export function Tab({ active, onClick, children }) {
   );
 }
 
-export function Textarea({ text, description, setDescription, activeTab }) {
+export function Textarea({ text, description, setDescription }) {
   const editorRef = useRef(null);
   const fileInputRef = useRef(null);
   const [imageUrl, setImageUrl] = useState("");
 
-  // Helper to insert image element into CKEditor instance safely
+  // Sync external changes (e.g. tab switches) without destroying focus while typing
+  useEffect(() => {
+    if (editorRef.current) {
+      const currentEditorData = editorRef.current.getData();
+      const incomingData = description || "";
+      if (incomingData !== currentEditorData) {
+        editorRef.current.setData(incomingData);
+      }
+    }
+  }, [description]);
+
   const insertImageIntoEditor = (src) => {
     const editor = editorRef.current;
     if (!editor || !src) return;
@@ -40,7 +51,6 @@ export function Textarea({ text, description, setDescription, activeTab }) {
     });
   };
 
-  // Handle local image file upload (Base64 conversion)
   const handleImageUpload = (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -48,12 +58,11 @@ export function Textarea({ text, description, setDescription, activeTab }) {
     const reader = new FileReader();
     reader.onload = () => {
       insertImageIntoEditor(reader.result);
-      if (fileInputRef.current) fileInputRef.current.value = ""; // Reset input
+      if (fileInputRef.current) fileInputRef.current.value = "";
     };
     reader.readAsDataURL(file);
   };
 
-  // Handle image insertion via external URL
   const handleImageByUrl = (e) => {
     e.preventDefault();
     if (imageUrl.trim()) {
@@ -64,17 +73,15 @@ export function Textarea({ text, description, setDescription, activeTab }) {
 
   return (
     <div className="mb-6 space-y-2">
-      {/* Label */}
       {text && (
         <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600">
           {text}
         </label>
       )}
 
-      {/* Toolbar for Quick Image Actions */}
+      {/* Quick Image Actions */}
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50/70 p-2.5">
         <div className="flex items-center gap-2">
-          {/* File Upload Button */}
           <input
             type="file"
             ref={fileInputRef}
@@ -92,7 +99,6 @@ export function Textarea({ text, description, setDescription, activeTab }) {
           </button>
         </div>
 
-        {/* URL Input Form */}
         <form onSubmit={handleImageByUrl} className="flex items-center gap-2">
           <div className="relative flex items-center">
             <LinkIcon className="absolute left-2.5 h-3.5 w-3.5 text-slate-400" />
@@ -115,17 +121,20 @@ export function Textarea({ text, description, setDescription, activeTab }) {
         </form>
       </div>
 
-      {/* CKEditor Wrapper Container */}
-      <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm transition focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-500">
+      {/* Editor Container */}
+      <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-500">
         <CKEditor
-          key={activeTab}
-          editor={ClassicCustomEditor}
-          data={description ?? ""}
+          editor={ClassicEditor}
+          config={editorConfig}
           onReady={(editor) => {
             editorRef.current = editor;
+            if (description) {
+              editor.setData(description);
+            }
           }}
           onChange={(event, editor) => {
-            setDescription(editor.getData());
+            const data = editor.getData();
+            setDescription(data);
           }}
         />
       </div>

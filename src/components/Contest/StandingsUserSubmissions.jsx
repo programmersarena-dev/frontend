@@ -1,5 +1,5 @@
 import React from "react";
-import SubmissionVerdict from "../Submissions/SubmissionVerdict";
+import SubmissionStatus from "../Submissions/SubmissionStatus";
 import CalculateDiff from "../core/CalculateDiff";
 import { Link } from "react-router-dom";
 
@@ -29,7 +29,7 @@ const StandingsUserSubmissions = ({
                 submissions.data.map((submission, index) => (
                   <div key={index} className="flex items-center space-x-2">
                     <CalculateDiff startDate={contestStartDate} endDate={submission.created_at} />
-                    <SubmissionVerdict verdict={submission.verdict} />
+                    <SubmissionStatus status={submission.status} />
                     <div>&rarr;</div>
                     <Link
                       to={`/contest/${contestId}/submission/${submission.id}`}

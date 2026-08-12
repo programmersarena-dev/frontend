@@ -19,9 +19,11 @@ export default function ProblemSetStatusView() {
       let targetUrl = url;
 
       if (!targetUrl) {
-        targetUrl = (!id && !char)
-          ? "/submissions"
-          : `/submissions/problem/${id}-${char}`;
+        if (id && char) {
+          targetUrl = `/submissions?contest_id=${id}&char=${char}`;
+        } else {
+          targetUrl = `/submissions`;
+        }
       }
 
       setLoading(true);

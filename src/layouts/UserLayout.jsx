@@ -90,7 +90,7 @@ export default function PageLayout() {
                   >
                     <img
                       className="h-8 w-auto"
-                      src="/logo.png"
+                      src="/logo.svg"
                       alt="Programmers Arena"
                     />
                   </Link>
@@ -324,7 +324,7 @@ export default function PageLayout() {
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Outlet />
       </main>
-      
+
       <footer className="mx-auto max-w-7xl px-4 pb-8 pt-12 sm:px-6 lg:px-8">
         <div className="border-t border-slate-200/80 pt-6 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p>&copy; {new Date().getFullYear()} ProgrammersArena. All rights reserved.</p>

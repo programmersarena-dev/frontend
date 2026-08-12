@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   HomeIcon,
@@ -8,11 +8,12 @@ import {
   UsersIcon,
   ArrowRightOnRectangleIcon,
   UserCircleIcon,
+  ArrowLeftIcon,
 } from "@heroicons/react/24/outline";
+import NotFound from "@/components/core/NotFound";
 
 const navigation = [
   { name: "Baş sahypa", to: "/admin/dashboard", icon: HomeIcon },
-  { name: "Ulanyjylar", to: "/admin/users", icon: UsersIcon },
   { name: "File Manager", to: "/admin/files", icon: FolderIcon },
   { name: "Bildirişler", to: "/admin/blogs", icon: MegaphoneIcon },
   { name: "Bäsleşikler", to: "/admin/contests", icon: TrophyIcon },
@@ -25,6 +26,12 @@ function classNames(...classes) {
 export default function AdminLayout({ children }) {
   const { currentUser, logout } = useAuth();
   const location = useLocation();
+
+  const userDashboardTo = currentUser?.name ? `/profile/${currentUser.handle}` : "/";
+
+  if (currentUser?.user_type !== "admin") {
+    return <NotFound />;
+  }
 
   return (
     <div className="flex h-screen bg-slate-50 text-slate-800 font-sans antialiased overflow-hidden">
@@ -45,7 +52,17 @@ export default function AdminLayout({ children }) {
           </div>
         </div>
 
-        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        <div className="px-3 pt-3">
+          <Link
+            to={userDashboardTo}
+            className="group flex items-center px-3 py-2 text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-colors"
+          >
+            <ArrowLeftIcon className="mr-2.5 h-3.5 w-3.5 text-slate-400 group-hover:text-slate-600 transition-colors" />
+            Ulanyjy paneli
+          </Link>
+        </div>
+
+        <nav className="flex-1 px-3 pt-2 pb-4 space-y-1 overflow-y-auto">
           {navigation.map((item) => {
             const Icon = item.icon;
             const isActive =
@@ -80,7 +97,10 @@ export default function AdminLayout({ children }) {
 
         <div className="p-3 border-t border-slate-100 bg-slate-50/50">
           <div className="flex items-center justify-between p-2 rounded-xl bg-white border border-slate-200/60 shadow-sm">
-            <div className="flex items-center gap-2.5 min-w-0">
+            <Link
+              to={userDashboardTo}
+              className="flex items-center gap-2.5 min-w-0 hover:opacity-80 transition-opacity"
+            >
               <UserCircleIcon className="h-8 w-8 text-slate-400 flex-shrink-0" />
               <div className="truncate">
                 <p className="text-xs font-semibold text-slate-800 truncate">
@@ -90,7 +110,7 @@ export default function AdminLayout({ children }) {
                   {currentUser?.email || "Administrator"}
                 </p>
               </div>
-            </div>
+            </Link>
 
             <button
               onClick={logout}
@@ -102,7 +122,7 @@ export default function AdminLayout({ children }) {
           </div>
         </div>
       </aside>
-      
+
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         <main className="flex-1 p-6 md:p-8 w-full mx-auto">
           <Outlet />

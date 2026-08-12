@@ -28,12 +28,12 @@ export default function ProfileEditView() {
   const [user, setUser] = useState({});
   const [countries, setCountries] = useState([]);
   const [errors, setErrors] = useState({});
-  const { username } = useParams();
+  const { handle } = useParams();
   const { addToast } = useToast();
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
-  if (currentUser.handle !== username || currentUser.email_verified_at == null) {
+  if (currentUser.handle !== handle || currentUser.email_verified_at == null) {
     return <NotFound />;
   }
 
@@ -51,7 +51,7 @@ export default function ProfileEditView() {
     if (user.country_id) formData.append("country_id", user.country_id);
 
     axiosClient
-      .post(`/profile/${username}/update`, formData, {
+      .post(`/profile/${handle}/update`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -62,7 +62,7 @@ export default function ProfileEditView() {
           ...prevState,
           image: data.image,
         }));
-        navigate(`/profile/${username}`);
+        navigate(`/profile/${handle}`);
       })
       .catch((err) => {
         const serverErrors = err.response.data.errors;
@@ -83,7 +83,7 @@ export default function ProfileEditView() {
 
   useEffect(() => {
     axiosClient
-      .get(`/profile/${username}/edit`)
+      .get(`/profile/${handle}/edit`)
       .then((res) => {
         setUser(res.data);
         setLoading(false);
@@ -95,7 +95,7 @@ export default function ProfileEditView() {
     axiosClient.get("/countries").then((res) => {
       setCountries(res.data);
     });
-  }, [username]);
+  }, [handle]);
 
   if (loading) {
     return <Loading />;
@@ -209,7 +209,7 @@ export default function ProfileEditView() {
         <div className="flex justify-end gap-3 pt-2">
           <button
             type="button"
-            onClick={() => navigate(`/profile/${username}`)}
+            onClick={() => navigate(`/profile/${handle}`)}
             className="px-4 py-2 rounded-lg text-xs font-medium text-slate-500 hover:bg-slate-50 transition-colors"
           >
             Goýbolsun

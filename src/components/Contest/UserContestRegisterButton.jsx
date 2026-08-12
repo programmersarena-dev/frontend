@@ -29,7 +29,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
       }
 
       axiosClient
-        .post(`/contest/${contest.id}/register`, data)
+        .post(`/contests/${contest.id}/register`, data)
         .then(() => {
           addToast("success", "Bäsleşige üstünlikli ýazyldyňyz");
           setIsRegistered(true);
@@ -52,7 +52,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
 
       setLoading(true);
       axiosClient
-        .post(`/contest/${contest.id}/unregister`)
+        .post(`/contests/${contest.id}/unregister`)
         .then(() => {
           addToast("success", "Bäsleşikden üstünlikli çykdyňyz");
           setIsRegistered(false);
