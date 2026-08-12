@@ -19,9 +19,9 @@ export default function ContestItem({ contest, index }) {
     (contest.participants?.official?.length || 0) +
     (contest.participants?.unofficial?.length || 0);
 
-  const isEnded = contest.status === "ended" || contest.status === "past";
-  const isStarted = contest.status === "started";
-  const isNotStarted = contest.status === "notStarted";
+  const isEnded = contest.status === "Ended";
+  const isStarted = contest.status === "Active";
+  const isNotStarted = contest.status === "Pending";
 
   return (
     <div className="group flex flex-col gap-3 py-4 px-1 border-b border-slate-100 last:border-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4">

@@ -38,8 +38,13 @@ export default function ContestsView() {
 
   if (loading) return <Loading />;
 
-  const upcomingContests = contests.filter((item) => item.status !== "ended");
-  const finishedContests = contests.filter((item) => item.status === "ended");
+  const upcomingContests = contests
+    .filter((item) => item.status !== "Ended")
+    .sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+
+  const finishedContests = contests
+    .filter((item) => item.status === "Ended")
+    .sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
 
   return (
     <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
@@ -61,7 +66,7 @@ export default function ContestsView() {
             </div>
 
             <div className="flex flex-col">
-              {[...upcomingContests].reverse().map((contest, index) => (
+              {upcomingContests.map((contest, index) => (
                 <ContestItem key={contest.id || index} contest={contest} index={index} />
               ))}
             </div>

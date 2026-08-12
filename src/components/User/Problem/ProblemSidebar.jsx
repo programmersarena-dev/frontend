@@ -8,7 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "@/contexts/TranslationContext";
 import { useToast } from "@/contexts/ToastContext";
 
-export default function ProblemSidebar({ setLoading, problem, id, char, attachments, languages, contest }) {
+export default function ProblemSidebar({ setLoading, problem, submissions, id, char, attachments, languages, contest }) {
   const { currentUser } = useAuth();
   const { __ } = useTranslation();
   const { addToast } = useToast();
@@ -154,7 +154,7 @@ export default function ProblemSidebar({ setLoading, problem, id, char, attachme
         </div>
       </form>
 
-      {problem.submissions && problem.submissions.length > 0 && (
+      {submissions && submissions.length > 0 && (
         <div className="border border-gray-300 rounded-xl py-4 px-6 shadow-lg">
           <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2 border-gray-300">
             {__("problem.last-submissions")}
@@ -166,15 +166,14 @@ export default function ProblemSidebar({ setLoading, problem, id, char, attachme
               <div className="w-1/5">{__("submission.nav-lang")}</div>
               <div className="w-1/5">{__("submission.nav-verdict")}</div>
             </div>
-            {problem.submissions.map((submission) => (
+            {submissions.map((submission) => (
               <div
                 key={submission.id}
                 className="flex justify-between items-center bg-gray-50 p-2 rounded-lg shadow-sm hover:bg-gray-100 transition"
               >
                 <div className="w-1/5 text-blue-500 hover:underline">
                   <Link
-                    to={`/contest/${id}/submission/${submission.id}`}
-                    key={submission.id}
+                    to={`/contest/${submission.problem?.contest_id || contest.id}/submission/${submission.id}`}
                   >
                     {submission.id}
                   </Link>

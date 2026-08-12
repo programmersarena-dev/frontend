@@ -19,6 +19,7 @@ export default function ProblemView() {
   const { addToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [problem, setProblem] = useState(null);
+  const [submissions, setSubmissions] = useState(null);
   const [contest, setContest] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [copiedKey, setCopiedKey] = useState(null);
@@ -46,6 +47,7 @@ export default function ProblemView() {
         const data = res.data;
         setProblem(data.problem);
         setContest(data.contest);
+        setSubmissions(data.submissions);
 
         if (data?.statement) {
           try {
@@ -254,6 +256,7 @@ export default function ProblemView() {
           <ProblemSidebar
             setLoading={setLoading}
             problem={problem}
+            submissions={submissions}
             id={id}
             char={char}
             attachments={Boolean(problem.statement)}

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import axiosClient from "@/api/axios";
 import Loading from "@/components/core/Loading";
@@ -10,9 +10,6 @@ export default function ProblemSetStatusView() {
   const [submissions, setSubmissions] = useState([]);
   const [meta, setMeta] = useState({});
   const { id, char } = useParams();
-
-  const submissionsRef = useRef(submissions);
-  submissionsRef.current = submissions;
 
   const getSubmissions = useCallback(
     (url) => {
@@ -55,27 +52,25 @@ export default function ProblemSetStatusView() {
   };
 
   useEffect(() => {
-    const pollPendingSubmissions = async () => {
-      const currentSubmissions = submissionsRef.current;
+    const PENDING_STATUSES = ["queued", "compiling", "running", "judging", "pending", "0"];
 
-      const pendingSubmissions = currentSubmissions.filter((sub) =>
-        sub.status?.startsWith("Compiling") ||
-        sub.status?.startsWith("Running") ||
-        sub.status?.startsWith("Queued") ||
-        sub.status?.startsWith("Judging") ||
-        sub.status === "Pending" ||
-        sub.status === "0" ||
-        sub.status === "Pending"
-      );
+    const pendingSubmissions = submissions.filter((sub) => {
+      const statusStr = String(sub.status ?? "").toLowerCase();
+      return PENDING_STATUSES.some((p) => statusStr.startsWith(p));
+    });
 
-      if (pendingSubmissions.length === 0) return;
+    if (pendingSubmissions.length === 0) return;
 
+    const timer = setTimeout(async () => {
       try {
         const updates = await Promise.all(
           pendingSubmissions.map((sub) =>
             axiosClient
-              .get(`/submissions/submission/${sub.id}`)
-              .then((res) => res.data)
+              .get(`/submissions/submission/${sub.id}/status`)
+              .then((res) => {
+                const data = res.data?.data || res.data;
+                return { id: sub.id, ...data }; // Attach id to the payload
+              })
               .catch((err) => {
                 console.error(`Failed to poll submission ${sub.id}:`, err);
                 return null;
@@ -85,7 +80,7 @@ export default function ProblemSetStatusView() {
 
         setSubmissions((prevSubmissions) =>
           prevSubmissions.map((sub) => {
-            const updated = updates.find((u) => u && u.id === sub.id);
+            const updated = updates.find((u) => u && String(u.id) === String(sub.id));
             if (!updated) return sub;
 
             return {
@@ -100,12 +95,10 @@ export default function ProblemSetStatusView() {
       } catch (error) {
         console.error("Error during polling:", error);
       }
-    };
+    }, 3000);
 
-    const intervalId = setInterval(pollPendingSubmissions, 3000);
-
-    return () => clearInterval(intervalId);
-  }, []);
+    return () => clearTimeout(timer);
+  }, [submissions]);
 
   if (loading && submissions.length === 0) {
     return <Loading />;
