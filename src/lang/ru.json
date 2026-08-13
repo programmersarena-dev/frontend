@@ -125,7 +125,9 @@
     "accepted": "Принято",
     "wrong-answer": "Неверный ответ",
     "time-limit": "Превышен лимит времени",
-    "compilation-error": "Ошибка компиляции",
+    "memory-limit": "Memory limit exceeded",
+    "compilation-error": "Compilation error",
+    "runtime-error": "Runtime error",
     "compiling": "Компиляция",
     "not-found": "Отправленные решения не найдены."
   },

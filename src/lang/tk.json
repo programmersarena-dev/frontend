@@ -125,7 +125,9 @@
     "accepted": "Geçdi",
     "wrong-answer": "Ýalňyş jogap",
     "time-limit": "Wagt araçäginden çykma",
-    "compilation-error": "Kompilýasiýa ýalňyşlygy",
+    "memory-limit": "Memory limit exceeded",
+    "compilation-error": "Compilation error",
+    "runtime-error": "Runtime error",
     "compiling": "Barlagda",
     "not-found": "Iberilen çözüwler tapylmady."
   },

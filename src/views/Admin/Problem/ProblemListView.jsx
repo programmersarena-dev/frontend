@@ -7,6 +7,7 @@ import {
   TrashIcon,
   UserIcon,
   DocumentTextIcon,
+  ArrowPathIcon,
 } from "@heroicons/react/24/outline";
 
 import axiosClient from "@/api/axios";
@@ -27,8 +28,7 @@ export default function ProblemListView() {
     "Jemi cozuwler",
     "Nädogry cozuwler",
     "Çözen ulanyjylaryň sany",
-    "Üýtget",
-    "Poz",
+    "Amallar",
   ];
 
   useEffect(() => {
@@ -47,6 +47,25 @@ export default function ProblemListView() {
         setLoading(false);
       });
   }, [id]);
+
+  const recheckAllSubmissions = (char) => {
+    if (window.confirm("Are you sure you want to recheck all submissions for this problem?")) {
+      setLoading(true);
+      axiosClient
+        .post(`/admin/contest/${id}/problem/${char}/recheck-all-submissions`)
+        .then(() => {
+          addToast("Cozuwleri täzeden barlagy işe goýberildi.");
+        })
+        .catch((err) => {
+          const message = err?.response?.data?.message || "Näbelli säwlik ýüze çykdy.";
+          addToast(message);
+          console.error("Error rechecking submissions:", err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  };
 
   const onDeleteClick = (char) => {
     if (!window.confirm("Siz çyndanam meseläni pozmak isleýäňizmi?")) return;
@@ -120,9 +139,6 @@ export default function ProblemListView() {
                   <th scope="col" className="py-3.5 px-6 text-center">
                     {TABLE_HEAD[5]}
                   </th>
-                  <th scope="col" className="py-3.5 px-6 text-center">
-                    {TABLE_HEAD[6]}
-                  </th>
                 </tr>
               </thead>
 
@@ -166,6 +182,13 @@ export default function ProblemListView() {
 
                       {/* Edit Action */}
                       <td className="py-3.5 px-6 text-center">
+                        <button
+                          onClick={() => recheckAllSubmissions(problem.char)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+                          title="Submssiýalary täzeden barlat"
+                        >
+                          <ArrowPathIcon className="h-4 w-4" />
+                        </button>
                         <Link
                           to={`/admin/contest/${id}/problem/${problem.char}`}
                           className="inline-flex items-center justify-center p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
@@ -173,10 +196,6 @@ export default function ProblemListView() {
                         >
                           <PencilIcon className="w-4 h-4" />
                         </Link>
-                      </td>
-
-                      {/* Delete Action */}
-                      <td className="py-3.5 px-6 text-center">
                         <button
                           onClick={() => onDeleteClick(problem.char)}
                           className="inline-flex items-center justify-center p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"

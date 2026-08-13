@@ -125,7 +125,9 @@
     "accepted": "Accepted",
     "wrong-answer": "Wrong answer",
     "time-limit": "Time limit exceeded",
+    "memory-limit": "Memory limit exceeded",
     "compilation-error": "Compilation error",
+    "runtime-error": "Runtime error",
     "compiling": "Compiling",
     "not-found": "Submissions not found."
   },

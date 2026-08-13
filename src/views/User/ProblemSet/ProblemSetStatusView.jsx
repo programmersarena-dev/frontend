@@ -52,7 +52,7 @@ export default function ProblemSetStatusView() {
   };
 
   useEffect(() => {
-    const PENDING_STATUSES = ["queued", "compiling", "running", "judging", "pending", "0"];
+    const PENDING_STATUSES = ["queued", "compiling", "running", "judging", "pending", "in queue", "0"];
 
     const pendingSubmissions = submissions.filter((sub) => {
       const statusStr = String(sub.status ?? "").toLowerCase();

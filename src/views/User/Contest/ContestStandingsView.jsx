@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import ReactCountryFlag from "react-world-flags";
 import Loading from "@/components/core/Loading";
 import NotFound from "@/components/core/NotFound";
 import axiosClient from "@/api/axios";
@@ -43,10 +44,16 @@ const rankedStandings = (data) => {
 };
 
 const tierClass = (index, oneSixth) => {
-  if (index >= 0 && index < oneSixth) return "border-l-2 border-l-amber-400";
-  if (index >= oneSixth && index < oneSixth * 3) return "border-l-2 border-l-slate-300";
-  if (index >= oneSixth * 3 && index < oneSixth * 6) return "border-l-2 border-l-orange-300/70";
-  return "border-l-2 border-l-transparent";
+  if (index >= 0 && index < oneSixth) {
+    return "border-l-4 border-l-amber-400 bg-amber-200";
+  }
+  if (index >= oneSixth && index < oneSixth * 3) {
+    return "border-l-4 border-l-slate-400 bg-slate-200";
+  }
+  if (index >= oneSixth * 3 && index < oneSixth * 6) {
+    return "border-l-4 border-l-amber-700 bg-amber-900/[0.4]";
+  }
+  return "border-l-4 border-l-transparent";
 };
 
 const StandingsTable = ({ data, currentUser, onClick, contestId, contestType, __ }) => {
@@ -81,14 +88,14 @@ const StandingsTable = ({ data, currentUser, onClick, contestId, contestType, __
       <tbody className="divide-y divide-slate-100">
         {data.standings?.length > 0 ? (
           rankedStandings(data).map((user, index) => {
-            const isCurrentUser = user.handle === currentUser.handle;
+            const isCurrentUser = user.handle === currentUser?.handle;
             return (
               <tr
                 key={index}
-                className={`${tierClass(index, oneSixth)} ${isCurrentUser ? "bg-indigo-50/50" : "hover:bg-slate-50/70"
+                className={`${tierClass(index, oneSixth)} ${isCurrentUser ? "bg-indigo-50/70" : "hover:bg-slate-50/70"
                   } transition-colors`}
               >
-                <td className="py-2.5 px-2 text-center font-mono text-xs text-slate-500">
+                <td className="py-2.5 px-2 text-center font-mono text-xs text-slate-500 font-medium">
                   {user.rank}
                 </td>
                 <td className="py-2.5 px-3 text-left">
@@ -276,7 +283,7 @@ export default function ContestStandingsView() {
       <div className="overflow-x-auto">
         <StandingsTable
           data={data}
-          currentUser={currentUser}
+          currentUser={currentUser ?? null}
           onClick={fetchSubmissions}
           contestId={id}
           contestType={data.contest.type}

@@ -7,13 +7,20 @@ import SubmissionStatus from "@/components/Submissions/SubmissionStatus";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "@/contexts/TranslationContext";
 import { useToast } from "@/contexts/ToastContext";
+import {
+  ArrowDownTrayIcon,
+  PaperClipIcon,
+  PaperAirplaneIcon,
+  TagIcon,
+  ClockIcon
+} from "@heroicons/react/24/outline";
 
 export default function ProblemSidebar({ setLoading, problem, submissions, id, char, attachments, languages, contest }) {
   const { currentUser } = useAuth();
   const { __ } = useTranslation();
   const { addToast } = useToast();
   const [file, setFile] = useState(null);
-  const [language, setLanguage] = useState(languages[0]);
+  const [language, setLanguage] = useState(languages?.[0] || "");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -40,7 +47,7 @@ export default function ProblemSidebar({ setLoading, problem, submissions, id, c
 
     axiosClient
       .post(
-        `/submissions/problem/${problem.code}/submit`,
+        `/submissions/problem/${problem?.code}/submit`,
         { file, language },
         {
           headers: {
@@ -48,12 +55,12 @@ export default function ProblemSidebar({ setLoading, problem, submissions, id, c
           },
         }
       )
-      .then((res) => {
+      .then(() => {
         addToast("Üstünlikli iberildi");
         navigate("/problemset/status");
       })
       .catch((err) => {
-        addToast(err.response.data.message);
+        addToast(err?.response?.data?.message || "Ýalňyşlyk ýüze çykdy");
         setLoading(false);
       });
   };
@@ -83,107 +90,127 @@ export default function ProblemSidebar({ setLoading, problem, submissions, id, c
   };
 
   return (
-    <div className="flex flex-col gap-8 text-center">
-      <ContestDetails contest={contest} />
+    <div className="flex flex-col gap-6 text-left">
+      {/* Contest Details Section */}
+      {contest && <ContestDetails contest={contest} />}
 
+      {/* Attachments Card */}
       {attachments && (
-        <div className="border border-gray-300 rounded-xl py-4 px-6 shadow-lg">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2 border-gray-300">
-            {__("problem.attachments")}
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold tracking-wide text-slate-800 uppercase">
+            <PaperClipIcon className="h-4 w-4 text-slate-500" />
+            {__("problem.attachments") || "Goşulmalar"}
           </h2>
-          <p className="text-gray-800 underline">
-            <button onClick={handleDownload}>{__("problem.download")}</button>
-          </p>
+          <button
+            onClick={handleDownload}
+            type="button"
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 py-2.5 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none"
+          >
+            <ArrowDownTrayIcon className="h-4 w-4 text-slate-500" />
+            {__("problem.download") || "Ýükläp al"}
+          </button>
         </div>
       )}
 
+      {/* Submit Solution Form */}
       <form
-        className="w-full mx-auto bg-white border border-gray-200 rounded-xl py-6 px-8 shadow-lg space-y-6"
         onSubmit={handleSubmit}
+        className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm space-y-4"
       >
-        <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2 border-gray-300">
-          {__("problem.send")}
+        <h2 className="flex items-center gap-2 text-sm font-semibold tracking-wide text-slate-800 uppercase border-b border-slate-100 pb-3">
+          <PaperAirplaneIcon className="h-4 w-4 text-emerald-600" />
+          {__("problem.send") || "Çözgüt ibermek"}
         </h2>
 
-        <div className="mb-6">
+        {/* Language Selection */}
+        <div>
           <label
-            className="block text-sm font-medium text-gray-700 mb-2"
             htmlFor="language"
+            className="block mb-1.5 text-xs font-medium text-slate-600 uppercase tracking-wider"
           >
-            {__("problem.lang")}:
+            {__("problem.lang") || "Programlama dili"}
           </label>
           <select
             id="language"
-            className="w-full border border-gray-300 rounded-lg p-3 text-gray-700 focus:ring focus:ring-blue-200"
             name="language"
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
+            className="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-2.5 text-sm text-slate-800 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition"
           >
-            {languages && languages.map((lang, index) => (
-              <option key={index} value={lang}>
-                {lang}
-              </option>
-            ))}
+            {languages &&
+              languages.map((lang, index) => (
+                <option key={index} value={lang}>
+                  {lang}
+                </option>
+              ))}
           </select>
         </div>
 
-        <div className="mb-6">
+        {/* File Input */}
+        <div>
           <label
-            className="block text-sm font-medium text-gray-700 mb-2"
             htmlFor="file"
+            className="block mb-1.5 text-xs font-medium text-slate-600 uppercase tracking-wider"
           >
-            {__("problem.select-file")}:
+            {__("problem.select-file") || "Faýly saýlaň"}
           </label>
           <input
             id="file"
             type="file"
-            className="w-full border border-gray-300 rounded-lg p-2 text-gray-700 focus:ring focus:ring-blue-200"
             name="file"
-            onChange={(e) => setFile(e.target.files[0])}
             required
+            onChange={(e) => setFile(e.target.files[0])}
+            className="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 file:cursor-pointer cursor-pointer border border-slate-200 rounded-xl bg-slate-50/50 p-1.5 transition"
           />
         </div>
 
-        <div className="flex justify-center">
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white rounded-lg py-3 font-medium hover:bg-blue-700 transition duration-300"
-          >
-            {__("problem.send")}
-          </button>
-        </div>
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="w-full mt-2 inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 px-4 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 active:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 transition"
+        >
+          {__("problem.send") || "Iber"}
+        </button>
       </form>
 
+      {/* Last Submissions Section */}
       {submissions && submissions.length > 0 && (
-        <div className="border border-gray-300 rounded-xl py-4 px-6 shadow-lg">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2 border-gray-300">
-            {__("problem.last-submissions")}
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold tracking-wide text-slate-800 uppercase border-b border-slate-100 pb-3">
+            <ClockIcon className="h-4 w-4 text-slate-500" />
+            {__("problem.last-submissions") || "Soňky synanyşyklar"}
           </h2>
-          <div className="text-xs space-y-2">
-            <div className="flex justify-between font-medium text-gray-600">
-              <div className="w-1/5">#</div>
-              <div className="w-2/5">{__("submission.nav-when")}</div>
-              <div className="w-1/5">{__("submission.nav-lang")}</div>
-              <div className="w-1/5">{__("submission.nav-verdict")}</div>
+
+          <div className="divide-y divide-slate-100 text-xs">
+            {/* Header */}
+            <div className="grid grid-cols-12 gap-1 font-semibold text-slate-400 pb-2 uppercase tracking-wider text-[10px]">
+              <div className="col-span-2">#</div>
+              <div className="col-span-4">{__("submission.nav-when") || "Wagty"}</div>
+              <div className="col-span-3">{__("submission.nav-lang") || "Dil"}</div>
+              <div className="col-span-3 text-right">{__("submission.nav-verdict") || "Nəticə"}</div>
             </div>
+
+            {/* Submissions List */}
             {submissions.map((submission) => (
               <div
                 key={submission.id}
-                className="flex justify-between items-center bg-gray-50 p-2 rounded-lg shadow-sm hover:bg-gray-100 transition"
+                className="grid grid-cols-12 gap-1 items-center py-2.5 hover:bg-slate-50/80 -mx-2 px-2 rounded-lg transition"
               >
-                <div className="w-1/5 text-blue-500 hover:underline">
+                <div className="col-span-2 font-mono text-emerald-600 hover:underline">
                   <Link
-                    to={`/contest/${submission.problem?.contest_id || contest.id}/submission/${submission.id}`}
+                    to={`/contest/${submission.problem?.contest_id || contest?.id}/submission/${submission.id}`}
                   >
-                    {submission.id}
+                    #{submission.id}
                   </Link>
                 </div>
-                <div className="flex items-center w-2/5 text-gray-800">
+                <div className="col-span-4 text-slate-500 truncate">
                   <FormatToUTC dateTime={submission.created_at} />
                 </div>
-                <div className="w-1/5 text-gray-800">{submission.language}</div>
-                <div className="w-1/5 text-sm">
-                  <SubmissionStatus status={submission.status} className="text-xs" />
+                <div className="col-span-3 font-medium text-slate-700 truncate">
+                  {submission.language}
+                </div>
+                <div className="col-span-3 text-right">
+                  <SubmissionStatus status={submission.status} className="text-[11px]" />
                 </div>
               </div>
             ))}
@@ -191,21 +218,22 @@ export default function ProblemSidebar({ setLoading, problem, submissions, id, c
         </div>
       )}
 
-      {problem.tags && problem.tags.length > 0 && (
-        <div className="border border-gray-300 rounded-xl py-4 px-6 shadow-lg">
-          <h2 className="text-xl font-semibold mb-4 border-b border-gray-800">
-            {__("problem.tags")}
+      {/* Problem Tags Section */}
+      {problem?.tags && problem.tags.length > 0 && (
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold tracking-wide text-slate-800 uppercase">
+            <TagIcon className="h-4 w-4 text-slate-500" />
+            {__("problem.tags") || "Tegler"}
           </h2>
-          <div className="flex flex-wrap justify-center">
-            {problem.tags.length > 0 &&
-              problem.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="bg-gray-200 text-gray-800 py-1 px-3 rounded-full mr-2 mb-2"
-                >
-                  {tag}
-                </span>
-              ))}
+          <div className="flex flex-wrap gap-1.5">
+            {problem.tags.map((tag) => (
+              <span
+                key={tag}
+                className="inline-flex items-center rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 hover:bg-slate-200/70 transition cursor-default"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
       )}

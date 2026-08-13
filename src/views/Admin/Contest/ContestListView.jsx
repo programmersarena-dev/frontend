@@ -11,6 +11,8 @@ import {
   StarIcon,
   DocumentTextIcon,
   TrophyIcon,
+  CheckCircleIcon,
+  ArrowPathIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import AdminPageHeader from "@/components/Admin/PageHeader";
@@ -18,6 +20,7 @@ import AdminPageHeader from "@/components/Admin/PageHeader";
 export default function ContestList() {
   const [loading, setLoading] = useState(true);
   const [contests, setContests] = useState([]);
+  const [searchName, setSearchName] = useState("");
   const [meta, setMeta] = useState({});
 
   const TABLE_HEAD = [
@@ -36,7 +39,7 @@ export default function ContestList() {
   };
 
   const getContests = (url) => {
-    url = url || "/admin/contests";
+    url = url || searchName ? `/admin/contests?searchName=${searchName}` : `/admin/contests`;
     setLoading(true);
     axiosClient
       .get(url)
@@ -62,6 +65,21 @@ export default function ContestList() {
         .delete(`/admin/contest/${id}/delete`)
         .then(() => {
           setContests(contests.filter((contest) => contest.id !== id));
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("Error:", err);
+          setLoading(false);
+        });
+    }
+  };
+
+  const recheckAllSubmissions = (id) => {
+    if (window.confirm("Are you sure you want to recheck all submissions for this contest?")) {
+      setLoading(true);
+      axiosClient
+        .post(`/admin/contest/${id}/recheck-all-submissions`)
+        .then(() => {
           setLoading(false);
         })
         .catch((err) => {
@@ -137,6 +155,16 @@ export default function ContestList() {
         {/* Header & Primary Action */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200/80 pb-5">
           <AdminPageHeader title="Bäsleşikler" />
+          <input
+            type="text"
+            placeholder="Bäsleşigi gözle"
+            value={searchName}
+            onChange={(e) => {
+              setSearchName(e.target.value);
+              getContests();
+            }}
+            className="w-full rounded-xl border border-slate-200/80 px-3 py-2.5 text-sm font-medium text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 focus-visible:border-slate-900 focus-visible:ring-1 focus-visible:ring-slate-900"
+          />
           <Link
             to="/admin/contest/add"
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
@@ -227,6 +255,13 @@ export default function ContestList() {
                       {/* Actions Column */}
                       <td className="px-4 py-4 text-right">
                         <div className="flex items-center justify-end gap-1">
+                          <button
+                            onClick={() => recheckAllSubmissions(contest.id)}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+                            title="Submssiýalary täzeden barlat"
+                          >
+                            <ArrowPathIcon className="h-4 w-4" />
+                          </button>
                           {/* Notify Button */}
                           {!isPast && (
                             <button
@@ -240,13 +275,22 @@ export default function ContestList() {
 
                           {/* Give Rating Button */}
                           {isPast && (
-                            <button
-                              onClick={() => onGiveRateClick(contest.id)}
-                              className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
-                              title="Reýting ber"
-                            >
-                              <StarIcon className="h-4 w-4" />
-                            </button>
+                            <>
+                              {!contest.is_added_ratings ? (
+                                <button
+                                  onClick={() => onGiveRateClick(contest.id)}
+                                  className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
+                                  title="Reýting ber"
+                                >
+                                  <StarIcon className="h-4 w-4" />
+                                </button>
+                              ) : (
+                                <span className="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-600 ring-1 ring-inset ring-green-500/10">
+                                  <CheckCircleIcon className="h-4 w-4" />
+                                  Reýting berildi
+                                </span>
+                              )}
+                            </>
                           )}
 
                           {/* Edit Button */}

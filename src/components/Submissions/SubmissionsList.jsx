@@ -52,25 +52,25 @@ export default function SubmissionsList({ submissions = [] }) {
               <th className="w-[7%] py-2.5 px-2 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-400">
                 #
               </th>
-              <th className="w-[13%] py-2.5 px-2 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-400">
+              <th className="w-[14%] py-2.5 px-2 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-400">
                 {__("submission.nav-when")}
               </th>
-              <th className="w-[13%] py-2.5 px-2 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-400">
+              <th className="w-[12%] py-2.5 px-2 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-400">
                 {__("submission.nav-user")}
               </th>
               <th className="w-[27%] py-2.5 px-2 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-400">
                 {__("submission.nav-problem")}
               </th>
-              <th className="w-[9%] py-2.5 px-2 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-400">
+              <th className="w-[8%] py-2.5 px-2 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-400">
                 {__("submission.nav-lang")}
               </th>
-              <th className="w-[13%] py-2.5 px-2 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-400">
+              <th className="w-[16%] py-2.5 px-2 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-400">
                 {__("submission.nav-verdict")}
               </th>
-              <th className="w-[9%] py-2.5 px-2 text-right text-[11px] font-medium uppercase tracking-wider text-zinc-400">
+              <th className="w-[8%] py-2.5 px-2 text-right text-[11px] font-medium uppercase tracking-wider text-zinc-400">
                 {__("submission.nav-time")}
               </th>
-              <th className="w-[9%] py-2.5 px-2 text-right text-[11px] font-medium uppercase tracking-wider text-zinc-400">
+              <th className="w-[8%] py-2.5 px-2 text-right text-[11px] font-medium uppercase tracking-wider text-zinc-400">
                 {__("submission.nav-memory")}
               </th>
             </tr>
@@ -86,9 +86,10 @@ export default function SubmissionsList({ submissions = [] }) {
                 </td>
               </tr>
             ) : (
-              submissions.map((submission) => (
+              submissions.map((submission, id) => (
                 <SubmissionRow
                   key={submission.id}
+                  id={id}
                   submission={submission}
                   currentUsername={currentUser?.name}
                   isLoading={loadingSubmissionId === submission.id}
@@ -108,6 +109,7 @@ export default function SubmissionsList({ submissions = [] }) {
 /* -------------------------------------------------------------------------- */
 
 const SubmissionRow = memo(function SubmissionRow({
+  id,
   submission,
   currentUsername,
   isLoading,
@@ -127,7 +129,7 @@ const SubmissionRow = memo(function SubmissionRow({
 
   return (
     <tr
-      className={`group transition-colors duration-100 hover:bg-zinc-50 ${isCurrentUser ? "relative bg-teal-50/40" : ""
+      className={`group transition-colors duration-100 hover:bg-zinc-100 ${id & 1 ? '' : 'bg-zinc-50'} ${isCurrentUser ? "relative bg-teal-50/40" : ""
         }`}
     >
       {/* Submission ID */}
