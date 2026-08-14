@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axiosClient from "@/api/axios";
 import Loading from "../../../components/core/Loading";
 import PaginationLinks from "../../../components/core/PaginationLinks";
@@ -13,11 +13,13 @@ import {
   TrophyIcon,
   CheckCircleIcon,
   ArrowPathIcon,
+  MagnifyingGlassIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import AdminPageHeader from "@/components/Admin/PageHeader";
 
-export default function ContestList() {
+export default function ContestListView() {
   const [loading, setLoading] = useState(true);
   const [contests, setContests] = useState([]);
   const [searchName, setSearchName] = useState("");
@@ -34,15 +36,18 @@ export default function ContestList() {
     { label: "Amallar", align: "text-right" },
   ];
 
-  const onPageClick = (link) => {
-    getContests(link.url);
-  };
-
-  const getContests = (url) => {
-    url = url || searchName ? `/admin/contests?searchName=${searchName}` : `/admin/contests`;
+  const getContests = useCallback((url = null, query = searchName) => {
     setLoading(true);
+
+    let targetUrl = url;
+    if (!targetUrl) {
+      targetUrl = query.trim()
+        ? `/admin/contests?searchName=${encodeURIComponent(query.trim())}`
+        : `/admin/contests`;
+    }
+
     axiosClient
-      .get(url)
+      .get(targetUrl)
       .then((response) => {
         setContests(response.data.data || []);
         setMeta(response.data.meta || {});
@@ -52,11 +57,27 @@ export default function ContestList() {
         console.error("Error fetching contests:", error);
         setLoading(false);
       });
-  };
+  }, [searchName]);
 
   useEffect(() => {
     getContests();
   }, []);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    getContests(null, searchName);
+  };
+
+  const handleClearSearch = () => {
+    setSearchName("");
+    getContests(null, "");
+  };
+
+  const onPageClick = (link) => {
+    if (link.url) {
+      getContests(link.url);
+    }
+  };
 
   const onDeleteClick = (id) => {
     if (window.confirm("Siz çyndanam pozmak isleýäňizmi?")) {
@@ -64,7 +85,7 @@ export default function ContestList() {
       axiosClient
         .delete(`/admin/contest/${id}/delete`)
         .then(() => {
-          setContests(contests.filter((contest) => contest.id !== id));
+          setContests((prev) => prev.filter((contest) => contest.id !== id));
           setLoading(false);
         })
         .catch((err) => {
@@ -79,9 +100,7 @@ export default function ContestList() {
       setLoading(true);
       axiosClient
         .post(`/admin/contest/${id}/recheck-all-submissions`)
-        .then(() => {
-          setLoading(false);
-        })
+        .then(() => setLoading(false))
         .catch((err) => {
           console.error("Error:", err);
           setLoading(false);
@@ -94,9 +113,7 @@ export default function ContestList() {
       setLoading(true);
       axiosClient
         .post(`/admin/contest/${id}/notify`)
-        .then(() => {
-          setLoading(false);
-        })
+        .then(() => setLoading(false))
         .catch((err) => {
           console.error("Error:", err);
           setLoading(false);
@@ -109,9 +126,7 @@ export default function ContestList() {
       setLoading(true);
       axiosClient
         .get(`/admin/contest/${id}/add/ratings`)
-        .then(() => {
-          setLoading(false);
-        })
+        .then(() => setLoading(false))
         .catch((err) => {
           console.error("Error:", err);
           setLoading(false);
@@ -150,200 +165,228 @@ export default function ContestList() {
   }
 
   return (
-    <>
-      <div className="space-y-6">
-        {/* Header & Primary Action */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200/80 pb-5">
-          <AdminPageHeader title="Bäsleşikler" />
-          <input
-            type="text"
-            placeholder="Bäsleşigi gözle"
-            value={searchName}
-            onChange={(e) => {
-              setSearchName(e.target.value);
-              getContests();
-            }}
-            className="w-full rounded-xl border border-slate-200/80 px-3 py-2.5 text-sm font-medium text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 focus-visible:border-slate-900 focus-visible:ring-1 focus-visible:ring-slate-900"
-          />
+    <div className="space-y-6">
+      {/* Header & Search Bar Bar */}
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between border-b border-slate-200/80 pb-5">
+        <AdminPageHeader title="Bäsleşikler" />
+
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+          {/* Enhanced Search Form */}
+          <form
+            onSubmit={handleSearchSubmit}
+            className="relative flex items-center flex-1 sm:w-80"
+          >
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+              <MagnifyingGlassIcon className="h-4 w-4 text-slate-400" />
+            </div>
+
+            <input
+              type="text"
+              placeholder="Bäsleşigi gözle..."
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
+              className="w-full rounded-xl border border-slate-200/90 bg-white pl-10 pr-20 py-2 text-sm font-medium text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+            />
+
+            {/* Clear Input Button */}
+            {searchName && (
+              <button
+                type="button"
+                onClick={handleClearSearch}
+                className="absolute right-14 text-slate-400 hover:text-slate-600 p-1"
+              >
+                <XMarkIcon className="h-4 w-4" />
+              </button>
+            )}
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="absolute right-1 top-1 bottom-1 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition-colors border border-slate-200"
+            >
+              Gözle
+            </button>
+          </form>
+
+          {/* Add Contest Button */}
           <Link
             to="/admin/contest/add"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 shrink-0"
           >
             <PlusIcon className="h-4 w-4 stroke-[2.5]" />
             <span>Bäsleşik goş</span>
           </Link>
         </div>
-
-        {/* Table Wrapper */}
-        <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-max text-left border-collapse">
-              <thead>
-                <tr className="border-b border-slate-200/80 bg-slate-50/60 text-xs font-semibold uppercase tracking-wider text-slate-500">
-                  {TABLE_HEAD.map((head, index) => (
-                    <th key={index} className={`px-4 py-3.5 ${head.align}`}>
-                      {head.label}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
-                {contests.map((contest) => {
-                  const isPast = contest.status === "past" || contest.status === "ended";
-
-                  return (
-                    <tr
-                      key={contest.id}
-                      className="hover:bg-slate-50/60 transition-colors duration-150"
-                    >
-                      {/* Type */}
-                      <td className="px-4 py-4 font-medium text-slate-900">
-                        <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600">
-                          {contest.type}
-                        </span>
-                      </td>
-
-                      {/* Name */}
-                      <td className="px-4 py-4 font-semibold text-slate-900 max-w-xs truncate">
-                        {contest.name}
-                      </td>
-
-                      {/* Authors */}
-                      <td className="px-4 py-4 text-xs text-slate-500">
-                        {contest.authorIds && contest.authorIds.length > 0 ? (
-                          <div className="flex flex-wrap gap-1">
-                            {contest.authorIds.map((author, idx) => (
-                              <span
-                                key={idx}
-                                className="inline-block rounded bg-slate-100 px-1.5 py-0.5 text-slate-600"
-                              >
-                                {author}
-                              </span>
-                            ))}
-                          </div>
-                        ) : (
-                          <span className="text-slate-400">—</span>
-                        )}
-                      </td>
-
-                      {/* Start Date */}
-                      <td className="px-4 py-4 text-center text-xs font-mono text-slate-600">
-                        <FormatToUTC dateTime={contest.start_date} />
-                      </td>
-
-                      {/* Duration */}
-                      <td className="px-4 py-4 text-center text-xs text-slate-600 font-mono">
-                        {contest.duration}
-                      </td>
-
-                      {/* Status */}
-                      <td className="px-4 py-4 text-center">
-                        {getStatusBadge(contest.status)}
-                      </td>
-
-                      {/* Problems */}
-                      <td className="px-4 py-4 text-center">
-                        <Link
-                          to={`/admin/contest/${contest.id}/problems`}
-                          className="inline-flex items-center justify-center p-2 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                          title="Meseleler"
-                        >
-                          <DocumentTextIcon className="h-5 w-5" />
-                        </Link>
-                      </td>
-
-                      {/* Actions Column */}
-                      <td className="px-4 py-4 text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <button
-                            onClick={() => recheckAllSubmissions(contest.id)}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
-                            title="Submssiýalary täzeden barlat"
-                          >
-                            <ArrowPathIcon className="h-4 w-4" />
-                          </button>
-                          {/* Notify Button */}
-                          {!isPast && (
-                            <button
-                              onClick={() => notifyUsers(contest.id)}
-                              className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
-                              title="Ulanyjylary duýdur"
-                            >
-                              <BellIcon className="h-4 w-4" />
-                            </button>
-                          )}
-
-                          {/* Give Rating Button */}
-                          {isPast && (
-                            <>
-                              {!contest.is_added_ratings ? (
-                                <button
-                                  onClick={() => onGiveRateClick(contest.id)}
-                                  className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
-                                  title="Reýting ber"
-                                >
-                                  <StarIcon className="h-4 w-4" />
-                                </button>
-                              ) : (
-                                <span className="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-600 ring-1 ring-inset ring-green-500/10">
-                                  <CheckCircleIcon className="h-4 w-4" />
-                                  Reýting berildi
-                                </span>
-                              )}
-                            </>
-                          )}
-
-                          {/* Edit Button */}
-                          {!isPast ? (
-                            <Link
-                              to={`/admin/contest/${contest.id}/edit`}
-                              className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                              title="Üýtget"
-                            >
-                              <PencilSquareIcon className="h-4 w-4" />
-                            </Link>
-                          ) : null}
-
-                          {/* Delete Button */}
-                          {!isPast ? (
-                            <button
-                              onClick={() => onDeleteClick(contest.id)}
-                              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                              title="Poz"
-                            >
-                              <TrashIcon className="h-4 w-4" />
-                            </button>
-                          ) : null}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Empty State */}
-        {contests.length === 0 && (
-          <div className="mx-auto my-12 max-w-md rounded-2xl border border-dashed border-slate-300 p-8 text-center bg-white/50">
-            <TrophyIcon className="mx-auto h-10 w-10 text-slate-300" />
-            <h3 className="mt-3 text-sm font-semibold text-slate-900">
-              Bäsleşik tapylmady
-            </h3>
-            <p className="mt-1 text-xs text-slate-500">
-              Täze bäsleşik goşmak üçin ýokardaky düwmä basyň.
-            </p>
-          </div>
-        )}
-
-        {/* Pagination */}
-        {contests.length > 0 && (
-          <div className="pt-2">
-            <PaginationLinks meta={meta} onPageClick={onPageClick} />
-          </div>
-        )}
       </div>
-    </>
+
+      {/* Table Wrapper */}
+      <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-max text-left border-collapse">
+            <thead>
+              <tr className="border-b border-slate-200/80 bg-slate-50/60 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                {TABLE_HEAD.map((head, index) => (
+                  <th key={index} className={`px-4 py-3.5 ${head.align}`}>
+                    {head.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
+              {contests.map((contest) => {
+                const isPast = contest.status === "past" || contest.status === "ended";
+
+                return (
+                  <tr
+                    key={contest.id}
+                    className="hover:bg-slate-50/60 transition-colors duration-150"
+                  >
+                    {/* Type */}
+                    <td className="px-4 py-4 font-medium text-slate-900">
+                      <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600">
+                        {contest.type}
+                      </span>
+                    </td>
+
+                    {/* Name */}
+                    <td className="px-4 py-4 font-semibold text-slate-900 max-w-xs truncate">
+                      {contest.name}
+                    </td>
+
+                    {/* Authors */}
+                    <td className="px-4 py-4 text-xs text-slate-500">
+                      {contest.authorIds && contest.authorIds.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {contest.authorIds.map((author, idx) => (
+                            <span
+                              key={idx}
+                              className="inline-block rounded bg-slate-100 px-1.5 py-0.5 text-slate-600"
+                            >
+                              {author}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-slate-400">—</span>
+                      )}
+                    </td>
+
+                    {/* Start Date */}
+                    <td className="px-4 py-4 text-center text-xs font-mono text-slate-600">
+                      <FormatToUTC dateTime={contest.start_date} />
+                    </td>
+
+                    {/* Duration */}
+                    <td className="px-4 py-4 text-center text-xs text-slate-600 font-mono">
+                      {contest.duration}
+                    </td>
+
+                    {/* Status */}
+                    <td className="px-4 py-4 text-center">
+                      {getStatusBadge(contest.status)}
+                    </td>
+
+                    {/* Problems */}
+                    <td className="px-4 py-4 text-center">
+                      <Link
+                        to={`/admin/contest/${contest.id}/problems`}
+                        className="inline-flex items-center justify-center p-2 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                        title="Meseleler"
+                      >
+                        <DocumentTextIcon className="h-5 w-5" />
+                      </Link>
+                    </td>
+
+                    {/* Actions Column */}
+                    <td className="px-4 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => recheckAllSubmissions(contest.id)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+                          title="Submssiýalary täzeden barlat"
+                        >
+                          <ArrowPathIcon className="h-4 w-4" />
+                        </button>
+
+                        {!isPast && (
+                          <button
+                            onClick={() => notifyUsers(contest.id)}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+                            title="Ulanyjylary duýdur"
+                          >
+                            <BellIcon className="h-4 w-4" />
+                          </button>
+                        )}
+
+                        {isPast && (
+                          <>
+                            {!contest.is_added_ratings ? (
+                              <button
+                                onClick={() => onGiveRateClick(contest.id)}
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
+                                title="Reýting ber"
+                              >
+                                <StarIcon className="h-4 w-4" />
+                              </button>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2.5 py-1 text-xs font-medium text-green-600 ring-1 ring-inset ring-green-500/20">
+                                <CheckCircleIcon className="h-3.5 w-3.5" />
+                                Reýting berildi
+                              </span>
+                            )}
+                          </>
+                        )}
+
+                        {!isPast && (
+                          <Link
+                            to={`/admin/contest/${contest.id}/edit`}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                            title="Üýtget"
+                          >
+                            <PencilSquareIcon className="h-4 w-4" />
+                          </Link>
+                        )}
+
+                        {!isPast && (
+                          <button
+                            onClick={() => onDeleteClick(contest.id)}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                            title="Poz"
+                          >
+                            <TrashIcon className="h-4 w-4" />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Empty State */}
+      {contests.length === 0 && (
+        <div className="mx-auto my-12 max-w-md rounded-2xl border border-dashed border-slate-300 p-8 text-center bg-white/50">
+          <TrophyIcon className="mx-auto h-10 w-10 text-slate-300" />
+          <h3 className="mt-3 text-sm font-semibold text-slate-900">
+            Bäsleşik tapylmady
+          </h3>
+          <p className="mt-1 text-xs text-slate-500">
+            {searchName
+              ? `"${searchName}" gözlegi boýunça bäsleşik tapylmady.`
+              : "Täze bäsleşik goşmak üçin ýokardaky düwmä basyň."}
+          </p>
+        </div>
+      )}
+
+      {/* Pagination */}
+      {contests.length > 0 && (
+        <div className="pt-2">
+          <PaginationLinks meta={meta} onPageClick={onPageClick} />
+        </div>
+      )}
+    </div>
   );
 }

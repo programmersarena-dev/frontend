@@ -129,7 +129,7 @@ const SubmissionRow = memo(function SubmissionRow({
 
   return (
     <tr
-      className={`group transition-colors duration-100 hover:bg-zinc-100 ${id & 1 ? '' : 'bg-zinc-50'} ${isCurrentUser ? "relative bg-teal-50/40" : ""
+      className={`group transition-colors duration-100 ${id & 1 ? '' : 'bg-zinc-50'} ${isCurrentUser ? "relative bg-teal-50/40" : ""
         }`}
     >
       {/* Submission ID */}
