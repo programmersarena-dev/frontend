@@ -33,6 +33,11 @@ const STATUS_CONFIG = {
     key: "submission.compiling",
     isAnimated: true,
   },
+  IN_QUEUE: {
+    badge: "bg-indigo-50 text-indigo-700 border-indigo-200/60 ring-indigo-500/10",
+    key: "submission.in-queue",
+    isAnimated: true,
+  },
   DEFAULT: {
     badge: "bg-slate-100 text-slate-700 border-slate-200 ring-slate-500/10",
   },
@@ -64,11 +69,11 @@ function SubmissionStatus({ status, className = "" }) {
     else if (code.startsWith("RE")) category = "RE";
     else if (
       code.startsWith("QUEUED") ||
-      code.startsWith("JUDGING") ||
-      code.startsWith("IN QUEUE")
+      code.startsWith("JUDGING")
     ) {
       category = "PENDING";
     }
+    else if (code.startsWith("IN QUEUE")) category = "IN_QUEUE";
 
     return {
       category,

@@ -7,7 +7,7 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 // data is already present in the response, just previously discarded).
 const TestRow = ({ test, testIndex, __ }) => {
   const [open, setOpen] = useState(false);
-  const isOk = test.log === "OK";
+  const isOk = test.log === "AC" || test.log === "OK" || test.status === "AC" || test.status === "OK";
   const hasDetail = test.input != null || test.output != null || test.expected_output != null;
 
   return (
