@@ -121,10 +121,10 @@ export default function ProblemSetProblemsView() {
                       return (
                         <tr
                           key={`${problem.contest_id}-${problem.char}`}
-                          className={`group hover:bg-slate-50/60 transition-colors ${problem.solved === 1
-                            ? "bg-emerald-50/20"
-                            : problem.solved === -1
-                              ? "bg-rose-50/20"
+                          className={`group hover:bg-slate-50/60 transition-colors ${problem.tried === true && problem.accepted === true
+                            ? "bg-emerald-200"
+                            : problem.tried === true && problem.accepted === false
+                              ? "bg-rose-200"
                               : ""
                             }`}
                         >
