@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
-  BoltIcon,
-  CheckIcon,
   UserIcon,
   CheckCircleIcon,
   XCircleIcon,
   InboxIcon,
-  ArrowUpCircleIcon
+  ChevronUpIcon,
+  ChevronDownIcon
 } from "@heroicons/react/24/outline";
 import axiosClient from "@/api/axios";
 import Loading from "@/components/core/Loading";
@@ -32,18 +31,10 @@ export default function ProblemSetProblemsView() {
 
   const getProblems = (url = "/problems") => {
     let params = {};
-    if (hideSolved) {
-      params.hideSolved = "true";
-    }
-    if (difficultyMin !== "") {
-      params.difficultyMin = difficultyMin;
-    }
-    if (difficultyMax !== "") {
-      params.difficultyMax = difficultyMax;
-    }
-    if (order !== "") {
-      params.order = order;
-    }
+    if (hideSolved) params.hideSolved = "true";
+    if (difficultyMin !== "") params.difficultyMin = difficultyMin;
+    if (difficultyMax !== "") params.difficultyMax = difficultyMax;
+    if (order !== "") params.order = order;
 
     axiosClient
       .get(url, { params })
@@ -75,82 +66,86 @@ export default function ProblemSetProblemsView() {
   }
 
   return (
-    <div className="px-4">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
       <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
         {/* Main Content Area */}
         <div className="flex-1 min-w-0">
-          <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-xs">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-200/80 bg-slate-50/70 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                    <th className="w-24 px-5 py-3.5 text-center">#</th>
-                    <th className="px-5 py-3.5">{__("problem.name")}</th>
-                    <th className="w-28 px-4 py-3.5 text-center">
+                  <tr className="border-b border-zinc-200/80 bg-zinc-50/50 text-[11px] font-medium text-zinc-400 uppercase tracking-wider">
+                    <th className="w-20 px-4 py-3 text-center">#</th>
+                    <th className="px-4 py-3">{__("problem.name")}</th>
+                    <th className="w-28 px-4 py-3 text-center">
                       <button
                         onClick={() => handleSortOrderChange("rating")}
-                        title="Difficulty order"
-                        className={`inline-flex items-center gap-1 hover:text-slate-800 transition-colors focus:outline-none ${order.includes("RATING") ? "text-indigo-600 font-bold" : ""
-                          }`}
+                        className={`inline-flex items-center gap-1 hover:text-zinc-700 transition-colors focus:outline-hidden ${
+                          order.includes("RATING") ? "text-zinc-900 font-semibold" : ""
+                        }`}
                       >
-                        <BoltIcon className="w-4 h-4 text-amber-500" />
                         <span>Rating</span>
-                        <ArrowUpCircleIcon className="w-3 h-3 text-slate-400" />
+                        {order === "BY_RATING_ASC" ? (
+                          <ChevronUpIcon className="w-3 h-3" />
+                        ) : order === "BY_RATING_DESC" ? (
+                          <ChevronDownIcon className="w-3 h-3" />
+                        ) : null}
                       </button>
                     </th>
-                    <th className="w-32 px-4 py-3.5 text-center">
+                    <th className="w-28 px-4 py-3 text-center">
                       <button
                         onClick={() => handleSortOrderChange("solved")}
-                        title="Solved count order"
-                        className={`inline-flex items-center gap-1 hover:text-slate-800 transition-colors focus:outline-none ${order.includes("SOLVED") ? "text-indigo-600 font-bold" : ""
-                          }`}
+                        className={`inline-flex items-center gap-1 hover:text-zinc-700 transition-colors focus:outline-hidden ${
+                          order.includes("SOLVED") ? "text-zinc-900 font-semibold" : ""
+                        }`}
                       >
-                        <CheckIcon className="w-4 h-4 text-emerald-500" />
                         <span>Solved</span>
-                        <ArrowUpCircleIcon className="w-3 h-3 text-slate-400" />
+                        {order === "BY_SOLVED_ASC" ? (
+                          <ChevronUpIcon className="w-3 h-3" />
+                        ) : order === "BY_SOLVED_DESC" ? (
+                          <ChevronDownIcon className="w-3 h-3" />
+                        ) : null}
                       </button>
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-sm">
+                <tbody className="divide-y divide-zinc-100 text-sm">
                   {problems.length > 0 ? (
                     problems.map((problem) => {
                       const problemUrl = `/problemset/problem/${problem.contest_id}/${problem.char}`;
                       const statusUrl = `/problemset/status/${problem.contest_id}/problem/${problem.char}`;
+                      const isAccepted = problem.tried && problem.accepted;
+                      const isFailed = problem.tried && !problem.accepted;
 
                       return (
                         <tr
                           key={`${problem.contest_id}-${problem.char}`}
-                          className={`group hover:bg-slate-50/60 transition-colors ${problem.tried === true && problem.accepted === true
-                            ? "bg-emerald-200"
-                            : problem.tried === true && problem.accepted === false
-                              ? "bg-rose-200"
-                              : ""
-                            }`}
+                          className={`group hover:bg-zinc-50/80 transition-colors ${
+                            isAccepted ? "bg-emerald-50/50" : isFailed ? "bg-rose-50/50" : ""
+                          }`}
                         >
                           {/* Problem Code */}
-                          <td className="px-5 py-4 text-center font-mono text-xs font-semibold text-slate-500">
-                            <Link
-                              to={problemUrl}
-                              className="px-2 py-1 rounded bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
-                            >
-                              {problem.contest_id}/{problem.char}
+                          <td
+                            className={`px-4 py-3 text-center font-mono text-xs text-zinc-400 group-hover:text-zinc-600 border-l-2 ${
+                              isAccepted
+                                ? "border-emerald-500"
+                                : isFailed
+                                ? "border-rose-500"
+                                : "border-transparent"
+                            }`}
+                          >
+                            <Link to={problemUrl} className="hover:underline">
+                              {problem.contest_id}{problem.char}
                             </Link>
                           </td>
 
                           {/* Problem Name & Tags */}
-                          <td className="px-5 py-4">
+                          <td className="px-4 py-3">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                               <div className="flex items-center gap-2">
-                                {problem.solved === 1 && (
-                                  <CheckCircleIcon className="w-4 h-4 text-emerald-500 shrink-0" title="Solved" />
-                                )}
-                                {problem.solved === -1 && (
-                                  <XCircleIcon className="w-4 h-4 text-rose-500 shrink-0" title="Attempted" />
-                                )}
                                 <Link
                                   to={problemUrl}
-                                  className="font-medium text-slate-800 hover:text-indigo-600 transition-colors"
+                                  className="font-medium text-zinc-900 hover:text-indigo-600 transition-colors"
                                 >
                                   {problem.name}
                                 </Link>
@@ -162,7 +157,7 @@ export default function ProblemSetProblemsView() {
                                   {problem.tags.map((tag, tagIndex) => (
                                     <span
                                       key={tagIndex}
-                                      className="inline-block px-2 py-0.5 text-[11px] font-medium text-slate-500 bg-slate-100/80 rounded-md border border-slate-200/50"
+                                      className="inline-block px-1.5 py-0.5 text-[10px] font-medium text-zinc-500 bg-zinc-100 rounded-sm"
                                     >
                                       {tag}
                                     </span>
@@ -172,24 +167,24 @@ export default function ProblemSetProblemsView() {
                             </div>
                           </td>
 
-                          {/* Rating / Difficulty */}
-                          <td className="px-4 py-4 text-center font-mono text-xs font-medium text-slate-600">
+                          {/* Difficulty / Rating */}
+                          <td className="px-4 py-3 text-center font-mono text-xs">
                             {problem.difficulty ? (
-                              <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-600/20">
+                              <span className="text-zinc-600 font-medium">
                                 {problem.difficulty}
                               </span>
                             ) : (
-                              <span className="text-slate-300">—</span>
+                              <span className="text-zinc-300">—</span>
                             )}
                           </td>
 
                           {/* Submissions */}
-                          <td className="px-4 py-4 text-center">
+                          <td className="px-4 py-3 text-center">
                             <Link
                               to={statusUrl}
-                              className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-indigo-600 transition-colors"
+                              className="inline-flex items-center gap-1 text-xs font-mono text-zinc-500 hover:text-indigo-600 transition-colors"
                             >
-                              <UserIcon className="w-3.5 h-3.5 text-slate-400" />
+                              <UserIcon className="w-3.5 h-3.5 text-zinc-400" />
                               <span>{problem.accepted_submissions_count}</span>
                             </Link>
                           </td>
@@ -198,9 +193,9 @@ export default function ProblemSetProblemsView() {
                     })
                   ) : (
                     <tr>
-                      <td colSpan="4" className="py-12 text-center text-slate-500">
-                        <div className="flex flex-col items-center justify-center">
-                          <InboxIcon className="w-8 h-8 text-slate-300 mb-2" />
+                      <td colSpan="4" className="py-16 text-center text-zinc-400">
+                        <div className="flex flex-col items-center justify-center gap-2">
+                          <InboxIcon className="w-7 h-7 text-zinc-300 stroke-[1.5]" />
                           <p className="text-sm">{__("problem.not-found") || "No problems found."}</p>
                         </div>
                       </td>
@@ -213,15 +208,15 @@ export default function ProblemSetProblemsView() {
 
           {/* Pagination */}
           {problems.length > 0 && (
-            <div className="mt-6 sm:justify-start">
+            <div className="mt-4">
               <PaginationLinks meta={meta} onPageClick={onPageClick} />
             </div>
           )}
         </div>
 
         {/* Sidebar Container */}
-        <aside className="w-full lg:w-72 shrink-0">
-          <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <aside className="w-full lg:w-64 shrink-0">
+          <div className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-xs">
             <ProblemListSidebar
               showTags={showTags}
               setShowTags={setShowTags}
