@@ -190,7 +190,7 @@ export default function ProblemSetProblemsView() {
                               className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-indigo-600 transition-colors"
                             >
                               <UserIcon className="w-3.5 h-3.5 text-slate-400" />
-                              <span>{problem.accepted_submissions || 0}</span>
+                              <span>{problem.accepted_submissions_count}</span>
                             </Link>
                           </td>
                         </tr>

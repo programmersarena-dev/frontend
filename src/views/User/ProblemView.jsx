@@ -74,7 +74,7 @@ export default function ProblemView() {
     <div className="container mx-auto max-w-7xl px-4 py-8">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         <div className="space-y-8 lg:col-span-2">
-          {!problem.statement ? (
+          {!problem.statement_url ? (
             <>
               <div className="rounded-2xl border border-slate-200/80 bg-white p-6 text-center shadow-sm">
                 <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
@@ -241,8 +241,8 @@ export default function ProblemView() {
             </>
           ) : (
             <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-              {pdfUrl ? (
-                <PdfViewer file={pdfUrl} />
+              {problem.statement_url ? (
+                <PdfViewer file={problem.statement_url} />
               ) : (
                 <div className="flex h-64 items-center justify-center p-8 text-center text-sm text-slate-500">
                   {__("problem.loading-pdf")}
@@ -257,10 +257,6 @@ export default function ProblemView() {
             setLoading={setLoading}
             problem={problem}
             submissions={submissions}
-            id={id}
-            char={char}
-            attachments={Boolean(problem.statement)}
-            languages={contest.acceptable_languages}
             contest={contest}
           />
         </div>

@@ -39,7 +39,7 @@ export default function AdminLayout({ children }) {
         <div className="flex items-center gap-3 px-6 py-5 border-b border-slate-100">
           <img
             className="h-8 w-8 object-contain"
-            src="/logo.png"
+            src="/logo.svg"
             alt="ProgrammersArena"
           />
           <div className="flex flex-col">

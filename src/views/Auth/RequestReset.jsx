@@ -55,7 +55,7 @@ export default function RequestReset() {
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 transition-colors duration-300">
       <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-3xl shadow-xl border border-slate-200/80">
         <div className="flex flex-col items-center justify-center">
-          <img className="h-20 w-auto object-contain mb-4" src="/logo.png" alt="ProgrammersArena Logo" />
+          <img className="h-20 w-auto object-contain mb-4" src="/logo.svg" alt="ProgrammersArena Logo" />
           <h2 className="text-center text-3xl font-extrabold text-slate-900 tracking-tight">
             {__("auth.reset_password_title") || "Reset your password"}
           </h2>

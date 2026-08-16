@@ -15,12 +15,12 @@ import {
   ClockIcon
 } from "@heroicons/react/24/outline";
 
-export default function ProblemSidebar({ setLoading, problem, submissions, id, char, attachments, languages, contest }) {
+export default function ProblemSidebar({ setLoading, problem, submissions, contest }) {
   const { currentUser } = useAuth();
   const { __ } = useTranslation();
   const { addToast } = useToast();
   const [file, setFile] = useState(null);
-  const [language, setLanguage] = useState(languages?.[0] || "");
+  const [language, setLanguage] = useState(localStorage.getItem("selectedLanguage") || contest.acceptable_languages?.[0] || "");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -45,6 +45,8 @@ export default function ProblemSidebar({ setLoading, problem, submissions, id, c
       return;
     }
 
+    localStorage.setItem("selectedLanguage", language);
+
     axiosClient
       .post(
         `/submissions/problem/${problem?.code}/submit`,
@@ -65,50 +67,27 @@ export default function ProblemSidebar({ setLoading, problem, submissions, id, c
       });
   };
 
-  const handleDownload = async () => {
-    try {
-      const response = await axiosClient.get(
-        `/problems/problem/${id}/${char}/attachments`,
-        {
-          responseType: "blob",
-        }
-      );
-
-      const blob = new Blob([response.data], { type: "application/zip" });
-      const url = window.URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "attachment.zip");
-      document.body.appendChild(link);
-      link.click();
-
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Error downloading attachment:", error);
-    }
-  };
-
   return (
     <div className="flex flex-col gap-6 text-left">
       {/* Contest Details Section */}
       {contest && <ContestDetails contest={contest} />}
 
       {/* Attachments Card */}
-      {attachments && (
+      {problem.attachment_url && (
         <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
           <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold tracking-wide text-slate-800 uppercase">
             <PaperClipIcon className="h-4 w-4 text-slate-500" />
             {__("problem.attachments") || "Goşulmalar"}
           </h2>
-          <button
-            onClick={handleDownload}
-            type="button"
+
+          <a
+            href={problem.attachment_url}
+            download
             className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 py-2.5 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none"
           >
             <ArrowDownTrayIcon className="h-4 w-4 text-slate-500" />
             {__("problem.download") || "Ýükläp al"}
-          </button>
+          </a>
         </div>
       )}
 
@@ -137,8 +116,8 @@ export default function ProblemSidebar({ setLoading, problem, submissions, id, c
             onChange={(e) => setLanguage(e.target.value)}
             className="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-2.5 text-sm text-slate-800 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition"
           >
-            {languages &&
-              languages.map((lang, index) => (
+            {contest.acceptable_languages &&
+              contest.acceptable_languages.map((lang, index) => (
                 <option key={index} value={lang}>
                   {lang}
                 </option>
