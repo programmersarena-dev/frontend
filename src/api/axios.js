@@ -2,25 +2,41 @@ import axios from "axios";
 
 const TOKEN_STORAGE_KEY = "ACCESS_TOKEN";
 const LEGACY_TOKEN_STORAGE_KEY = "TOKEN";
+const TOKEN_EXPIRES_AT_KEY = "ACCESS_TOKEN_EXPIRES_AT";
 
 export const getStoredToken = () => {
   const token = localStorage.getItem(TOKEN_STORAGE_KEY) || localStorage.getItem(LEGACY_TOKEN_STORAGE_KEY);
   return token && token !== "undefined" ? token : null;
 };
 
-export const setStoredToken = (token) => {
+export const getStoredTokenExpiry = () => {
+  const expiry = localStorage.getItem(TOKEN_EXPIRES_AT_KEY);
+  return expiry && expiry !== "undefined" ? expiry : null;
+};
+
+export const isTokenExpired = (expiry) => {
+  if (!expiry) return false;
+  return new Date(expiry).getTime() <= Date.now();
+};
+
+export const setStoredToken = (token, expiresAt = null) => {
   if (token) {
     localStorage.setItem(TOKEN_STORAGE_KEY, token);
     localStorage.setItem(LEGACY_TOKEN_STORAGE_KEY, token);
+    if (expiresAt) {
+      localStorage.setItem(TOKEN_EXPIRES_AT_KEY, expiresAt);
+    }
   } else {
     localStorage.removeItem(TOKEN_STORAGE_KEY);
     localStorage.removeItem(LEGACY_TOKEN_STORAGE_KEY);
+    localStorage.removeItem(TOKEN_EXPIRES_AT_KEY);
   }
 };
 
 export const clearStoredToken = () => {
   localStorage.removeItem(TOKEN_STORAGE_KEY);
   localStorage.removeItem(LEGACY_TOKEN_STORAGE_KEY);
+  localStorage.removeItem(TOKEN_EXPIRES_AT_KEY);
 };
 
 const axiosClient = axios.create({
@@ -34,7 +50,19 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   (config) => {
+    const isRefreshRequest = config.url.includes("/auth/refresh");
+
+    if (isRefreshRequest) {
+      return config;
+    }
+
     const token = getStoredToken();
+    const expiry = getStoredTokenExpiry();
+
+    if (token && expiry && isTokenExpired(expiry)) {
+      return config;
+    }
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -94,7 +122,8 @@ axiosClient.interceptors.response.use(
           const token = response.data?.token || response.data?.access_token || response.data?.accessToken;
 
           if (token) {
-            setStoredToken(token);
+            const expiresAt = response.data?.token_expires_at || response.data?.expires_at;
+            setStoredToken(token, expiresAt);
             axiosClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             originalRequest.headers.Authorization = `Bearer ${token}`;
             processQueue(null, token);

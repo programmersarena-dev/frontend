@@ -9,8 +9,8 @@ export const AuthProvider = ({ children }) => {
   const [currentLang, setCurrentLang] = useState("tk");
   const [loading, setLoading] = useState(true);
 
-  const setUserToken = (token) => {
-    setStoredToken(token);
+  const setUserToken = (token, expiresAt = null) => {
+    setStoredToken(token, expiresAt);
     _setUserToken(token);
   };
 

@@ -38,7 +38,7 @@ export default function Login() {
       .then(({ data }) => {
         addToast("success", data.message || __("auth.success-msg") || "Welcome back!");
         setCurrentUser(data.user);
-        setStoredToken(data.token);
+        setStoredToken(data.token, data.token_expires_at);
 
         if (data.user?.user_type === "admin") {
           navigate("/admin");

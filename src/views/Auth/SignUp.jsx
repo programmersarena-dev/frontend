@@ -50,7 +50,7 @@ export default function SignUp() {
 
         setCurrentUser(data.user);
         if (data.token) {
-          setStoredToken(data.token);
+          setStoredToken(data.token, data.token_expires_at);
         }
         navigate("/");
       })
