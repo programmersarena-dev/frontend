@@ -129,6 +129,7 @@
     "compilation-error": "Compilation error",
     "runtime-error": "Runtime error",
     "compiling": "Barlagda",
+    "judging": "Barlanýar",
     "not-found": "Iberilen çözüwler tapylmady."
   },
   "rating": {

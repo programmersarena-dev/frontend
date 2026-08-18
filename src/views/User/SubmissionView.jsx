@@ -104,7 +104,7 @@ export default function SubmissionView() {
               </Link>
             </div>
           </div>
-          <SubmissionStatus status={statusString} />
+          <SubmissionStatus status={statusString} subtask={submission.subtask} test={submission.test} />
         </div>
 
         <div className="flex flex-wrap gap-x-8 gap-y-3 py-4 border-y border-slate-100">

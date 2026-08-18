@@ -51,7 +51,12 @@ export default function ProfileSubmissionsView() {
             setSubmissions((prevSubmissions) =>
               prevSubmissions.map((sub) =>
                 sub.id === updatedSubmission.id
-                  ? { ...sub, verdict: updatedSubmission.verdict }
+                  ? {
+                      ...sub,
+                      status: updatedSubmission.status ?? sub.status,
+                      subtask: updatedSubmission.subtask ?? sub.subtask,
+                      test: updatedSubmission.test ?? sub.test,
+                    }
                   : sub
               )
             );

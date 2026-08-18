@@ -181,7 +181,7 @@ const SubmissionRow = memo(function SubmissionRow({
 
       {/* Verdict */}
       <td className="py-2 px-2 truncate">
-        <SubmissionStatus status={submission.status} />
+        <SubmissionStatus status={submission.status} subtask={submission.subtask} test={submission.test} />
       </td>
 
       {/* Execution Time */}

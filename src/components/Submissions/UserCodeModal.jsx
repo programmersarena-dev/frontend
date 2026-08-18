@@ -70,7 +70,7 @@ const UserCodeModal = ({ isOpen, onClose, userSubmission }) => {
 
             <span className="text-slate-300">•</span>
 
-            <SubmissionStatus status={userSubmission.status} />
+            <SubmissionStatus status={userSubmission.status} subtask={userSubmission.subtask} test={userSubmission.test} />
 
             <span className="text-slate-300">•</span>
 

@@ -189,7 +189,7 @@ export default function ProblemSidebar({ setLoading, problem, submissions, conte
                   {submission.language}
                 </div>
                 <div className="col-span-3 text-right">
-                  <SubmissionStatus status={submission.status} className="text-[11px]" />
+                  <SubmissionStatus status={submission.status} subtask={submission.subtask} test={submission.test} className="text-[11px]" />
                 </div>
               </div>
             ))}

@@ -89,6 +89,8 @@ export default function ProblemSetStatusView() {
               status: updated.status ?? sub.status,
               time: updated.time ?? sub.time,
               memory: updated.memory ?? sub.memory,
+              subtask: updated.subtask ?? sub.subtask,
+              test: updated.test ?? sub.test,
             };
           })
         );

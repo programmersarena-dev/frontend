@@ -32,6 +32,11 @@ const STATUS_CONFIG = {
     key: "submission.compiling",
     isAnimated: true,
   },
+  JUDGING: {
+    badge: "bg-indigo-50 text-indigo-700 border-indigo-200/60 ring-indigo-500/10",
+    key: "submission.judging",
+    isAnimated: true,
+  },
   IN_QUEUE: {
     badge: "bg-indigo-50 text-indigo-700 border-indigo-200/60 ring-indigo-500/10",
     key: "submission.in-queue",
@@ -42,14 +47,14 @@ const STATUS_CONFIG = {
   },
 };
 
-function SubmissionStatus({ status, className = "" }) {
+function SubmissionStatus({ status, subtask, test, className = "" }) {
   const { __ } = useTranslation();
 
   const numericScore = useMemo(() => {
     if (status === null || status === undefined || status === "") return null;
     const parsed = Number(status);
     return Number.isInteger(parsed) && parsed >= 0 && parsed <= 100 ? parsed : null;
-  }, []);
+  }, [status]);
 
   const parsedStatus = useMemo(() => {
     if (!status || typeof status !== "string") return null;
@@ -65,11 +70,11 @@ function SubmissionStatus({ status, className = "" }) {
     else if (code.startsWith("CE")) category = "CE";
     else if (code.startsWith("RE")) category = "RE";
     else if (
-      code.startsWith("QUEUED") ||
-      code.startsWith("JUDGING")
+      code.startsWith("QUEUED")
     ) {
       category = "PENDING";
     }
+    else if (code.startsWith("JUDGING")) category = "JUDGING";
     else if (code.startsWith("IN QUEUE")) category = "IN_QUEUE";
 
     return {
@@ -94,7 +99,12 @@ function SubmissionStatus({ status, className = "" }) {
   const config = STATUS_CONFIG[parsedStatus.category] || STATUS_CONFIG.DEFAULT;
 
   let label = config.key ? __(config.key) : parsedStatus.raw;
-  if (parsedStatus.testNum) {
+  if (subtask) {
+    label += `, subtask-${subtask}`;
+    if (test && test > 0) {
+      label += `, test-${test}`;
+    }
+  } else if (parsedStatus.testNum) {
     label += `, test-${parsedStatus.testNum}`;
   }
 

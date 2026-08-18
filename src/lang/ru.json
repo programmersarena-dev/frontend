@@ -129,6 +129,7 @@
     "compilation-error": "Compilation error",
     "runtime-error": "Runtime error",
     "compiling": "Компиляция",
+    "judging": "Проверка",
     "not-found": "Отправленные решения не найдены."
   },
   "rating": {

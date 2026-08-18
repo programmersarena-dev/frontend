@@ -129,6 +129,7 @@
     "compilation-error": "Compilation error",
     "runtime-error": "Runtime error",
     "compiling": "Compiling",
+    "judging": "Judging",
     "not-found": "Submissions not found."
   },
   "rating": {

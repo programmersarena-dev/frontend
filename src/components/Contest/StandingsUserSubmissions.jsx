@@ -29,7 +29,7 @@ const StandingsUserSubmissions = ({
                 submissions.data.map((submission, index) => (
                   <div key={index} className="flex items-center space-x-2">
                     <CalculateDiff startDate={contestStartDate} endDate={submission.created_at} />
-                    <SubmissionStatus status={submission.status} />
+                    <SubmissionStatus status={submission.status} subtask={submission.subtask} test={submission.test} />
                     <div>&rarr;</div>
                     <Link
                       to={`/contest/${contestId}/submission/${submission.id}`}
