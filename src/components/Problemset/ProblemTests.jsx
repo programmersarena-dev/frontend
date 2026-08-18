@@ -5,6 +5,13 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 // A single test case row — verdict, timing, and an optional expandable
 // input/output/expected panel (useful for debugging a WA/RE, and the
 // data is already present in the response, just previously discarded).
+const truncateLines = (text, maxLines = 50) => {
+  if (!text) return text;
+  const lines = text.split("\n");
+  if (lines.length <= maxLines) return text;
+  return lines.slice(0, maxLines).join("\n") + "\n...";
+};
+
 const TestRow = ({ test, testIndex, __ }) => {
   const [open, setOpen] = useState(false);
   const isOk = test.log === "AC" || test.log === "OK" || test.status === "AC" || test.status === "OK";
@@ -46,7 +53,7 @@ const TestRow = ({ test, testIndex, __ }) => {
                 {__("submission.input") || "Input"}
               </div>
               <pre className="text-[11px] font-mono text-slate-700 bg-white border border-slate-100 rounded px-2.5 py-2 overflow-x-auto whitespace-pre-wrap">
-                {test.input}
+                {truncateLines(test.input)}
               </pre>
             </div>
           )}
@@ -56,7 +63,7 @@ const TestRow = ({ test, testIndex, __ }) => {
                 {__("submission.output") || "Output"}
               </div>
               <pre className="text-[11px] font-mono text-slate-700 bg-white border border-slate-100 rounded px-2.5 py-2 overflow-x-auto whitespace-pre-wrap">
-                {test.output}
+                {truncateLines(test.output)}
               </pre>
             </div>
           )}
@@ -66,7 +73,7 @@ const TestRow = ({ test, testIndex, __ }) => {
                 {__("submission.expected") || "Expected"}
               </div>
               <pre className="text-[11px] font-mono text-slate-700 bg-white border border-slate-100 rounded px-2.5 py-2 overflow-x-auto whitespace-pre-wrap">
-                {test.expected_output}
+                {truncateLines(test.expected_output)}
               </pre>
             </div>
           )}

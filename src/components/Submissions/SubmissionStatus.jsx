@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import ProgressBar from "../core/ProgressBar";
 import { useTranslation } from "../../contexts/TranslationContext";
 
-// Config map for visual styles and icons based on status type
 const STATUS_CONFIG = {
   AC: {
     badge: "bg-emerald-50 text-emerald-700 border-emerald-200/60 ring-emerald-500/10",
@@ -46,14 +45,12 @@ const STATUS_CONFIG = {
 function SubmissionStatus({ status, className = "" }) {
   const { __ } = useTranslation();
 
-  // Numeric Score check
   const numericScore = useMemo(() => {
     if (status === null || status === undefined || status === "") return null;
     const parsed = Number(status);
     return Number.isInteger(parsed) && parsed >= 0 && parsed <= 100 ? parsed : null;
-  }, [status]);
+  }, []);
 
-  // Extract base code and test case number in 1 pass
   const parsedStatus = useMemo(() => {
     if (!status || typeof status !== "string") return null;
 
@@ -82,7 +79,6 @@ function SubmissionStatus({ status, className = "" }) {
     };
   }, [status]);
 
-  // If score progress bar
   if (numericScore !== null) {
     return (
       <div className={`flex items-center justify-center ${className}`}>
@@ -97,7 +93,6 @@ function SubmissionStatus({ status, className = "" }) {
 
   const config = STATUS_CONFIG[parsedStatus.category] || STATUS_CONFIG.DEFAULT;
 
-  // Format translated label with test case number if available
   let label = config.key ? __(config.key) : parsedStatus.raw;
   if (parsedStatus.testNum) {
     label += `, test-${parsedStatus.testNum}`;
@@ -108,7 +103,6 @@ function SubmissionStatus({ status, className = "" }) {
       <span
         className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-semibold ring-1 ring-inset transition-colors ${config.badge}`}
       >
-        {/* Animated spinner for active/queued status */}
         {config.isAnimated && (
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75"></span>

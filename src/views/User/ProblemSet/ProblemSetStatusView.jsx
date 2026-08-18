@@ -52,7 +52,7 @@ export default function ProblemSetStatusView() {
   };
 
   useEffect(() => {
-    const PENDING_STATUSES = ["queued", "compiling", "running", "judging", "pending", "in queue", "0"];
+    const PENDING_STATUSES = ["queued", "compiling", "running", "judging", "pending", "in queue"];
 
     const pendingSubmissions = submissions.filter((sub) => {
       const statusStr = String(sub.status ?? "").toLowerCase();
@@ -69,7 +69,7 @@ export default function ProblemSetStatusView() {
               .get(`/submissions/submission/${sub.id}/status`)
               .then((res) => {
                 const data = res.data?.data || res.data;
-                return { id: sub.id, ...data }; // Attach id to the payload
+                return { id: sub.id, ...data };
               })
               .catch((err) => {
                 console.error(`Failed to poll submission ${sub.id}:`, err);
