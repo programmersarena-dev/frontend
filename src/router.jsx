@@ -33,6 +33,7 @@ import ProfileView from "@/views/User/Profile/ProfileView";
 import ProfileEditView from "@/views/User/Profile/ProfileEditView";
 import ProfileRatingsView from "@/views/User/Profile/ProfileRatingsView";
 import ProfileSubmissionsView from "@/views/User/Profile/ProfileSubmissionsView";
+import ProfileTeamsView from "@/views/User/Profile/ProfileTeamsView";
 
 import EmailVerification from "@/components/core/EmailVerification";
 import ResendVerificationEmail from "@/components/core/ResendVerificationEmail";
@@ -52,26 +53,42 @@ import AdminProblemListView from "@/views/Admin/Problem/ProblemListView";
 import AdminProblemCreateView from "@/views/Admin/Problem/ProblemCreateView";
 import AdminProblemEditView from "@/views/Admin/Problem/ProblemEditView";
 
+import { getStoredToken } from "@/api/axios";
+
+function ProtectedRoute({ children }) {
+  const { loading } = useAuth();
+  const token = getStoredToken();
+
+  if (loading) return <Loading />;
+  if (!token) return <Navigate to="/login" replace />;
+  return children;
+}
+
+function AdminRoute({ children }) {
+  const { currentUser, loading } = useAuth();
+
+  if (loading) return <Loading />;
+  if (!currentUser || currentUser.user_type !== "admin") return <NotFound />;
+  return children;
+}
+
 const router = createBrowserRouter([
   {
     path: "admin",
-    element: <AdminLayout />,
+    element: <ProtectedRoute><AdminLayout /></ProtectedRoute>,
     children: [
       { index: true, element: <Navigate to="dashboard" replace /> },
-      { path: "dashboard", element: <AdminDashboardView /> },
-      { path: "files", element: <AdminFileManagerView /> },
-
-      { path: "blogs", element: <AdminBlogList /> },
-      { path: "blog/add", element: <AdminAddBlog /> },
-      { path: "blog/:id/edit", element: <AdminEditBlog /> },
-
-      { path: "contests", element: <AdminContestListView /> },
-      { path: "contest/add", element: <AdminContestCreateView /> },
-      { path: "contest/:id/edit", element: <AdminContestEditView /> },
-
-      { path: "contest/:id/problems", element: <AdminProblemListView /> },
-      { path: "contest/:id/problem/add", element: <AdminProblemCreateView /> },
-      { path: "contest/:id/problem/:char", element: <AdminProblemEditView /> },
+      { path: "dashboard", element: <AdminRoute><AdminDashboardView /></AdminRoute> },
+      { path: "files", element: <AdminRoute><AdminFileManagerView /></AdminRoute> },
+      { path: "blogs", element: <AdminRoute><AdminBlogList /></AdminRoute> },
+      { path: "blog/add", element: <AdminRoute><AdminAddBlog /></AdminRoute> },
+      { path: "blog/:id/edit", element: <AdminRoute><AdminEditBlog /></AdminRoute> },
+      { path: "contests", element: <AdminRoute><AdminContestListView /></AdminRoute> },
+      { path: "contest/add", element: <AdminRoute><AdminContestCreateView /></AdminRoute> },
+      { path: "contest/:id/edit", element: <AdminRoute><AdminContestEditView /></AdminRoute> },
+      { path: "contest/:id/problems", element: <AdminRoute><AdminProblemListView /></AdminRoute> },
+      { path: "contest/:id/problem/add", element: <AdminRoute><AdminProblemCreateView /></AdminRoute> },
+      { path: "contest/:id/problem/:char", element: <AdminRoute><AdminProblemEditView /></AdminRoute> },
     ],
   },
 
@@ -86,7 +103,7 @@ const router = createBrowserRouter([
   },
 
   {
-    element: <UserLayout />,
+    element: <ProtectedRoute><UserLayout /></ProtectedRoute>,
     children: [
       { index: true, element: <Navigate to="blogs" replace /> },
       { path: "blogs", element: <BlogsView /> },
@@ -124,6 +141,7 @@ const router = createBrowserRouter([
         children: [
           { path: ":handle", element: <ProfileView /> },
           { path: ":handle/edit", element: <ProfileEditView /> },
+          { path: ":handle/teams", element: <ProfileTeamsView /> },
           { path: ":handle/submissions", element: <ProfileSubmissionsView /> },
           { path: ":handle/ratings", element: <ProfileRatingsView /> },
         ],

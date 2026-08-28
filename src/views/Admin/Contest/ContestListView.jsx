@@ -136,14 +136,14 @@ export default function ContestListView() {
 
   const getStatusBadge = (status) => {
     switch (status) {
-      case "started":
+      case "Active":
         return (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
             Başlandy
           </span>
         );
-      case "notStarted":
+      case "Pending":
         return (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-600/20">
             <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
@@ -234,7 +234,7 @@ export default function ContestListView() {
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
               {contests.map((contest) => {
-                const isPast = contest.status === "past" || contest.status === "ended";
+                const isPast = contest.status === "Ended";
 
                 return (
                   <tr

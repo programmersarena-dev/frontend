@@ -16,6 +16,19 @@ export default function UserContestRegisterButton({ contest, setContest }) {
   const [isRegistered, setIsRegistered] = useState(contest.is_registered);
   const [currentDuo, setCurrentDuo] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [teams, setTeams] = useState([]);
+  const [selectedTeamId, setSelectedTeamId] = useState('');
+  const [showTeamModal, setShowTeamModal] = useState(false);
+  const [newTeamName, setNewTeamName] = useState('');
+
+  useEffect(() => {
+    if (contest.type === 'ICPC' && !isRegistered) {
+      axiosClient.get('/teams').then((res) => {
+        const ownedTeams = res.data.owned_teams || [];
+        setTeams(ownedTeams);
+      }).catch(() => {});
+    }
+  }, []);
 
   const register = () => {
     if (window.confirm("Siz çyndanam bäsleşige ýazylmakçymy?")) {
@@ -25,7 +38,14 @@ export default function UserContestRegisterButton({ contest, setContest }) {
       setLoading(true);
       const data = new FormData();
       if (contest.type === 'Duel') {
-        data.append('opponent', opponent === '' ? currentDuo[1] : opponent);
+        const duelOpponent = opponent === '' ? (currentDuo?.[1] ?? '') : opponent;
+        if (!duelOpponent) {
+          setLoading(false);
+          return addToast("error", "Opponent required");
+        }
+        data.append('opponent', duelOpponent);
+      } else if (contest.type === 'ICPC' && selectedTeamId) {
+        data.append('team_id', selectedTeamId);
       }
 
       axiosClient
@@ -33,7 +53,10 @@ export default function UserContestRegisterButton({ contest, setContest }) {
         .then(() => {
           addToast("success", "Bäsleşige üstünlikli ýazyldyňyz");
           setIsRegistered(true);
-          if (contest.type === 'Duel') setCurrentDuo([currentUser.name, opponent === '' ? currentDuo[1] : opponent + '|X']);
+          if (contest.type === 'Duel') {
+            const finalOpponent = opponent === '' ? (currentDuo?.[1] ?? '') : opponent;
+            setCurrentDuo([currentUser.name, finalOpponent + '|X']);
+          }
           navigate("/contests");
         })
         .catch((error) => {
@@ -57,6 +80,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
           addToast("success", "Bäsleşikden üstünlikli çykdyňyz");
           setIsRegistered(false);
           if (contest.type === 'Duel') setCurrentDuo(null);
+          setSelectedTeamId('');
           navigate("/contests");
         })
         .catch((error) => {
@@ -66,6 +90,22 @@ export default function UserContestRegisterButton({ contest, setContest }) {
           setLoading(false);
         });
     }
+  };
+
+  const createTeam = () => {
+    if (!newTeamName.trim()) return;
+    setLoading(true);
+    axiosClient.post('/teams', { name: newTeamName }).then((res) => {
+      addToast("success", "Topar döredildi");
+      setTeams([...teams, res.data.team]);
+      setSelectedTeamId(res.data.team.id);
+      setNewTeamName('');
+      setShowTeamModal(false);
+    }).catch((error) => {
+      addToast("error", error.response?.data?.message || "Error");
+    }).finally(() => {
+      setLoading(false);
+    });
   };
 
   useEffect(() => {
@@ -95,6 +135,16 @@ export default function UserContestRegisterButton({ contest, setContest }) {
       }
     }
   }, []);
+
+  const canRegister = () => {
+    if (contest.type === 'ICPC') {
+      return selectedTeamId !== '' || teams.length === 0;
+    }
+    if (contest.type === 'Duel') {
+      return opponent.trim() !== '' || currentDuo !== null;
+    }
+    return true;
+  };
 
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-xs mx-auto">
@@ -169,15 +219,74 @@ export default function UserContestRegisterButton({ contest, setContest }) {
               </div>
             </div>
           ) : (
-            <button
-              disabled={loading}
-              onClick={register}
-              className="w-full flex justify-center items-center py-2 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/40 active:bg-indigo-700 transition duration-200 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
-            >
-              <span>{__("contest.register") || "Register"}</span>
-              <ChevronDoubleRightIcon className="w-4 h-4 ml-1.5" />
-            </button>
+            <>
+              {contest.type === 'ICPC' && teams.length > 0 && (
+                <div className="w-full">
+                  <select
+                    value={selectedTeamId}
+                    onChange={(e) => setSelectedTeamId(e.target.value)}
+                    className="block w-full px-3 py-2 border border-slate-700 bg-slate-900 text-slate-200 rounded-xl focus:outline-none focus:ring-indigo-500/40 focus:border-indigo-500 text-sm"
+                  >
+                    <option value="">Topar saýlaň</option>
+                    {teams.map((team) => (
+                      <option key={team.id} value={team.id}>
+                        {team.name} ({team.members?.length || 0}/4)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {contest.type === 'ICPC' && (
+                <button
+                  type="button"
+                  onClick={() => setShowTeamModal(true)}
+                  className="w-full text-xs text-indigo-400 hover:text-indigo-300 py-1"
+                >
+                  + Täze topar döret
+                </button>
+              )}
+
+              <button
+                disabled={loading || !canRegister()}
+                onClick={register}
+                className="w-full flex justify-center items-center py-2 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/40 active:bg-indigo-700 transition duration-200 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+              >
+                <span>{__("contest.register") || "Register"}</span>
+                <ChevronDoubleRightIcon className="w-4 h-4 ml-1.5" />
+              </button>
+            </>
           )}
+        </div>
+      )}
+
+      {showTeamModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm">
+            <h3 className="text-lg font-semibold text-slate-100 mb-4">Täze topar döret</h3>
+            <input
+              type="text"
+              value={newTeamName}
+              onChange={(e) => setNewTeamName(e.target.value)}
+              placeholder="Toparyň ady"
+              className="block w-full px-3 py-2 border border-slate-700 bg-slate-800 text-slate-200 rounded-xl focus:outline-none focus:ring-indigo-500/40 focus:border-indigo-500 text-sm mb-4"
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={createTeam}
+                disabled={loading || !newTeamName.trim()}
+                className="flex-1 px-3 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-500 disabled:opacity-50"
+              >
+                Döret
+              </button>
+              <button
+                onClick={() => setShowTeamModal(false)}
+                className="flex-1 px-3 py-2 bg-slate-800 text-slate-300 rounded-xl text-sm font-semibold hover:bg-slate-700"
+              >
+                Goýbolsun
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

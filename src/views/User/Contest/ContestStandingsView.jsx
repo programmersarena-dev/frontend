@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, NavLink, useParams } from "react-router-dom";
 import ReactCountryFlag from "react-world-flags";
 import Loading from "@/components/core/Loading";
 import NotFound from "@/components/core/NotFound";
@@ -25,13 +25,13 @@ const getProblemChar = (index) => String.fromCharCode("A".charCodeAt(0) + index)
 
 const rankedStandings = (data) => {
   const sortedStandings = [...data.standings].sort(
-    (a, b) => b.total_score - a.total_score
+    (a, b) => (b.total_score ?? 0) - (a.total_score ?? 0)
   );
   let lastScore = null;
   let lastRank = 0;
 
   return sortedStandings.map((user, index) => {
-    const currentScore = user.total_score;
+    const currentScore = user.total_score ?? 0;
     if (currentScore === lastScore) {
       user.rank = lastRank;
     } else {
@@ -60,13 +60,14 @@ const StandingsTable = ({ data, currentUser, onClick, contestId, contestType, __
   const halfParticipants = data.standings.length / 2;
   const oneSixth = halfParticipants / 6;
   const isDuel = contestType === "Duel";
+  const isICPC = contestType === "ICPC";
 
   return (
     <table className="w-full text-sm border-collapse">
       <thead>
         <tr className="border-b border-slate-200 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
           <th className="py-2.5 px-2 w-10 text-center font-semibold">#</th>
-          <th className="py-2.5 px-3 text-left font-semibold">{__("contest.user")}</th>
+          <th className="py-2.5 px-3 text-left font-semibold">{isICPC ? __("contest.group") || "Group" : __("contest.user")}</th>
           <th className="py-2.5 px-2 w-12 text-center font-semibold">=</th>
           {data.problemScores?.map((score, index) => (
             <th key={index} className="py-2.5 px-2 w-12 text-center font-semibold">
@@ -88,11 +89,15 @@ const StandingsTable = ({ data, currentUser, onClick, contestId, contestType, __
       <tbody className="divide-y divide-slate-100">
         {data.standings?.length > 0 ? (
           rankedStandings(data).map((user, index) => {
-            const isCurrentUser = user.handle === currentUser?.handle;
+            const isCurrentUser = isICPC
+              ? user.members?.includes(currentUser?.handle)
+              : isDuel
+                ? user.handle === currentUser?.handle || user.handle2 === currentUser?.handle
+                : user.handle === currentUser?.handle;
             return (
               <tr
                 key={index}
-                className={`${tierClass(index, oneSixth)} ${isCurrentUser ? "bg-indigo-50/70" : "hover:bg-slate-50/70"
+                className={`${tierClass(index, oneSixth)} ${isCurrentUser ? "bg-indigo-50/70" : "hover:bg-slate-50/10"
                   } transition-colors`}
               >
                 <td className="py-2.5 px-2 text-center font-mono text-xs text-slate-500 font-medium">
@@ -115,6 +120,15 @@ const StandingsTable = ({ data, currentUser, onClick, contestId, contestType, __
                         {user.handle2}
                       </Link>
                     </span>
+                  ) : isICPC ? (
+                    <div>
+                      <div className="font-medium text-slate-900">{user.group_name}</div>
+                      <div className="text-[10px] text-slate-400">
+                        {user.members.map((member, index) => (
+                          <NavLink key={index} to={`/profile/${member}`} className="pr-1">{member}</NavLink>
+                        ))}
+                      </div>
+                    </div>
                   ) : (
                     <Link
                       to={`/profile/${user.handle}`}
@@ -127,9 +141,9 @@ const StandingsTable = ({ data, currentUser, onClick, contestId, contestType, __
                 <td className="py-2.5 px-2 text-center font-mono font-semibold text-slate-900">
                   {isDuel ? (
                     <span>
-                      {user.total_score}
+                      {user.total_score ?? 0}
                       <span className="text-slate-300 px-1">:</span>
-                      {user.total_score2}
+                      {user.total_score2 ?? 0}
                     </span>
                   ) : user.total_score === 0 ? (
                     <span className="text-slate-300">—</span>
@@ -138,16 +152,30 @@ const StandingsTable = ({ data, currentUser, onClick, contestId, contestType, __
                   )}
                 </td>
                 {user.problems?.map((problem, problemIndex) => {
-                  const p2 = isDuel ? user.problems2[problemIndex] : null;
+                  const p2 = isDuel ? (user.problems2?.[problemIndex] ?? null) : null;
                   return (
                     <td
                       key={problemIndex}
                       className="py-2.5 px-2 text-center cursor-pointer"
-                      onDoubleClick={() =>
-                        onClick(
-                          `/contest/${contestId}/problem/${problemIndex + 1}/user/${user.username}`
-                        )
-                      }
+                      onDoubleClick={() => {
+                        if (isDuel) {
+                          const targetHandle = (problem?.score ?? 0) >= (p2?.score ?? 0)
+                            ? user.handle
+                            : user.handle2;
+                          onClick(
+                            `/contests/${contestId}/problem/${problemIndex + 1}/user/${targetHandle}`
+                          );
+                        } else {
+                          const memberHandle = isICPC
+                            ? (currentUser?.handle && user.members?.includes(currentUser.handle)
+                                ? currentUser.handle
+                                : (user.members?.[0] || ''))
+                            : user.handle;
+                          onClick(
+                            `/contests/${contestId}/problem/${problemIndex + 1}/user/${memberHandle}`
+                          );
+                        }
+                      }}
                     >
                       {isDuel ? (
                         problem.score > p2.score && problem.score > 0 ? (

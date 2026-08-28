@@ -67,7 +67,21 @@
     "send": "Send",
     "show-unofficial": "Show unofficial",
     "user": "User",
-    "participants-not-found": "Contest participants not found."
+    "group": "Group",
+    "participants-not-found": "Contest participants not found.",
+    "select-team": "Select team",
+    "create-team": "Create team",
+    "team-name": "Team name",
+    "create": "Create",
+    "cancel": "Cancel",
+    "my-teams": "My Teams",
+    "invitations": "Invitations",
+    "add-member": "Add member",
+    "delete": "Delete",
+    "owner": "Owner",
+    "members": "Members",
+    "no-teams": "No teams yet",
+    "no-invitations": "No pending invitations"
   },
   "problem": {
     "problemset": "Problems",

@@ -53,6 +53,7 @@ axiosClient.interceptors.request.use(
     const isRefreshRequest = config.url.includes("/auth/refresh");
 
     if (isRefreshRequest) {
+      config.headers.Authorization = undefined;
       return config;
     }
 
@@ -60,12 +61,21 @@ axiosClient.interceptors.request.use(
     const expiry = getStoredTokenExpiry();
 
     if (token && expiry && isTokenExpired(expiry)) {
+      config.headers.Authorization = undefined;
       return config;
     }
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    try {
+      const storedLang = localStorage.getItem("selectedLanguage");
+      if (storedLang && ["en", "ru", "tk"].includes(storedLang)) {
+        config.headers["X-Locale"] = storedLang;
+      }
+    } catch {}
+
     return config;
   },
   (error) => Promise.reject(error)
@@ -127,6 +137,7 @@ axiosClient.interceptors.response.use(
             axiosClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             originalRequest.headers.Authorization = `Bearer ${token}`;
             processQueue(null, token);
+            window.dispatchEvent(new CustomEvent("auth-token-refreshed", { detail: { token, expiresAt } }));
             return axiosClient(originalRequest);
           }
         }
@@ -134,6 +145,7 @@ axiosClient.interceptors.response.use(
         processQueue(refreshError, null);
         clearStoredToken();
         delete axiosClient.defaults.headers.common['Authorization'];
+        window.dispatchEvent(new Event("auth-refresh-failed"));
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

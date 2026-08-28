@@ -5,38 +5,32 @@ import axiosClient from "@/api/axios";
 import { useToast } from "@/contexts/ToastContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "@/contexts/TranslationContext";
-
-const inputClass =
-  "mt-1.5 block w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 focus:outline-none transition-colors";
-
-const Field = ({ label, htmlFor, children }) => (
-  <div>
-    <label htmlFor={htmlFor} className="block text-xs font-medium text-slate-500">
-      {label}
-    </label>
-    {children}
-  </div>
-);
+import LanguageSelector from "@/components/Contest/Submit/LanguageSelector";
+import {
+  CodeBracketIcon,
+  DocumentArrowUpIcon,
+  XMarkIcon,
+  PaperAirplaneIcon,
+} from "@heroicons/react/24/outline";
 
 export default function ContestSubmitView() {
   const { currentUser } = useAuth();
   const { __ } = useTranslation();
   const { addToast } = useToast();
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [problems, setProblems] = useState([]);
   const [acceptableLanguages, setAcceptableLanguages] = useState([]);
-  const [file, setFile] = useState(null);
+
+  const [problemCode, setProblemCode] = useState("");
   const [language, setLanguage] = useState("");
   const [code, setCode] = useState("");
-  const [problemChar, setProblemChar] = useState("A");
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const [file, setFile] = useState(null);
+  const [inputMode, setInputMode] = useState("code");
 
-  // Auth redirects belong in an effect, not directly in the render path —
-  // calling navigate() while rendering is an unsafe pattern (React keeps
-  // evaluating the rest of this render pass regardless), and it also ran
-  // on every single render rather than only when auth state changes.
   useEffect(() => {
     if (!currentUser || !currentUser.name) {
       navigate("/login");
@@ -49,138 +43,206 @@ export default function ContestSubmitView() {
     axiosClient
       .get(`/contests/${id}/submit`)
       .then((res) => {
-        setProblems(res.data.problems);
-        setAcceptableLanguages(res.data.acceptable_languages);
-        setLanguage(res.data.acceptable_languages[0]);
-        setProblemChar(res.data.problems?.[0]?.char ?? "A");
-        setLoading(false);
+        const fetchedProblems = res.data.problems || [];
+        const fetchedLangs = res.data.acceptable_languages || [];
+
+        setProblems(fetchedProblems);
+        setAcceptableLanguages(fetchedLangs);
+        setProblemCode(fetchedProblems[0]?.code ?? "");
+
+        const savedLang = localStorage.getItem("selectedProgrammingLanguage");
+        if (savedLang && fetchedLangs.includes(savedLang)) {
+          setLanguage(savedLang);
+        } else if (fetchedLangs.length > 0) {
+          setLanguage(fetchedLangs[0]);
+        }
       })
       .catch((error) => {
-        console.error("Error fetching contests:", error);
-        setLoading(false);
-      });
-  }, [id]);
+        console.error("Error fetching contest submit data:", error);
+        addToast(__("contest.error-loading") || "Maglumatlary ýükläp bolmady");
+      })
+      .finally(() => setLoading(false));
+  }, [id, addToast, __]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!file && !code.trim()) {
-      addToast(__("contest.submit-code-or-file-required") || "Kod ýazyň ýa-da faýl saýlaň");
+    if (inputMode === "file" && !file) {
+      addToast(__("contest.select-file-required") || "Haýyş, faýl saýlaň");
+      return;
+    }
+
+    if (inputMode === "code" && !code.trim()) {
+      addToast(__("contest.code-required") || "Haýyş, kody giriziň");
       return;
     }
 
     setSubmitting(true);
 
-    // Was posting a plain object with a hand-set multipart header, which
-    // does not actually multipart-encode anything — a real FormData
-    // instance is required for the body to be encoded correctly.
     const formData = new FormData();
     formData.append("language", language);
-    // File and pasted code are presented as alternatives ("or choose
-    // file"); only send whichever one the user actually used instead of
-    // always sending both.
-    if (file) {
+
+    if (inputMode === "file" && file) {
       formData.append("file", file);
     } else {
       formData.append("code", code);
     }
 
-    axiosClient
-      .post(`/problemset/problem/${id}/${problemChar}/submit`, formData, {
+    try {
+      await axiosClient.post(`/submissions/problem/${problemCode}/submit`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
-      })
-      .then(() => {
-        addToast(__("contest.submitted-successfully") || "Üstünlikli iberildi");
-        navigate("/problemset/status");
-      })
-      .catch((err) => {
-        addToast(err.response?.data?.message || "Ýalňyşlyk ýüze çykdy");
-        console.error("Failed to submit:", err);
-      })
-      .finally(() => setSubmitting(false));
+      });
+      addToast(__("contest.submitted-successfully") || "Üstünlikli iberildi");
+      navigate("/problemset/status");
+    } catch (err) {
+      addToast(err.response?.data?.message || "Ýalňyşlyk ýüze çykdy");
+      console.error("Failed to submit:", err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (loading) return <Loading />;
 
   return (
-    <div className="px-4">
-      <h2 className="text-lg font-semibold text-slate-900 mb-6">
-        {__("contest.submit")}
-      </h2>
+    <div className="px-4 py-8">
+      <div className="mb-6 flex items-center justify-between border-b border-slate-200/80 pb-4">
+        <div>
+          <h2 className="text-xl font-bold tracking-tight text-slate-900">
+            {__("contest.submit") || "Mesele çözgüdini ibermek"}
+          </h2>
+          <p className="mt-1 text-xs text-slate-500">
+            {__("contest.submit-subtitle") || "Çözgüdiňizi faýl görnüşinde ýa-da kody göni girizip bilersiňiz."}
+          </p>
+        </div>
+      </div>
 
-      <form className="space-y-5" onSubmit={handleSubmit}>
-        <Field label={__("contest.problem")} htmlFor="problem">
-          <select
-            name="problem"
-            id="problem"
-            value={problemChar}
-            className={inputClass}
-            onChange={(e) => setProblemChar(e.target.value)}
-          >
-            {problems.map((problem, index) => (
-              <option value={problem.char} key={index}>
-                {problem.char} — {problem.name}
-              </option>
-            ))}
-          </select>
-        </Field>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label htmlFor="problem" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500">
+              {__("contest.problem") || "Mesele"}
+            </label>
+            <select
+              id="problem"
+              value={problemCode}
+              onChange={(e) => setProblemCode(e.target.value)}
+              className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-sm transition-all hover:border-slate-300 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+            >
+              {problems.map((problem) => (
+                <option key={problem.code} value={problem.code}>
+                  {problem.char} — {problem.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <Field label={__("contest.language")} htmlFor="language">
-          <select
-            name="language"
-            id="language"
-            value={language}
-            className={inputClass}
-            onChange={(e) => setLanguage(e.target.value)}
-          >
-            {acceptableLanguages.map((acceptableLanguage, index) => (
-              <option key={index} value={acceptableLanguage}>
-                {acceptableLanguage}
-              </option>
-            ))}
-          </select>
-        </Field>
+          <div>
+            <LanguageSelector acceptable_languages={acceptableLanguages} language={language} setLanguage={setLanguage} />
+          </div>
+        </div>
 
-        <Field label={__("contest.code")} htmlFor="code">
-          <textarea
-            name="code"
-            id="code"
-            rows="8"
-            placeholder={file ? __("contest.file-selected-below") || "Faýl saýlandy" : ""}
-            disabled={!!file}
-            value={code}
-            className={`${inputClass} font-mono disabled:bg-slate-50 disabled:text-slate-300`}
-            onChange={(e) => setCode(e.target.value)}
-          />
-        </Field>
-
-        <Field label={__("contest.or-choose-file")} htmlFor="file">
-          <div className="mt-1.5 flex items-center gap-3">
-            <input
-              type="file"
-              id="file"
-              name="file"
-              className="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-slate-50 file:text-slate-600 hover:file:bg-slate-100"
-              onChange={(e) => setFile(e.target.files[0] || null)}
-            />
-            {file && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              {__("contest.submission-method") || "Iberiş usuly"}
+            </span>
+            <div className="inline-flex rounded-lg bg-slate-100 p-1">
               <button
                 type="button"
-                onClick={() => setFile(null)}
-                className="text-xs font-medium text-slate-400 hover:text-rose-500 transition-colors shrink-0"
+                onClick={() => setInputMode("code")}
+                className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-all ${inputMode === "code"
+                  ? "bg-white text-indigo-600 shadow-sm"
+                  : "text-slate-500 hover:text-slate-900"
+                  }`}
               >
-                {__("contest.clear") || "Aýyr"}
+                <CodeBracketIcon className="h-3.5 w-3.5" />
+                {__("contest.code") || "Kod"}
               </button>
-            )}
+              <button
+                type="button"
+                onClick={() => setInputMode("file")}
+                className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-all ${inputMode === "file"
+                  ? "bg-white text-indigo-600 shadow-sm"
+                  : "text-slate-500 hover:text-slate-900"
+                  }`}
+              >
+                <DocumentArrowUpIcon className="h-3.5 w-3.5" />
+                {__("contest.choose-file") || "Faýl saýla"}
+              </button>
+            </div>
           </div>
-        </Field>
+
+          {inputMode === "code" && (
+            <div className="relative rounded-2xl border border-slate-200 bg-slate-900 p-3 shadow-sm transition-all focus-within:ring-2 focus-within:ring-indigo-500/30">
+              <textarea
+                id="code"
+                rows="10"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="// Paste or write your source code here..."
+                className="w-full resize-y bg-transparent font-mono text-xs leading-relaxed text-slate-100 placeholder-slate-500 focus:outline-none"
+              />
+            </div>
+          )}
+
+          {inputMode === "file" && (
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 p-8 text-center transition-all hover:bg-slate-50">
+              {!file ? (
+                <label htmlFor="file" className="cursor-pointer space-y-2">
+                  <DocumentArrowUpIcon className="mx-auto h-10 w-10 text-slate-400" />
+                  <div className="text-xs text-slate-600">
+                    <span className="font-semibold text-indigo-600 hover:underline">
+                      {__("contest.click-to-upload") || "Faýl saýlamak üçin basyň"}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">
+                    .cpp, .java, .py, .pas, .go, .rs
+                  </p>
+                  <input
+                    type="file"
+                    id="file"
+                    className="hidden"
+                    onChange={(e) => setFile(e.target.files[0] || null)}
+                  />
+                </label>
+              ) : (
+                <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                  <DocumentArrowUpIcon className="h-5 w-5 text-indigo-600 shrink-0" />
+                  <div className="text-left">
+                    <p className="max-w-xs truncate text-xs font-semibold text-slate-800">
+                      {file.name}
+                    </p>
+                    <p className="text-[10px] text-slate-400">
+                      {(file.size / 1024).toFixed(1)} KB
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setFile(null)}
+                    className="ml-2 rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-rose-500 transition-colors"
+                  >
+                    <XMarkIcon className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
         <button
           type="submit"
           disabled={submitting}
-          className="w-full py-2 rounded-lg text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 transition-colors"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 active:scale-[0.99] disabled:opacity-50"
         >
-          {submitting ? __("contest.sending") || "Iberilýär..." : __("contest.send")}
+          {submitting ? (
+            <span>{__("contest.sending") || "Iberilýär..."}</span>
+          ) : (
+            <>
+              <PaperAirplaneIcon className="h-4 w-4" />
+              <span>{__("contest.send") || "Iber"}</span>
+            </>
+          )}
         </button>
       </form>
     </div>

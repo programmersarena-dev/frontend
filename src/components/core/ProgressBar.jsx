@@ -10,7 +10,7 @@ const styles = {
   bar: {
     height: '75%',
     borderRadius: '8px',
-    margin: '3px',
+    margin: '2px',
     backgroundColor: '#006633',
     borderTop: '1px solid white',
     transition: 'width 0.3s ease-in-out',
@@ -31,7 +31,7 @@ const styles = {
   },
 };
 
-export default function ProgressBar({progress}){
+export default function ProgressBar({ progress }) {
   return (
     <div style={styles.container}>
       <div

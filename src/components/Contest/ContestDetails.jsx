@@ -9,8 +9,8 @@ export default function ContestDetails({ contest }) {
 
   if (!contest) return null;
 
-  const isEnded = contest.status === "ended" || contest.status === "past";
-  const isStarted = contest.status === "started";
+  const isEnded = contest.status === "Ended";
+  const isStarted = contest.status === "Active";
 
   return (
     <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm space-y-4">

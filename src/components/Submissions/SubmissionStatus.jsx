@@ -99,13 +99,17 @@ function SubmissionStatus({ status, subtask, test, className = "" }) {
   const config = STATUS_CONFIG[parsedStatus.category] || STATUS_CONFIG.DEFAULT;
 
   let label = config.key ? __(config.key) : parsedStatus.raw;
-  if (subtask) {
-    label += `, subtask-${subtask}`;
-    if (test && test > 0) {
+  if (parsedStatus.category !== "AC") {
+    if (subtask) {
+      label += `, subtask-${subtask}`;
+      if (test && test > 0) {
+        label += `, test-${test}`;
+      }
+    } else if (parsedStatus.testNum) {
+      label += `, test-${parsedStatus.testNum}`;
+    } else if (test && test > 0) {
       label += `, test-${test}`;
     }
-  } else if (parsedStatus.testNum) {
-    label += `, test-${parsedStatus.testNum}`;
   }
 
   return (

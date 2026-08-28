@@ -130,7 +130,7 @@ export default function AdminLayout({ children }) {
 
         <footer className="py-4 px-8 border-t border-slate-200/60 bg-white">
           <div className="flex items-center justify-between text-xs text-slate-400">
-            <p>&copy; {new Date().getFullYear()} ProgrammersArena. Ähli haklary goralan.</p>
+            <p>&copy; {new Date().getFullYear()} ProgrammersArena.</p>
             <p className="font-medium text-slate-500">v1.0.0</p>
           </div>
         </footer>

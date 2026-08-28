@@ -5,6 +5,7 @@ import { useParams, Link, useLocation } from "react-router-dom";
 const TABS = [
   { path: "", label: "Profil" },
   { path: "/edit", label: "Sazlamalar", ownerOnly: true },
+  { path: "/teams", label: "Toparlar", ownerOnly: true },
   { path: "/submissions", label: "Iberilen kodlar" },
   { path: "/ratings", label: "Reýting üýtgemeler" },
 ];
@@ -14,7 +15,7 @@ export default function ProfileMenu() {
   const { handle } = useParams();
   const { pathname } = useLocation();
 
-  const canEdit = currentUser?.name === handle && currentUser?.email_verified_at;
+  const canEdit = currentUser?.handle === handle && currentUser?.email_verified_at;
 
   return (
     <div className="mb-6">
@@ -28,8 +29,8 @@ export default function ProfileMenu() {
               key={tab.path}
               to={to}
               className={`relative pb-2.5 text-xs font-medium transition-colors ${isActive
-                  ? "text-indigo-600"
-                  : "text-slate-500 hover:text-slate-800"
+                ? "text-indigo-600"
+                : "text-slate-500 hover:text-slate-800"
                 }`}
             >
               {tab.label}

@@ -67,7 +67,21 @@
     "send": "Отправить",
     "show-unofficial": "Показать неофициальных участников",
     "user": "Пользователь",
-    "participants-not-found": "Участники этого соревнования не найдены."
+    "group": "Команда",
+    "participants-not-found": "Участники этого соревнования не найдены.",
+    "select-team": "Выбрать команду",
+    "create-team": "Создать команду",
+    "team-name": "Название команды",
+    "create": "Создать",
+    "cancel": "Отмена",
+    "my-teams": "Мои команды",
+    "invitations": "Приглашения",
+    "add-member": "Добавить участника",
+    "delete": "Удалить",
+    "owner": "Владелец",
+    "members": "Участники",
+    "no-teams": "Пока нет команд",
+    "no-invitations": "Нет pending приглашений"
   },
   "problem": {
     "problemset": "Задачи",

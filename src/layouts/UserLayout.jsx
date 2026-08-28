@@ -13,6 +13,7 @@ import Loading from "@/components/core/Loading";
 import ReactCountryFlag from "react-world-flags";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "@/contexts/TranslationContext";
+import { clearStoredToken, getStoredToken, setStoredToken } from "@/api/axios";
 
 const availableLanguages = [
   { code: "US", label: "United States", title: "en" },
@@ -46,6 +47,7 @@ export default function PageLayout() {
       .post(`/locale/`, { lang: language })
       .then(() => {
         setCurrentLang(language);
+        localStorage.setItem("selectedLanguage", language);
         setLoading(false);
       })
       .catch((error) => {
@@ -61,6 +63,7 @@ export default function PageLayout() {
       .post("/auth/logout")
       .then(() => {
         setCurrentUser(null);
+        clearStoredToken();
         navigate("/login");
       })
       .catch((error) => {

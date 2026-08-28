@@ -14,13 +14,14 @@ import {
   TagIcon,
   ClockIcon
 } from "@heroicons/react/24/outline";
+import LanguageSelector from "@/components/Contest/Submit/LanguageSelector";
 
 export default function ProblemSidebar({ setLoading, problem, submissions, contest }) {
   const { currentUser } = useAuth();
   const { __ } = useTranslation();
   const { addToast } = useToast();
   const [file, setFile] = useState(null);
-  const [language, setLanguage] = useState(localStorage.getItem("selectedLanguage") || contest.acceptable_languages?.[0] || "");
+  const [language, setLanguage] = useState(localStorage.getItem("selectedProgrammingLanguage") || contest.acceptable_languages?.[0]);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -45,18 +46,17 @@ export default function ProblemSidebar({ setLoading, problem, submissions, conte
       return;
     }
 
-    localStorage.setItem("selectedLanguage", language);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("language", language);
+
+    console.log(formData);
 
     axiosClient
       .post(
-        `/submissions/problem/${problem?.code}/submit`,
-        { file, language },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
+        `/submissions/problem/${problem?.code}/submit`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
       .then(() => {
         addToast("Üstünlikli iberildi");
         navigate("/problemset/status");
@@ -69,7 +69,6 @@ export default function ProblemSidebar({ setLoading, problem, submissions, conte
 
   return (
     <div className="flex flex-col gap-6 text-left">
-      {/* Contest Details Section */}
       {contest && <ContestDetails contest={contest} />}
 
       {/* Attachments Card */}
@@ -103,26 +102,7 @@ export default function ProblemSidebar({ setLoading, problem, submissions, conte
 
         {/* Language Selection */}
         <div>
-          <label
-            htmlFor="language"
-            className="block mb-1.5 text-xs font-medium text-slate-600 uppercase tracking-wider"
-          >
-            {__("problem.lang") || "Programlama dili"}
-          </label>
-          <select
-            id="language"
-            name="language"
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-2.5 text-sm text-slate-800 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition"
-          >
-            {contest.acceptable_languages &&
-              contest.acceptable_languages.map((lang, index) => (
-                <option key={index} value={lang}>
-                  {lang}
-                </option>
-              ))}
-          </select>
+          <LanguageSelector acceptable_languages={contest.acceptable_languages} language={language} setLanguage={setLanguage} />
         </div>
 
         {/* File Input */}

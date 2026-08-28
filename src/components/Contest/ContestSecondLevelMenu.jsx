@@ -41,11 +41,10 @@ export default function ContestSecondLevelMenu({ contestId }) {
               key={item.path}
               to={item.path}
               aria-current={isActive ? "page" : undefined}
-              className={`relative inline-flex items-center px-3 py-2.5 text-sm border-b-2 -mb-px transition-colors duration-150 ${
-                isActive
+              className={`relative inline-flex items-center px-3 py-2.5 text-sm border-b-2 -mb-px transition-colors duration-150 ${isActive
                   ? "border-teal-600 text-zinc-900 font-medium"
                   : "border-transparent text-zinc-500 hover:text-zinc-800"
-              }`}
+                }`}
             >
               {item.label}
             </Link>

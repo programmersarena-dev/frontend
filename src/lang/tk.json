@@ -67,7 +67,21 @@
     "send": "Iber",
     "show-unofficial": "Resmi dälleri görkez",
     "user": "Ulanyjy",
-    "participants-not-found": "Bu bäsleşige gatnaşanlar tapylmady."
+    "group": "Topar",
+    "participants-not-found": "Bu bäsleşige gatnaşanlar tapylmady.",
+    "select-team": "Topar saýla",
+    "create-team": "Topar döret",
+    "team-name": "Toparyň ady",
+    "create": "Döret",
+    "cancel": "Goýbolsun",
+    "my-teams": "Meniň toparlarym",
+    "invitations": "Çagyrylyşlar",
+    "add-member": "Agza goş",
+    "delete": "Poz",
+    "owner": "Eýesi",
+    "members": "Agzalar",
+    "no-teams": "Heniz topar ýok",
+    "no-invitations": "Çakylyk ýok"
   },
   "problem": {
     "problemset": "Meseleler",
