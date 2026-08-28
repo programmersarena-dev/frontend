@@ -3,9 +3,11 @@ import axiosClient from "@/api/axios";
 import Loading from "@/components/core/Loading.jsx";
 import FormatToUTC from "@/components/core/FormatToUTC.jsx";
 import PaginationLinks from "@/components/core/PaginationLinks.jsx";
+import { useTranslation } from "@/contexts/TranslationContext";
 import { CalendarDaysIcon, NewspaperIcon } from "@heroicons/react/24/outline";
 
 export default function BlogsView() {
+  const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [blogs, setBlogs] = useState([]);
   const [meta, setMeta] = useState({});
@@ -69,9 +71,9 @@ export default function BlogsView() {
         ) : (
           <div className="text-center py-16 bg-white rounded-xl border border-dashed border-slate-200">
             <NewspaperIcon className="mx-auto h-10 w-10 text-slate-300" />
-            <h3 className="mt-2 text-sm font-semibold text-slate-900">No updates yet</h3>
+             <h3 className="mt-2 text-sm font-semibold text-slate-900">{__("user.blogs.no_updates")}</h3>
             <p className="mt-1 text-sm text-slate-500">
-              Check back later for new announcements or contest news.
+               {__("user.blogs.no_updates_description")}
             </p>
           </div>
         )}

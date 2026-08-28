@@ -3,9 +3,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axiosClient from "@/api/axios";
 import Loading from "./Loading";
 import { useToast } from "@/contexts/ToastContext";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 export default function EmailVerification() {
   const { addToast } = useToast();
+  const { __ } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -14,17 +16,17 @@ export default function EmailVerification() {
     const verificationUrl = query.get("url");
 
     if (!verificationUrl) {
-      addToast("Nädogry ssylka.");
+      addToast(__("core.email.invalid_link"));
       return;
     }
 
     axiosClient
       .get(verificationUrl)
       .then((response) => {
-        addToast("E-poçta üstünlikli tassyklanyldy!");
+        addToast(__("core.email.verified"));
       })
       .catch((error) => {
-        addToast("E-poçta barlag şowsuz. Gaýtadan synanyşmagyňyzy haýyş edýäris.");
+        addToast(__("core.email.failed"));
       });
     return navigate("/");
   }, [location.search, navigate]);

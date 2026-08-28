@@ -3,6 +3,7 @@ import axiosClient from "@/api/axios";
 import Loading from "../../../components/core/Loading";
 import PaginationLinks from "../../../components/core/PaginationLinks";
 import FormatToUTC from "../../../components/core/FormatToUTC";
+import { useTranslation } from "@/contexts/TranslationContext";
 import {
   CalendarDaysIcon,
   PencilIcon,
@@ -14,6 +15,7 @@ import { Link } from "react-router-dom";
 import PageHeader from "../../../components/Admin/PageHeader";
 
 export default function BlogList() {
+  const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [blogs, setBlogs] = useState([]);
   const [meta, setMeta] = useState({});
@@ -41,7 +43,7 @@ export default function BlogList() {
   }, []);
 
   const onDeleteClick = (id) => {
-    if (window.confirm("Siz çyndanam pozmak isleýäňizmi?")) {
+    if (window.confirm(__("admin.blog.confirm_delete"))) {
       setLoading(true);
       axiosClient
         .delete(`/admin/blog/${id}`)
@@ -64,13 +66,13 @@ export default function BlogList() {
     <>
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <PageHeader title="Bildirişler" />
+        <PageHeader title={__("admin.blog.title")} />
         <Link
           to="/admin/blog/add"
           className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10"
         >
           <PlusIcon className="w-4 h-4" />
-          Bildiriş goş
+          {__("admin.blog.add")}
         </Link>
       </div>
 
@@ -92,14 +94,14 @@ export default function BlogList() {
                   <Link
                     to={`/admin/blog/${blog.id}/edit`}
                     className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors"
-                    title="Düzet"
+                    title={__("admin.blog.edit")}
                   >
                     <PencilIcon className="w-4 h-4" />
                   </Link>
                   <button
                     onClick={() => onDeleteClick(blog.id)}
                     className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
-                    title="Poz"
+                    title={__("admin.blog.delete")}
                   >
                     <TrashIcon className="w-4 h-4" />
                   </button>
@@ -125,8 +127,8 @@ export default function BlogList() {
           /* Empty State */
           <div className="text-center py-16 bg-white rounded-xl border border-dashed border-slate-200">
             <NewspaperIcon className="mx-auto h-10 w-10 text-slate-300" />
-            <h3 className="mt-2 text-sm font-semibold text-slate-900">Hiç hili bildiriş tapylmady</h3>
-            <p className="mt-1 text-sm text-slate-500">Täze bildiriş goşmak üçin ýokardaky düwmä basyň.</p>
+            <h3 className="mt-2 text-sm font-semibold text-slate-900">{__("admin.blog.empty")}</h3>
+            <p className="mt-1 text-sm text-slate-500">{__("admin.blog.empty_description")}</p>
           </div>
         )}
 

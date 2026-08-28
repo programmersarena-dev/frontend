@@ -6,6 +6,7 @@ import NotFound from "@/components/core/NotFound";
 import { UserIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 const inputClass =
   "mt-1.5 block w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 focus:outline-none transition-colors";
@@ -24,6 +25,7 @@ const Field = ({ label, htmlFor, error, children }) => (
 );
 
 export default function ProfileEditView() {
+  const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({});
   const [countries, setCountries] = useState([]);
@@ -57,7 +59,7 @@ export default function ProfileEditView() {
         },
       })
       .then(({ data }) => {
-        addToast("Siziň profiliňiz üstünlikli täzelendi");
+        addToast(__("user.profile.update_success"));
         setUser((prevState) => ({
           ...prevState,
           image: data.image,
@@ -121,7 +123,7 @@ export default function ProfileEditView() {
           )}
         </div>
 
-        <Field label="Suraty üýtget" error={errors.image}>
+         <Field label={__("user.profile.edit_image")} error={errors.image}>
           <input
             type="file"
             onChange={(e) => setUser({ ...user, image: e.target.files[0] })}
@@ -129,7 +131,7 @@ export default function ProfileEditView() {
           />
         </Field>
 
-        <Field label="Köne parol" htmlFor="old_password" error={errors.old_password}>
+         <Field label={__("user.profile.old_password")} htmlFor="old_password" error={errors.old_password}>
           <input
             id="old_password"
             name="old_password"
@@ -139,7 +141,7 @@ export default function ProfileEditView() {
           />
         </Field>
 
-        <Field label="Täze parol" htmlFor="password" error={errors.password}>
+         <Field label={__("user.profile.new_password")} htmlFor="password" error={errors.password}>
           <input
             id="password"
             name="password"
@@ -148,12 +150,12 @@ export default function ProfileEditView() {
             className={inputClass}
           />
           <p className="mt-1 text-xs text-slate-400">
-            Üýtgetmek islemeýän bolsaňyz, paroly boş goýuň
+             {__("user.profile.password_hint")}
           </p>
         </Field>
 
         <Field
-          label="Täze paroly tassykla"
+           label={__("user.profile.confirm_password")}
           htmlFor="password_confirmation"
           error={errors.password_confirmation}
         >
@@ -168,7 +170,7 @@ export default function ProfileEditView() {
           />
         </Field>
 
-        <Field label="At" htmlFor="first_name" error={errors.first_name}>
+         <Field label={__("user.profile.first_name")} htmlFor="first_name" error={errors.first_name}>
           <input
             id="first_name"
             name="first_name"
@@ -179,7 +181,7 @@ export default function ProfileEditView() {
           />
         </Field>
 
-        <Field label="Familiýa" htmlFor="last_name" error={errors.last_name}>
+         <Field label={__("user.profile.last_name")} htmlFor="last_name" error={errors.last_name}>
           <input
             id="last_name"
             name="last_name"
@@ -190,7 +192,7 @@ export default function ProfileEditView() {
           />
         </Field>
 
-        <Field label="Ýurt" htmlFor="country_id" error={errors.country_id}>
+         <Field label={__("user.profile.country")} htmlFor="country_id" error={errors.country_id}>
           <select
             id="country_id"
             name="country_id"
@@ -212,13 +214,13 @@ export default function ProfileEditView() {
             onClick={() => navigate(`/profile/${handle}`)}
             className="px-4 py-2 rounded-lg text-xs font-medium text-slate-500 hover:bg-slate-50 transition-colors"
           >
-            Goýbolsun
+             {__("user.profile.cancel")}
           </button>
           <button
             type="submit"
             className="px-4 py-2 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 transition-colors"
           >
-            Täzele
+             {__("user.profile.update")}
           </button>
         </div>
       </form>

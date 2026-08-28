@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { Textarea } from "@/components/ui";
 import { Button, Input, Tabs, Tab } from "@/components/ui";
 import { useToast } from "@/contexts/ToastContext";
+import { useTranslation } from "@/contexts/TranslationContext";
 import AdminPageHeader from "@/components/Admin/PageHeader";
 import ReactCountryFlag from "react-world-flags";
 
 export default function AddBlog() {
   const { addToast } = useToast();
+  const { __ } = useTranslation();
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState("tm");
@@ -40,7 +42,7 @@ export default function AddBlog() {
         navigate("/admin/blogs");
       })
       .catch((err) => {
-        addToast("Error creating blog", "error");
+        addToast(__("admin.blog.error_creating"), "error");
         console.error("Error creating blog:", err);
       });
   };
@@ -51,7 +53,7 @@ export default function AddBlog() {
 
   return (
     <>
-      <AdminPageHeader title="Täze bildiriş goş" />
+      <AdminPageHeader title={__("admin.blog.add_title")} />
       <div className="bg-white p-6 rounded-lg shadow-md">
 
         <div className="mb-4">
@@ -69,20 +71,20 @@ export default function AddBlog() {
         </div>
 
         <Input
-          text="Tema"
+          text={__("admin.blog.title_label")}
           title={blogData[activeTab].title}
           setTitle={(value) => handleChange(activeTab, "title", value)}
         />
         <Textarea
-          text="Mazmun"
+          text={__("admin.blog.content_label")}
           description={blogData[activeTab].description}
           setDescription={(value) => handleChange(activeTab, "description", value)}
           activeTab={activeTab}
         />
 
         <div className="flex justify-end space-x-4">
-          <Button text="Yza" onClick={onCancelClick} />
-          <Button text="Goş" onClick={onSaveClick} />
+          <Button text={__("admin.blog.cancel")} onClick={onCancelClick} />
+          <Button text={__("admin.blog.save")} onClick={onSaveClick} />
         </div>
       </div>
     </>

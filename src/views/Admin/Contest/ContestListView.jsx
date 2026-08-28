@@ -3,6 +3,7 @@ import axiosClient from "@/api/axios";
 import Loading from "../../../components/core/Loading";
 import PaginationLinks from "../../../components/core/PaginationLinks";
 import FormatToUTC from "../../../components/core/FormatToUTC";
+import { useTranslation } from "@/contexts/TranslationContext";
 import {
   BellIcon,
   PencilSquareIcon,
@@ -20,20 +21,21 @@ import { Link } from "react-router-dom";
 import AdminPageHeader from "@/components/Admin/PageHeader";
 
 export default function ContestListView() {
+  const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [contests, setContests] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [meta, setMeta] = useState({});
 
   const TABLE_HEAD = [
-    { label: "Görnüşi", align: "text-left" },
-    { label: "Ady", align: "text-left" },
-    { label: "Awtorlar", align: "text-left" },
-    { label: "Başlaýan wagty", align: "text-center" },
-    { label: "Dowamlylygy", align: "text-center" },
-    { label: "Ýagdaýy", align: "text-center" },
-    { label: "Meseleler", align: "text-center" },
-    { label: "Amallar", align: "text-right" },
+    { label: __("admin.contest.type"), align: "text-left" },
+    { label: __("admin.contest.name"), align: "text-left" },
+    { label: __("admin.contest.authors"), align: "text-left" },
+    { label: __("admin.contest.start_time"), align: "text-center" },
+    { label: __("admin.contest.duration"), align: "text-center" },
+    { label: __("admin.contest.status"), align: "text-center" },
+    { label: __("admin.contest.problems"), align: "text-center" },
+    { label: __("admin.contest.actions"), align: "text-right" },
   ];
 
   const getContests = useCallback((url = null, query = searchName) => {
@@ -80,7 +82,7 @@ export default function ContestListView() {
   };
 
   const onDeleteClick = (id) => {
-    if (window.confirm("Siz çyndanam pozmak isleýäňizmi?")) {
+    if (window.confirm(__("admin.contest.confirm_delete"))) {
       setLoading(true);
       axiosClient
         .delete(`/admin/contest/${id}/delete`)
@@ -96,7 +98,7 @@ export default function ContestListView() {
   };
 
   const recheckAllSubmissions = (id) => {
-    if (window.confirm("Are you sure you want to recheck all submissions for this contest?")) {
+    if (window.confirm(__("admin.contest.confirm_recheck"))) {
       setLoading(true);
       axiosClient
         .post(`/admin/contest/${id}/recheck-all-submissions`)
@@ -109,7 +111,7 @@ export default function ContestListView() {
   };
 
   const notifyUsers = (id) => {
-    if (window.confirm("Are you sure you want to notify users for this contest?")) {
+    if (window.confirm(__("admin.contest.confirm_notify"))) {
       setLoading(true);
       axiosClient
         .post(`/admin/contest/${id}/notify`)
@@ -122,7 +124,7 @@ export default function ContestListView() {
   };
 
   const onGiveRateClick = (id) => {
-    if (window.confirm("Siz çyndanam reýting beresiňiz gelýärmi?")) {
+    if (window.confirm(__("admin.contest.confirm_rating"))) {
       setLoading(true);
       axiosClient
         .get(`/admin/contest/${id}/add/ratings`)
@@ -140,21 +142,21 @@ export default function ContestListView() {
         return (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            Başlandy
+             {__("admin.contest.active")}
           </span>
         );
       case "Pending":
         return (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-600/20">
             <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-            Başlamady
+             {__("admin.contest.pending")}
           </span>
         );
       default:
         return (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-500/10">
             <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
-            Gutardy
+             {__("admin.contest.ended")}
           </span>
         );
     }
@@ -168,7 +170,7 @@ export default function ContestListView() {
     <div className="space-y-6">
       {/* Header & Search Bar Bar */}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between border-b border-slate-200/80 pb-5">
-        <AdminPageHeader title="Bäsleşikler" />
+        <AdminPageHeader title={__("admin.contest.title")} />
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
           {/* Enhanced Search Form */}
@@ -182,7 +184,7 @@ export default function ContestListView() {
 
             <input
               type="text"
-              placeholder="Bäsleşigi gözle..."
+              placeholder={__("admin.contest.search_placeholder")}
               value={searchName}
               onChange={(e) => setSearchName(e.target.value)}
               className="w-full rounded-xl border border-slate-200/90 bg-white pl-10 pr-20 py-2 text-sm font-medium text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
@@ -204,7 +206,7 @@ export default function ContestListView() {
               type="submit"
               className="absolute right-1 top-1 bottom-1 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition-colors border border-slate-200"
             >
-              Gözle
+              {__("admin.contest.search")}
             </button>
           </form>
 
@@ -214,7 +216,7 @@ export default function ContestListView() {
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 shrink-0"
           >
             <PlusIcon className="h-4 w-4 stroke-[2.5]" />
-            <span>Bäsleşik goş</span>
+            <span>{__("admin.contest.add")}</span>
           </Link>
         </div>
       </div>
@@ -291,7 +293,7 @@ export default function ContestListView() {
                       <Link
                         to={`/admin/contest/${contest.id}/problems`}
                         className="inline-flex items-center justify-center p-2 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                        title="Meseleler"
+                         title={__("admin.contest.problems_tooltip")}
                       >
                         <DocumentTextIcon className="h-5 w-5" />
                       </Link>
@@ -303,7 +305,7 @@ export default function ContestListView() {
                         <button
                           onClick={() => recheckAllSubmissions(contest.id)}
                           className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
-                          title="Submssiýalary täzeden barlat"
+                           title={__("admin.contest.recheck_tooltip")}
                         >
                           <ArrowPathIcon className="h-4 w-4" />
                         </button>
@@ -312,7 +314,7 @@ export default function ContestListView() {
                           <button
                             onClick={() => notifyUsers(contest.id)}
                             className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
-                            title="Ulanyjylary duýdur"
+                             title={__("admin.contest.notify_tooltip")}
                           >
                             <BellIcon className="h-4 w-4" />
                           </button>
@@ -324,14 +326,14 @@ export default function ContestListView() {
                               <button
                                 onClick={() => onGiveRateClick(contest.id)}
                                 className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
-                                title="Reýting ber"
+                                 title={__("admin.contest.rate_tooltip")}
                               >
                                 <StarIcon className="h-4 w-4" />
                               </button>
                             ) : (
                               <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2.5 py-1 text-xs font-medium text-green-600 ring-1 ring-inset ring-green-500/20">
                                 <CheckCircleIcon className="h-3.5 w-3.5" />
-                                Reýting berildi
+                                 {__("admin.contest.rated_badge")}
                               </span>
                             )}
                           </>
@@ -341,7 +343,7 @@ export default function ContestListView() {
                           <Link
                             to={`/admin/contest/${contest.id}/edit`}
                             className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                            title="Üýtget"
+                             title={__("admin.contest.edit_tooltip")}
                           >
                             <PencilSquareIcon className="h-4 w-4" />
                           </Link>
@@ -351,7 +353,7 @@ export default function ContestListView() {
                           <button
                             onClick={() => onDeleteClick(contest.id)}
                             className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                            title="Poz"
+                             title={__("admin.contest.delete_tooltip")}
                           >
                             <TrashIcon className="h-4 w-4" />
                           </button>
@@ -371,12 +373,12 @@ export default function ContestListView() {
         <div className="mx-auto my-12 max-w-md rounded-2xl border border-dashed border-slate-300 p-8 text-center bg-white/50">
           <TrophyIcon className="mx-auto h-10 w-10 text-slate-300" />
           <h3 className="mt-3 text-sm font-semibold text-slate-900">
-            Bäsleşik tapylmady
+             {__("admin.contest.not_found")}
           </h3>
           <p className="mt-1 text-xs text-slate-500">
             {searchName
-              ? `"${searchName}" gözlegi boýunça bäsleşik tapylmady.`
-              : "Täze bäsleşik goşmak üçin ýokardaky düwmä basyň."}
+                             ? `${__("admin.contest.not_found_search")} "${searchName}".`
+              : __("admin.contest.add_new")}}
           </p>
         </div>
       )}

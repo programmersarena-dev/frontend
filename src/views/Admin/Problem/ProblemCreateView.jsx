@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axiosClient from "@/api/axios";
+import { useTranslation } from "@/contexts/TranslationContext";
 import {
   XMarkIcon,
   ArrowUpTrayIcon,
@@ -31,6 +32,7 @@ const Field = ({ label, children }) => (
 );
 
 export default function ProblemCreateView() {
+  const { __ } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -163,18 +165,18 @@ export default function ProblemCreateView() {
 
   return (
     <div className="max-w-4xl">
-      <AdminPageHeader title="Mesele goş" />
+       <AdminPageHeader title={__("admin.problem.add_title")} />
 
       <div className="mt-6 space-y-6">
         {/* Card 1: Limits & Score */}
         <div className="border border-slate-100 rounded-2xl p-6">
           <div className="mb-5 flex items-center gap-2 border-b border-slate-100 pb-3">
             <AdjustmentsHorizontalIcon className="h-4 w-4 text-slate-400" />
-            <h3 className="text-sm font-semibold text-slate-900">Esasy sazlamalar</h3>
+             <h3 className="text-sm font-semibold text-slate-900">{__("admin.problem.basic_settings")}</h3>
           </div>
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-4">
-            <Field label="Wagt çäklendirmesi (sekunt)">
+             <Field label={__("admin.problem.time_limit")}>
               <input
                 type="number"
                 name="time_limit"
@@ -186,7 +188,7 @@ export default function ProblemCreateView() {
               />
             </Field>
 
-            <Field label="Ýat çäklendirmesi (MB)">
+             <Field label={__("admin.problem.memory_limit")}>
               <input
                 type="number"
                 name="memory_limit"
@@ -197,7 +199,7 @@ export default function ProblemCreateView() {
               />
             </Field>
 
-            <Field label="Bal">
+             <Field label={__("admin.problem.score")}>
               <input
                 type="number"
                 name="score"
@@ -208,7 +210,7 @@ export default function ProblemCreateView() {
               />
             </Field>
 
-            <Field label="Çylşyrymlylyk">
+             <Field label={__("admin.problem.difficulty")}>
               <input
                 type="number"
                 name="difficulty"
@@ -226,17 +228,17 @@ export default function ProblemCreateView() {
         <div className="border border-slate-100 rounded-2xl p-6">
           <div className="mb-5 flex items-center gap-2 border-b border-slate-100 pb-3">
             <TagIcon className="h-4 w-4 text-slate-400" />
-            <h3 className="text-sm font-semibold text-slate-900">Tegler we Test Faýllary</h3>
+             <h3 className="text-sm font-semibold text-slate-900">{__("admin.problem.tags_files")}</h3>
           </div>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* Tag Selector */}
             <div>
-              <label className="block text-xs font-medium text-slate-500">Tegler</label>
+               <label className="block text-xs font-medium text-slate-500">{__("admin.problem.tags")}</label>
               <div className="mt-1.5 flex flex-wrap gap-1.5 rounded-lg border border-slate-200 p-3 min-h-[46px]">
                 {problem.tags.length === 0 ? (
                   <span className="text-xs text-slate-300 self-center">
-                    Hiç hili teg saýlanmady
+                     {__("admin.problem.no_tags")}
                   </span>
                 ) : (
                   problem.tags.map((tag) => (
@@ -266,7 +268,7 @@ export default function ProblemCreateView() {
                 className={inputClass}
               >
                 <option value="" disabled>
-                  + Teg saýla
+                   {__("admin.problem.select_tag")}
                 </option>
                 {tags.map((tag, index) => (
                   <option key={index} value={tag}>
@@ -278,7 +280,7 @@ export default function ProblemCreateView() {
 
             {/* Test Cases File Upload */}
             <div>
-              <label className="block text-xs font-medium text-slate-500">Testler (.zip)</label>
+               <label className="block text-xs font-medium text-slate-500">{__("admin.problem.tests")}</label>
               <label className="mt-1.5 relative flex min-h-[105px] cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 p-4 transition-colors hover:border-indigo-300 hover:bg-indigo-50/20">
                 <input
                   type="file"
@@ -295,7 +297,7 @@ export default function ProblemCreateView() {
                   <div className="text-center">
                     <ArrowUpTrayIcon className="mx-auto h-5 w-5 text-slate-300" />
                     <p className="mt-1 text-xs text-slate-400">
-                      ZIP faýly saýlaň ýa-da bu ýere geçiriň
+                       {__("admin.problem.upload_hint")}
                     </p>
                   </div>
                 )}
@@ -309,7 +311,7 @@ export default function ProblemCreateView() {
           <div className="mb-5 flex items-center justify-between border-b border-slate-100 pb-3">
             <div className="flex items-center gap-2">
               <GlobeAltIcon className="h-4 w-4 text-slate-400" />
-              <h3 className="text-sm font-semibold text-slate-900">Mesele barada maglumat</h3>
+               <h3 className="text-sm font-semibold text-slate-900">{__("admin.problem.info")}</h3>
             </div>
 
             <div className="inline-flex rounded-lg border border-slate-200 p-0.5">
@@ -344,27 +346,27 @@ export default function ProblemCreateView() {
               className={activeTab === lang.id ? "space-y-5 block" : "hidden"}
             >
               <Input
-                text="Ady"
+                 text={__("admin.problem.name_label")}
                 title={problem[lang.id].name}
                 setTitle={(value) => handleChange(lang.id, "name", value)}
               />
               <Textarea
-                text="Mazmun"
+                 text={__("admin.problem.description_label")}
                 description={problem[lang.id].description}
                 setDescription={(value) => handleChange(lang.id, "description", value)}
               />
               <Textarea
-                text="Giriş verileri (Input)"
+                 text={__("admin.problem.input_label")}
                 description={problem[lang.id].input}
                 setDescription={(value) => handleChange(lang.id, "input", value)}
               />
               <Textarea
-                text="Çykyş verileri (Output)"
+                 text={__("admin.problem.output_label")}
                 description={problem[lang.id].output}
                 setDescription={(value) => handleChange(lang.id, "output", value)}
               />
               <Textarea
-                text="Bellik (Note)"
+                 text={__("admin.problem.note_label")}
                 description={problem[lang.id].note}
                 setDescription={(value) => handleChange(lang.id, "note", value)}
               />
@@ -378,7 +380,7 @@ export default function ProblemCreateView() {
             to={`/admin/contest/${id}/problems`}
             className="px-4 py-2 rounded-lg text-xs font-medium text-slate-500 hover:bg-slate-50 transition-colors"
           >
-            Goýbolsun
+             {__("admin.problem.cancel")}
           </Link>
           <button
             type="button"
@@ -386,7 +388,7 @@ export default function ProblemCreateView() {
             onClick={onSaveClick}
             className="px-4 py-2 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 transition-colors"
           >
-            {isSubmitting ? "Goşulýar..." : "Goş"}
+             {isSubmitting ? __("admin.problem.saving") : __("admin.problem.save")}
           </button>
         </div>
       </div>

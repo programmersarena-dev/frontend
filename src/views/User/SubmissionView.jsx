@@ -7,6 +7,7 @@ import FormatToUTC from "@/components/core/FormatToUTC";
 import ProblemTests from "@/components/Problemset/ProblemTests";
 import SubmissionStatus from "@/components/Submissions/SubmissionStatus";
 import LanguageMapper from "@/components/Problemset/LanguageMapper";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -22,6 +23,7 @@ const Stat = ({ label, children }) => (
 );
 
 export default function SubmissionView() {
+  const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
   const { submissionId } = useParams();
   const [submission, setSubmission] = useState(null);
@@ -86,7 +88,7 @@ export default function SubmissionView() {
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="space-y-1">
             <span className="text-[10.5px] font-medium text-slate-400 uppercase tracking-wide font-mono">
-              Iberilme #{submission.id}
+              {__("user.submission.submission_label")}{submission.id}
             </span>
             <div>
               <Link
@@ -108,7 +110,7 @@ export default function SubmissionView() {
         </div>
 
         <div className="flex flex-wrap gap-x-8 gap-y-3 py-4 border-y border-slate-100">
-          <Stat label="Ulanyjy">
+           <Stat label={__("user.submission.user")}>
             <Link
               to={`/profile/${submission.handle}`}
               className="text-indigo-600 hover:text-indigo-700 transition-colors"
@@ -116,12 +118,12 @@ export default function SubmissionView() {
               {typeof submission.handle === "string" ? submission.handle : ""}
             </Link>
           </Stat>
-          <Stat label="Dil">
+           <Stat label={__("user.submission.language")}>
             {typeof submission.language === "string" ? submission.language : ""}
           </Stat>
-          <Stat label="Wagt">{submission.time ?? 0}</Stat>
-          <Stat label="Ýady">{submission.memory ?? 0}</Stat>
-          <Stat label="Ugradyldy">
+           <Stat label={__("user.submission.time")}>{submission.time ?? 0}</Stat>
+           <Stat label={__("user.submission.memory")}>{submission.memory ?? 0}</Stat>
+           <Stat label={__("user.submission.sent_time")}>
             <FormatToUTC dateTime={submission.sent_time} />
           </Stat>
         </div>
@@ -129,7 +131,7 @@ export default function SubmissionView() {
 
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-slate-900">Kod</h2>
+           <h2 className="text-sm font-semibold text-slate-900">{__("user.submission.code")}</h2>
           <button
             onClick={handleCopyCode}
             type="button"
@@ -138,12 +140,12 @@ export default function SubmissionView() {
             {copied ? (
               <>
                 <CheckIcon className="h-3.5 w-3.5 text-emerald-600" />
-                <span className="text-emerald-600">Göçürildi</span>
+                 <span className="text-emerald-600">{__("user.submission.copied")}</span>
               </>
             ) : (
               <>
                 <ClipboardIcon className="h-3.5 w-3.5" />
-                <span>Göçür</span>
+                 <span>{__("user.submission.copy")}</span>
               </>
             )}
           </button>
@@ -152,7 +154,7 @@ export default function SubmissionView() {
         <div className="rounded-lg border border-slate-100 overflow-hidden">
           <div className="border-b border-slate-100 bg-slate-50/60 px-4 py-2 flex items-center justify-between text-[11px] font-mono text-slate-400">
             <span>{syntaxLanguage}</span>
-            <span>{codeString.split("\n").length} setir</span>
+             <span>{codeString.split("\n").length} {__("user.submission.lines")}</span>
           </div>
           <SyntaxHighlighter
             language={syntaxLanguage}

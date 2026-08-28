@@ -4,12 +4,14 @@ import axiosClient from "@/api/axios";
 import Loading from "@/components/core/Loading";
 import { Textarea } from "@/components/ui";
 import { Button, Input, Tabs, Tab } from "@/components/ui";
+import { useTranslation } from "@/contexts/TranslationContext";
 import AdminPageHeader from "@/components/Admin/PageHeader";
 import ReactCountryFlag from "react-world-flags";
 
 export default function EditBlog() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("tm");
   const [blogData, setBlogData] = useState({
@@ -70,7 +72,7 @@ export default function EditBlog() {
 
   return (
     <>
-      <AdminPageHeader title="Bildirişi üýtget" />
+      <AdminPageHeader title={__("admin.blog.edit_title")} />
       <div className="bg-white p-6 rounded-lg shadow-md">
 
         <div className="mb-4">
@@ -88,20 +90,20 @@ export default function EditBlog() {
         </div>
 
         <Input
-          text="Tema"
+          text={__("admin.blog.title_label")}
           title={blogData[activeTab].title}
           setTitle={(value) => handleChange(activeTab, "title", value)}
         />
         <Textarea
-          text="Mazmun"
+          text={__("admin.blog.content_label")}
           description={blogData[activeTab].description}
           setDescription={(value) => handleChange(activeTab, "description", value)}
           activeTab={activeTab}
         />
 
         <div className="flex justify-end space-x-4">
-          <Button text="Yza" onClick={onCancelClick} />
-          <Button text="Üýtget" onClick={onSaveClick} />
+          <Button text={__("admin.blog.cancel")} onClick={onCancelClick} />
+          <Button text={__("admin.blog.update")} onClick={onSaveClick} />
         </div>
       </div>
     </>

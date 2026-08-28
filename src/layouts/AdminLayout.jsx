@@ -1,5 +1,6 @@
 import { NavLink, Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "@/contexts/TranslationContext";
 import {
   HomeIcon,
   FolderIcon,
@@ -12,20 +13,21 @@ import {
 } from "@heroicons/react/24/outline";
 import NotFound from "@/components/core/NotFound";
 
-const navigation = [
-  { name: "Baş sahypa", to: "/admin/dashboard", icon: HomeIcon },
-  { name: "File Manager", to: "/admin/files", icon: FolderIcon },
-  { name: "Bildirişler", to: "/admin/blogs", icon: MegaphoneIcon },
-  { name: "Bäsleşikler", to: "/admin/contests", icon: TrophyIcon },
-];
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function AdminLayout({ children }) {
   const { currentUser, logout } = useAuth();
+  const { __ } = useTranslation();
   const location = useLocation();
+
+  const navigation = [
+    { name: __("admin.dashboard.title"), to: "/admin/dashboard", icon: HomeIcon },
+    { name: __("admin.file_manager.title"), to: "/admin/files", icon: FolderIcon },
+    { name: __("admin.blog.title"), to: "/admin/blogs", icon: MegaphoneIcon },
+    { name: __("admin.contest.title"), to: "/admin/contests", icon: TrophyIcon },
+  ];
 
   const userDashboardTo = currentUser?.name ? `/profile/${currentUser.handle}` : "/";
 
@@ -47,7 +49,7 @@ export default function AdminLayout({ children }) {
               ProgrammersArena
             </span>
             <span className="text-xs font-medium text-emerald-600">
-              Admin Dashboard
+              {__("admin.dashboard.title")}
             </span>
           </div>
         </div>
@@ -58,7 +60,7 @@ export default function AdminLayout({ children }) {
             className="group flex items-center px-3 py-2 text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-colors"
           >
             <ArrowLeftIcon className="mr-2.5 h-3.5 w-3.5 text-slate-400 group-hover:text-slate-600 transition-colors" />
-            Ulanyjy paneli
+            {__("admin.dashboard.user_panel")}
           </Link>
         </div>
 
@@ -104,17 +106,17 @@ export default function AdminLayout({ children }) {
               <UserCircleIcon className="h-8 w-8 text-slate-400 flex-shrink-0" />
               <div className="truncate">
                 <p className="text-xs font-semibold text-slate-800 truncate">
-                  {currentUser?.name || "Admin"}
+                  {currentUser?.name || __("admin.dashboard.title")}
                 </p>
                 <p className="text-[11px] text-slate-500 truncate">
-                  {currentUser?.email || "Administrator"}
+                  {currentUser?.email || __("admin.dashboard.title")}
                 </p>
               </div>
             </Link>
 
             <button
               onClick={logout}
-              title="Çykmak"
+              title={__("auth.logout")}
               className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
             >
               <ArrowRightOnRectangleIcon className="h-5 w-5" />

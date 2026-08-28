@@ -1,7 +1,9 @@
 import React, { useMemo } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 export default function PaginationLinks({ meta, onPageClick, onPageChange }) {
+  const { __ } = useTranslation();
   if (!meta || !meta.total || meta.total <= meta.per_page) {
     return null;
   }
@@ -48,7 +50,7 @@ export default function PaginationLinks({ meta, onPageClick, onPageChange }) {
 
     // Previous link
     list.push({
-      label: "Öňki",
+              label: __("core.pagination.previous"),
       url: currentPage > 1 ? constructUrl(currentPage - 1) : null,
       isPrev: true,
     });
@@ -114,14 +116,14 @@ export default function PaginationLinks({ meta, onPageClick, onPageChange }) {
           disabled={currentPage <= 1}
           onClick={(ev) =>
             handleLinkClick(ev, {
-              label: "Öňki",
+      label: __("core.pagination.previous"),
               url: currentPage > 1 ? constructUrl(currentPage - 1) : null,
             })
           }
           className="relative inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
           <ChevronLeftIcon className="mr-1.5 h-4 w-4 text-slate-500" />
-          Öňki
+          {__("core.pagination.previous")}
         </button>
 
         <button
@@ -129,13 +131,13 @@ export default function PaginationLinks({ meta, onPageClick, onPageChange }) {
           disabled={currentPage >= totalPages}
           onClick={(ev) =>
             handleLinkClick(ev, {
-              label: "Indiki",
+      label: __("core.pagination.next"),
               url: currentPage < totalPages ? constructUrl(currentPage + 1) : null,
             })
           }
           className="relative ml-3 inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
-          Indiki
+          {__("core.pagination.next")}
           <ChevronRightIcon className="ml-1.5 h-4 w-4 text-slate-500" />
         </button>
       </div>
@@ -144,9 +146,9 @@ export default function PaginationLinks({ meta, onPageClick, onPageChange }) {
       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
         <div>
           <p className="text-xs text-slate-600">
-            Görkezilýär <span className="font-semibold text-slate-900">{from || 0}</span> -{" "}
-            <span className="font-semibold text-slate-900">{to || 0}</span> / Jemi{" "}
-            <span className="font-semibold text-slate-900">{total}</span>
+             {__("core.pagination.showing")} <span className="font-semibold text-slate-900">{from || 0}</span> {__("core.pagination.to")}{" "}
+             <span className="font-semibold text-slate-900">{to || 0}</span> {__("core.pagination.of")}{" "}
+             <span className="font-semibold text-slate-900">{total}</span>
           </p>
         </div>
 

@@ -1,17 +1,19 @@
 import React from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useParams, Link, useLocation } from "react-router-dom";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 const TABS = [
-  { path: "", label: "Profil" },
-  { path: "/edit", label: "Sazlamalar", ownerOnly: true },
-  { path: "/teams", label: "Toparlar", ownerOnly: true },
-  { path: "/submissions", label: "Iberilen kodlar" },
-  { path: "/ratings", label: "Reýting üýtgemeler" },
+  { path: "", labelKey: "profile.menu.profile" },
+  { path: "/edit", labelKey: "profile.menu.settings", ownerOnly: true },
+  { path: "/teams", labelKey: "profile.menu.teams", ownerOnly: true },
+  { path: "/submissions", labelKey: "profile.menu.submissions" },
+  { path: "/ratings", labelKey: "profile.menu.ratings" },
 ];
 
 export default function ProfileMenu() {
   const { currentUser } = useAuth();
+  const { __ } = useTranslation();
   const { handle } = useParams();
   const { pathname } = useLocation();
 
@@ -33,7 +35,7 @@ export default function ProfileMenu() {
                 : "text-slate-500 hover:text-slate-800"
                 }`}
             >
-              {tab.label}
+              {__(tab.labelKey)}
               {isActive && (
                 <span className="absolute left-0 right-0 -bottom-px h-[1.5px] bg-indigo-600" />
               )}

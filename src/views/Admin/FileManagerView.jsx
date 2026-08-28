@@ -9,8 +9,10 @@ import {
   ArrowLeftIcon,
 } from '@heroicons/react/24/outline';
 import axiosClient from '@/api/axios';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 export default function FileManagerView() {
+  const { __ } = useTranslation();
   const [files, setFiles] = useState([]);
   const [directories, setDirectories] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -49,7 +51,7 @@ export default function FileManagerView() {
       });
       fetchFiles();
     } catch (err) {
-      alert("Failed to upload file.");
+      alert(__("admin.file_manager.upload_failed"));
     } finally {
       setIsUploading(false);
       e.target.value = ''; // Reset input
@@ -57,7 +59,7 @@ export default function FileManagerView() {
   };
 
   const handleDelete = async (path) => {
-    if (!confirm("Are you sure?")) return;
+    if (!confirm(__("admin.file_manager.confirm_delete"))) return;
     try {
       await axiosClient.delete(`/admin/files/delete`, { data: { path } });
       fetchFiles();
@@ -67,7 +69,7 @@ export default function FileManagerView() {
   };
 
   const handleCreateFolder = async () => {
-    const folderName = window.prompt("Enter new folder name:");
+    const folderName = window.prompt(__("admin.file_manager.folder_name_prompt"));
 
     if (!folderName || folderName.trim() === "") return;
 
@@ -81,7 +83,7 @@ export default function FileManagerView() {
       fetchFiles(currentDirectory);
     } catch (err) {
       console.error("Error creating folder:", err);
-      alert(err.response?.data?.error || "Failed to create folder");
+      alert(err.response?.data?.error || __("admin.file_manager.create_folder_failed"));
     }
   };
 
@@ -110,7 +112,7 @@ export default function FileManagerView() {
     navigator.clipboard.writeText(url);
 
     // Optional: replace alert with a toast notification if you have one
-    alert("Link copied to clipboard!");
+    alert(__("admin.file_manager.link_copied"));
   };
 
   return (
@@ -119,8 +121,8 @@ export default function FileManagerView() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">File Manager</h2>
-            <p className="text-sm text-gray-500">Managing: <span className="font-mono text-indigo-600">{currentDirectory}</span></p>
+            <h2 className="text-2xl font-bold text-gray-800">{__("admin.file_manager.title")}</h2>
+            <p className="text-sm text-gray-500">{__("admin.file_manager.managing")} <span className="font-mono text-indigo-600">{currentDirectory}</span></p>
           </div>
           <div className="flex items-center gap-3">
             {/* Back Button - Only show if not at root */}
@@ -128,10 +130,10 @@ export default function FileManagerView() {
               <button
                 onClick={handleGoBack}
                 className="flex items-center gap-2 px-3 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
-                title="Go to parent folder"
+                title={__("admin.file_manager.go_to_parent")}
               >
                 <ArrowLeftIcon className="w-5 h-5" />
-                <span className="text-sm font-medium">Back</span>
+                <span className="text-sm font-medium">{__("admin.file_manager.back")}</span>
               </button>
             )}
 
@@ -141,14 +143,14 @@ export default function FileManagerView() {
               className="flex items-center gap-2 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
             >
               <FolderPlusIcon className="w-5 h-5 text-gray-500" />
-              <span className="text-sm font-medium">New Folder</span>
+              <span className="text-sm font-medium">{__("admin.file_manager.new_folder")}</span>
             </button>
 
             {/* Existing Upload Button */}
             <label className={`flex items-center gap-2 px-4 py-2 text-white rounded-lg transition cursor-pointer ${isUploading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'
               }`}>
               <ArrowUpTrayIcon className="w-5 h-5" />
-              <span className="text-sm font-medium">Upload</span>
+              <span className="text-sm font-medium">{__("admin.file_manager.upload")}</span>
               <input type="file" className="hidden" onChange={handleUpload} disabled={isUploading} />
             </label>
           </div>
@@ -157,14 +159,14 @@ export default function FileManagerView() {
         <div className="grid grid-cols-12 gap-6">
           {/* Sidebar / Navigation */}
           <aside className="col-span-3 border-r border-gray-100 pr-4">
-            <h3 className="text-xs font-semibold text-gray-400 uppercase mb-4">Navigation</h3>
+            <h3 className="text-xs font-semibold text-gray-400 uppercase mb-4">{__("admin.file_manager.navigation")}</h3>
             <ul className="space-y-1">
               {/* Root Button */}
               <li
                 onClick={() => fetchFiles('')}
                 className={`flex items-center gap-2 p-2 rounded-md cursor-pointer text-sm ${currentDirectory === '' ? 'bg-indigo-50 text-indigo-600 font-bold' : 'text-gray-600 hover:bg-gray-50'}`}
               >
-                <FolderIcon className="w-5 h-5" /> root
+                <FolderIcon className="w-5 h-5" /> {__("admin.file_manager.root")}
               </li>
 
               {/* List of Sub-directories in the CURRENT folder */}
@@ -186,17 +188,17 @@ export default function FileManagerView() {
           {/* Main Grid */}
           <main className="col-span-9">
             {loading ? (
-              <div className="flex justify-center py-20 text-gray-400 animate-pulse">Loading assets...</div>
+              <div className="flex justify-center py-20 text-gray-400 animate-pulse">{__("admin.file_manager.loading")}</div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {files.map((file) => (
                   <div key={file} className="group relative flex flex-col items-center p-4 border border-gray-100 rounded-xl hover:border-indigo-200 hover:bg-indigo-50/30 transition">
                     {/* Action Buttons */}
                     <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition">
-                      <button onClick={() => copyToClipboard(file)} className="p-1 text-gray-500 hover:bg-white border rounded shadow-sm" title="Copy URL">
-                        <ClipboardDocumentIcon className="w-4 h-4" />
-                      </button>
-                      <button onClick={() => handleDelete(file)} className="p-1 text-red-500 hover:bg-red-50 border rounded shadow-sm" title="Delete">
+                      <button onClick={() => copyToClipboard(file)} className="p-1 text-gray-500 hover:bg-white border rounded shadow-sm" title={__("admin.file_manager.copy_url")}>
+                         <ClipboardDocumentIcon className="w-4 h-4" />
+                       </button>
+                       <button onClick={() => handleDelete(file)} className="p-1 text-red-500 hover:bg-red-50 border rounded shadow-sm" title={__("admin.file_manager.delete")}>
                         <TrashIcon className="w-4 h-4" />
                       </button>
                     </div>

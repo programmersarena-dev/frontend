@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useTranslation } from "@/contexts/TranslationContext";
 import {
   ArrowLeftIcon,
   PencilIcon,
@@ -18,6 +19,7 @@ import { useToast } from "@/contexts/ToastContext";
 import AdminPageHeader from "@/components/Admin/PageHeader";
 
 export default function ProblemListView() {
+  const { __ } = useTranslation();
   const { addToast } = useToast();
   const { id } = useParams();
 
@@ -26,11 +28,11 @@ export default function ProblemListView() {
 
   const TABLE_HEAD = [
     "#",
-    "Ady",
-    "Jemi çözüwler",
-    "Nädogry çözüwler",
-    "Çözen ulanyjylar",
-    "Amallar",
+    __("admin.problem.name"),
+    __("admin.problem.total_submissions"),
+    __("admin.problem.wrong_submissions"),
+    __("admin.problem.accepted_users"),
+    __("admin.problem.actions"),
   ];
 
   useEffect(() => {
@@ -42,7 +44,7 @@ export default function ProblemListView() {
       })
       .catch((err) => {
         const message =
-          err?.response?.data?.message || "Näbelli säwlik ýüze çykdy.";
+          err?.response?.data?.message || __("admin.problem.unknown_error");
         addToast(message);
         console.error("Error fetching problems:", err);
       })
@@ -53,19 +55,17 @@ export default function ProblemListView() {
 
   const recheckAllSubmissions = (char) => {
     if (
-      window.confirm(
-        "Are you sure you want to recheck all submissions for this problem?"
-      )
+      window.confirm(__("admin.problem.confirm_recheck"))
     ) {
       setLoading(true);
       axiosClient
         .post(`/admin/contest/${id}/problem/${char}/recheck-all-submissions`)
         .then(() => {
-          addToast("Çözüwleri täzeden barlag işe goýberildi.");
+          addToast(__("admin.problem.recheck_success"));
         })
         .catch((err) => {
           const message =
-            err?.response?.data?.message || "Näbelli säwlik ýüze çykdy.";
+          err?.response?.data?.message || __("admin.problem.unknown_error");
           addToast(message);
           console.error("Error rechecking submissions:", err);
         })
@@ -76,17 +76,17 @@ export default function ProblemListView() {
   };
 
   const onDeleteClick = (char) => {
-    if (!window.confirm("Siz çyndanam meseläni pozmak isleýäňizmi?")) return;
+    if (!window.confirm(__("admin.problem.confirm_delete"))) return;
 
     setLoading(true);
     axiosClient
       .delete(`/admin/contest/${id}/problem/${char}/delete`)
       .then(() => {
         setProblems((prev) => prev.filter((problem) => problem.char !== char));
-        addToast("Mesele üstünlikli pozuldy.");
+        addToast(__("admin.problem.delete_success"));
       })
       .catch((err) => {
-        const message = err?.response?.data?.message || "Meseläni pozup bolmady.";
+        const message = err?.response?.data?.message || __("admin.problem.delete_failed");
         addToast(message);
         console.error("Error deleting problem:", err);
       })
@@ -101,7 +101,7 @@ export default function ProblemListView() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       {/* Top Header & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200/80 pb-5">
-        <AdminPageHeader title="Meseleler" />
+        <AdminPageHeader title={__("admin.problem.title")} />
 
         <div className="flex items-center space-x-2.5">
           <Link
@@ -109,7 +109,7 @@ export default function ProblemListView() {
             className="inline-flex items-center px-3.5 py-2 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors shadow-sm"
           >
             <ArrowLeftIcon className="w-4 h-4 mr-1.5 text-slate-500" />
-            Yza
+             {__("admin.problem.back")}
           </Link>
 
           <Link
@@ -117,7 +117,7 @@ export default function ProblemListView() {
             className="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-600 text-xs font-semibold text-white hover:bg-indigo-500 transition-all shadow-sm active:scale-[0.98]"
           >
             <PlusIcon className="w-4 h-4 mr-1.5" />
-            Mesele goş
+            {__("admin.problem.add")}
           </Link>
         </div>
       </div>
@@ -198,21 +198,21 @@ export default function ProblemListView() {
                         <button
                           onClick={() => recheckAllSubmissions(problem.char)}
                           className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
-                          title="Submissiýalary täzeden barlat"
+                           title={__("admin.problem.recheck_tooltip")}
                         >
                           <ArrowPathIcon className="h-4 w-4" />
                         </button>
                         <Link
                           to={`/admin/contest/${id}/problem/${problem.char}`}
                           className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                          title="Üýtget"
+                           title={__("admin.problem.edit_tooltip")}
                         >
                           <PencilIcon className="w-4 h-4" />
                         </Link>
                         <button
                           onClick={() => onDeleteClick(problem.char)}
                           className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                          title="Poz"
+                           title={__("admin.problem.delete_tooltip")}
                         >
                           <TrashIcon className="w-4 h-4" />
                         </button>
@@ -226,10 +226,10 @@ export default function ProblemListView() {
                     <div className="flex flex-col items-center justify-center space-y-2">
                       <InboxIcon className="w-8 h-8 text-slate-300" />
                       <span className="text-sm font-medium text-slate-600">
-                        Meseleler tapylmady.
+                         {__("admin.problem.not_found")}
                       </span>
                       <p className="text-xs text-slate-400">
-                        Täze mesele goşmak üçin ýokardaky düwmä basyň.
+                         {__("admin.problem.add_new")}
                       </p>
                     </div>
                   </td>

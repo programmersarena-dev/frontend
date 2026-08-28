@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axiosClient from "@/api/axios";
+import { useTranslation } from "@/contexts/TranslationContext";
 import { XMarkIcon, ArrowDownTrayIcon, TagIcon, FolderArrowDownIcon } from "@heroicons/react/24/outline";
 import { Textarea, Input } from "@/components/ui";
 import Loading from "@/components/core/Loading";
@@ -20,6 +21,7 @@ const Field = ({ label, children }) => (
 );
 
 export default function ProblemEditView() {
+  const { __ } = useTranslation();
   const { addToast } = useToast();
   const { id, char } = useParams();
   const navigate = useNavigate();
@@ -180,7 +182,7 @@ export default function ProblemEditView() {
       })
       .catch((error) => {
         console.error("Error downloading test cases:", error);
-        alert("Failed to download test cases.");
+         alert(__("admin.problem.download_failed"));
       });
   };
 
@@ -194,16 +196,16 @@ export default function ProblemEditView() {
 
   return (
     <div className="max-w-4xl">
-      <AdminPageHeader title={`Meseläni üýtget (${char})`} />
+       <AdminPageHeader title={`${__("admin.problem.edit_title")} (${char})`} />
 
       <div className="mt-6 space-y-6">
         {/* Card 1: Parameters & Limits */}
         <div className="border border-slate-100 rounded-2xl p-6">
           <h3 className="mb-4 text-sm font-semibold text-slate-900 border-b border-slate-100 pb-3">
-            Parametrler we çäklendirmeler
+             {__("admin.problem.params_limits")}
           </h3>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-4">
-            <Field label="Wagt çägi (sekunt)">
+             <Field label={__("admin.problem.time_limit")}>
               <input
                 type="number"
                 name="time_limit"
@@ -215,7 +217,7 @@ export default function ProblemEditView() {
               />
             </Field>
 
-            <Field label="Ýat çägi (MB)">
+             <Field label={__("admin.problem.memory_limit")}>
               <input
                 type="number"
                 name="memory_limit"
@@ -226,7 +228,7 @@ export default function ProblemEditView() {
               />
             </Field>
 
-            <Field label="Bal">
+             <Field label={__("admin.problem.score")}>
               <input
                 type="number"
                 name="score"
@@ -237,7 +239,7 @@ export default function ProblemEditView() {
               />
             </Field>
 
-            <Field label="Çylşyrymlylyk">
+             <Field label={__("admin.problem.difficulty")}>
               <input
                 type="number"
                 name="difficulty"
@@ -256,11 +258,11 @@ export default function ProblemEditView() {
           <div className="border border-slate-100 rounded-2xl p-6 flex flex-col justify-between">
             <div>
               <label className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
-                <TagIcon className="h-3.5 w-3.5 text-slate-400" /> Tegler
+                 <TagIcon className="h-3.5 w-3.5 text-slate-400" /> {__("admin.problem.tags_label")}
               </label>
               <div className="mt-2 flex flex-wrap gap-1.5 min-h-[38px] rounded-lg border border-slate-200 p-2">
                 {problem.tags.length === 0 && (
-                  <span className="text-xs text-slate-300 self-center px-1">Teg saýlanmady</span>
+                   <span className="text-xs text-slate-300 self-center px-1">{__("admin.problem.no_tags")}</span>
                 )}
                 {problem.tags.map((tag) => (
                   <span
@@ -287,7 +289,7 @@ export default function ProblemEditView() {
               }}
               className={inputClass}
             >
-              <option value="">+ Teg goş...</option>
+               <option value="">{__("admin.problem.add_tag")}</option>
               {availableTags.map((tag, index) => (
                 <option key={index} value={tag}>
                   {tag}
@@ -300,7 +302,7 @@ export default function ProblemEditView() {
           <div className="border border-slate-100 rounded-2xl p-6 flex flex-col justify-between">
             <div>
               <label className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
-                <FolderArrowDownIcon className="h-3.5 w-3.5 text-slate-400" /> Testler (ZIP)
+                 <FolderArrowDownIcon className="h-3.5 w-3.5 text-slate-400" /> {__("admin.problem.tests")}
               </label>
               <input
                 type="file"
@@ -319,7 +321,7 @@ export default function ProblemEditView() {
               className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors"
             >
               <ArrowDownTrayIcon className="h-3.5 w-3.5 text-slate-400" />
-              Şu wagtky testleri ýükle
+               {__("admin.problem.download_tests")}
             </button>
           </div>
         </div>
@@ -349,13 +351,13 @@ export default function ProblemEditView() {
 
           <div className="space-y-5">
             <Input
-              text="Ady"
+               text={__("admin.problem.name_label")}
               title={problem[activeTab].name}
               setTitle={(value) => handleChange(activeTab, "name", value)}
             />
 
             <Textarea
-              text="Mazmun (Description)"
+               text={__("admin.problem.description")}
               description={problem[activeTab].description}
               setDescription={(value) => handleChange(activeTab, "description", value)}
               activeTab={activeTab}
@@ -363,13 +365,13 @@ export default function ProblemEditView() {
 
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               <Textarea
-                text="Input Formaty"
+                 text={__("admin.problem.input_format")}
                 description={problem[activeTab].input}
                 setDescription={(value) => handleChange(activeTab, "input", value)}
                 activeTab={activeTab}
               />
               <Textarea
-                text="Output Formaty"
+                 text={__("admin.problem.output_format")}
                 description={problem[activeTab].output}
                 setDescription={(value) => handleChange(activeTab, "output", value)}
                 activeTab={activeTab}
@@ -377,7 +379,7 @@ export default function ProblemEditView() {
             </div>
 
             <Textarea
-              text="Bellik (Note)"
+               text={__("admin.problem.note")}
               description={problem[activeTab].note}
               setDescription={(value) => handleChange(activeTab, "note", value)}
               activeTab={activeTab}
@@ -391,7 +393,7 @@ export default function ProblemEditView() {
             to={`/admin/contest/${id}/problems`}
             className="px-4 py-2 rounded-lg text-xs font-medium text-slate-500 hover:bg-slate-50 transition-colors"
           >
-            Goýbolsun
+             {__("admin.problem.cancel")}
           </Link>
           <button
             type="button"
@@ -399,7 +401,7 @@ export default function ProblemEditView() {
             onClick={onSaveClick}
             className="px-4 py-2 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 transition-colors"
           >
-            {saving ? "Ýüklenýär..." : "Täzele"}
+             {saving ? __("admin.problem.loading") : __("admin.problem.update")}
           </button>
         </div>
       </div>

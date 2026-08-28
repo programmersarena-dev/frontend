@@ -6,6 +6,7 @@ import AdminPageHeader from "@/components/Admin/PageHeader";
 import AdminContestTypeList from "@/components/Admin/AdminContestTypeList";
 import AdminContestAuthorList from "@/components/Admin/AdminContestAuthorList";
 import AdminContestOfficialCheckBox from "../../../components/Admin/AdminContestOfficialCheckBox";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 const inputClass =
   "mt-1.5 block w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 focus:outline-none transition-colors";
@@ -21,6 +22,7 @@ const Field = ({ label, htmlFor, hint, children }) => (
 );
 
 export default function ContestEditView() {
+  const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [contestTypes, setContestTypes] = useState([]);
@@ -103,7 +105,7 @@ export default function ContestEditView() {
 
   return (
     <div className="max-w-2xl">
-      <AdminPageHeader title="Bäsleşigi üýtget" />
+       <AdminPageHeader title={__("admin.contest.add_title")} />
 
       <div className="mt-6 border border-slate-100 rounded-2xl p-6 space-y-5">
         <AdminContestTypeList
@@ -112,7 +114,7 @@ export default function ContestEditView() {
           contestTypes={contestTypes}
         />
 
-        <Field label="Ady" htmlFor="name">
+        <Field label={__("admin.contest.name_label")} htmlFor="name">
           <input
             id="name"
             type="text"
@@ -145,7 +147,7 @@ export default function ContestEditView() {
           />
         </Field>
 
-        <Field label="Dowamlylygy">
+        <Field label={__("admin.contest.duration_label")}>
           <div className="mt-1.5 flex items-center gap-3">
             <div className="flex items-center gap-1.5">
               <input
@@ -155,7 +157,7 @@ export default function ContestEditView() {
                 onChange={handleDurationPartChange("hours")}
                 className={`${inputClass} mt-0 w-20 text-center font-mono`}
               />
-              <span className="text-xs text-slate-400">sagat</span>
+               <span className="text-xs text-slate-400">{__("admin.contest.hours")}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <input
@@ -166,7 +168,7 @@ export default function ContestEditView() {
                 onChange={handleDurationPartChange("minutes")}
                 className={`${inputClass} mt-0 w-20 text-center font-mono`}
               />
-              <span className="text-xs text-slate-400">minut</span>
+               <span className="text-xs text-slate-400">{__("admin.contest.minutes")}</span>
             </div>
           </div>
         </Field>
@@ -188,7 +190,7 @@ export default function ContestEditView() {
             className="h-3.5 w-3.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500/30 focus:ring-offset-0"
           />
           <label htmlFor="active" className="text-xs font-medium text-slate-600">
-            Işjeň
+             {__("admin.contest.active_label")}
           </label>
         </div>
 
@@ -198,14 +200,14 @@ export default function ContestEditView() {
             onClick={onCancelClick}
             className="px-4 py-2 rounded-lg text-xs font-medium text-slate-500 hover:bg-slate-50 transition-colors"
           >
-            Goýbolsun
+             {__("admin.contest.cancel")}
           </button>
           <button
             type="button"
             onClick={onSaveClick}
             className="px-4 py-2 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 transition-colors"
           >
-            Täzele
+             {__("admin.contest.update")}
           </button>
         </div>
       </div>

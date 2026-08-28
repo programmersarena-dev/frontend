@@ -6,6 +6,7 @@ import NotFound from "@/components/core/NotFound";
 import { UserIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 const Stat = ({ label, children }) => (
   <div className="flex items-center justify-between py-2.5 border-b border-slate-50 last:border-0">
@@ -16,6 +17,7 @@ const Stat = ({ label, children }) => (
 
 export default function ProfileView() {
   const { currentUser } = useAuth();
+  const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({});
   const { handle } = useParams();
@@ -38,10 +40,10 @@ export default function ProfileView() {
     axiosClient
       .post("/email/resend")
       .then(() => {
-        addToast("E-poçta salgyňyza üstünlikli iberildi");
+        addToast(__("user.profile.verify_email"));
       })
       .catch(() => {
-        addToast("Ýalňyşlyk ýüze çykdy");
+        addToast(__("contest_register.error"));
       });
   };
 
@@ -81,7 +83,7 @@ export default function ProfileView() {
                 }`}
             />
             <span className="text-xs text-slate-400">
-              {user.is_online === 1 ? "Onlaýn" : "Oflaýn"}
+               {user.is_online === 1 ? __("user.profile.online") : __("user.profile.offline")}
             </span>
           </div>
 
@@ -92,14 +94,14 @@ export default function ProfileView() {
                   to={`/profile/${user.handle}/edit`}
                   className="text-xs font-medium text-slate-500 hover:text-indigo-600 transition-colors"
                 >
-                  Profili üýtgetmek
+                  {__("user.profile.edit")}
                 </Link>
               ) : (
                 <button
                   onClick={handleResend}
                   className="text-xs font-medium text-slate-500 hover:text-indigo-600 transition-colors"
                 >
-                  E-poçta salga tassyklama iber
+                  {__("user.profile.verify_email")}
                 </button>
               )}
             </div>
@@ -108,16 +110,16 @@ export default function ProfileView() {
 
         <div className="border-t border-slate-100 px-6 py-5">
           <div className="text-[10.5px] font-medium text-slate-400 uppercase tracking-wide mb-1.5">
-            Profil maglumatlar
+             {__("user.profile.info_title")}
           </div>
           <div>
-            <Stat label="Ady">{user.first_name || "—"}</Stat>
-            <Stat label="Familiýasy">{user.last_name || "—"}</Stat>
-            {user.country && <Stat label="Ýurdy">{user.country}</Stat>}
-            <Stat label="Reýtingi">
-              <span className="font-mono">{user.current_rating || "0"}</span>
-            </Stat>
-            <Stat label="Işlän mesele sany">
+             <Stat label={__("user.profile.first_name")}>{user.first_name || "—"}</Stat>
+             <Stat label={__("user.profile.last_name")}>{user.last_name || "—"}</Stat>
+             {user.country && <Stat label={__("user.profile.country")}>{user.country}</Stat>}
+             <Stat label={__("user.profile.rating")}>
+               <span className="font-mono">{user.current_rating || "0"}</span>
+             </Stat>
+             <Stat label={__("user.profile.solved")}>
               <span className="font-mono">{user.accepted_problems_count ?? 0}</span>
             </Stat>
           </div>

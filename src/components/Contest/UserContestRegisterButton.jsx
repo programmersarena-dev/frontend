@@ -31,9 +31,9 @@ export default function UserContestRegisterButton({ contest, setContest }) {
   }, []);
 
   const register = () => {
-    if (window.confirm("Siz çyndanam bäsleşige ýazylmakçymy?")) {
-      if (!currentUser.name) return addToast("error", "Hasabyňyza giriň");
-      if (!currentUser.email_verified_at) return addToast("error", "Poçtaňyzy tassyklaň");
+    if (window.confirm(__("contest_register.confirm"))) {
+      if (!currentUser.name) return addToast("error", __("contest_register.login_required"));
+      if (!currentUser.email_verified_at) return addToast("error", __("contest_register.email_required"));
 
       setLoading(true);
       const data = new FormData();
@@ -41,7 +41,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
         const duelOpponent = opponent === '' ? (currentDuo?.[1] ?? '') : opponent;
         if (!duelOpponent) {
           setLoading(false);
-          return addToast("error", "Opponent required");
+          return addToast("error", __("contest_register.opponent_required"));
         }
         data.append('opponent', duelOpponent);
       } else if (contest.type === 'ICPC' && selectedTeamId) {
@@ -51,7 +51,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
       axiosClient
         .post(`/contests/${contest.id}/register`, data)
         .then(() => {
-          addToast("success", "Bäsleşige üstünlikli ýazyldyňyz");
+          addToast("success", __("contest_register.success"));
           setIsRegistered(true);
           if (contest.type === 'Duel') {
             const finalOpponent = opponent === '' ? (currentDuo?.[1] ?? '') : opponent;
@@ -69,15 +69,15 @@ export default function UserContestRegisterButton({ contest, setContest }) {
   };
 
   const unregister = () => {
-    if (window.confirm("Siz çyndanam bäsleşikden çykmakçymy?")) {
-      if (!currentUser.name) return addToast("error", "Hasabyňyza giriň");
-      if (!currentUser.email_verified_at) return addToast("error", "Poçtaňyzy tassyklaň");
+    if (window.confirm(__("contest_register.unregister_confirm"))) {
+      if (!currentUser.name) return addToast("error", __("contest_register.login_required"));
+      if (!currentUser.email_verified_at) return addToast("error", __("contest_register.email_required"));
 
       setLoading(true);
       axiosClient
         .post(`/contests/${contest.id}/unregister`)
         .then(() => {
-          addToast("success", "Bäsleşikden üstünlikli çykdyňyz");
+          addToast("success", __("contest_register.unregister_success"));
           setIsRegistered(false);
           if (contest.type === 'Duel') setCurrentDuo(null);
           setSelectedTeamId('');
@@ -96,7 +96,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
     if (!newTeamName.trim()) return;
     setLoading(true);
     axiosClient.post('/teams', { name: newTeamName }).then((res) => {
-      addToast("success", "Topar döredildi");
+      addToast("success", __("contest_register.team_created"));
       setTeams([...teams, res.data.team]);
       setSelectedTeamId(res.data.team.id);
       setNewTeamName('');
@@ -186,7 +186,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
                 disabled={loading}
                 onChange={(e) => setOpponent(e.target.value)}
                 type="text"
-                placeholder="Type Username"
+                 placeholder={__("contest_register.opponent_placeholder")}
                 className="block w-full pl-9 pr-3 py-2 bg-slate-900 border border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500 placeholder-slate-600 text-slate-200 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50"
               />
             </div>
@@ -206,7 +206,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
                   className="flex items-center justify-center gap-1.5 bg-indigo-600 text-white px-3 py-2 border border-transparent text-xs font-semibold rounded-xl hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/40 transition duration-200 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                 >
                   <CheckIcon className="w-3.5 h-3.5" />
-                  <span>Confirm</span>
+                   <span>{__("contest_register.confirm_btn")}</span>
                 </button>
                 <button
                   disabled={loading}
@@ -214,7 +214,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
                   className="flex items-center justify-center gap-1.5 bg-slate-900 text-slate-300 px-3 py-2 border border-slate-700 text-xs font-semibold rounded-xl hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-700/40 transition duration-200 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                 >
                   <XMarkIcon className="w-3.5 h-3.5" />
-                  <span>Cancel</span>
+                   <span>{__("contest_register.cancel")}</span>
                 </button>
               </div>
             </div>
@@ -227,7 +227,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
                     onChange={(e) => setSelectedTeamId(e.target.value)}
                     className="block w-full px-3 py-2 border border-slate-700 bg-slate-900 text-slate-200 rounded-xl focus:outline-none focus:ring-indigo-500/40 focus:border-indigo-500 text-sm"
                   >
-                    <option value="">Topar saýlaň</option>
+                     <option value="">{__("contest_register.select_team")}</option>
                     {teams.map((team) => (
                       <option key={team.id} value={team.id}>
                         {team.name} ({team.members?.length || 0}/4)
@@ -243,7 +243,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
                   onClick={() => setShowTeamModal(true)}
                   className="w-full text-xs text-indigo-400 hover:text-indigo-300 py-1"
                 >
-                  + Täze topar döret
+                   {__("contest_register.create_new")}
                 </button>
               )}
 
@@ -263,12 +263,12 @@ export default function UserContestRegisterButton({ contest, setContest }) {
       {showTeamModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm">
-            <h3 className="text-lg font-semibold text-slate-100 mb-4">Täze topar döret</h3>
+             <h3 className="text-lg font-semibold text-slate-100 mb-4">{__("contest_register.create_title")}</h3>
             <input
               type="text"
               value={newTeamName}
               onChange={(e) => setNewTeamName(e.target.value)}
-              placeholder="Toparyň ady"
+               placeholder={__("contest_register.team_name_placeholder")}
               className="block w-full px-3 py-2 border border-slate-700 bg-slate-800 text-slate-200 rounded-xl focus:outline-none focus:ring-indigo-500/40 focus:border-indigo-500 text-sm mb-4"
             />
             <div className="flex gap-2">
@@ -277,13 +277,13 @@ export default function UserContestRegisterButton({ contest, setContest }) {
                 disabled={loading || !newTeamName.trim()}
                 className="flex-1 px-3 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-500 disabled:opacity-50"
               >
-                Döret
+                 {__("contest_register.create")}
               </button>
               <button
                 onClick={() => setShowTeamModal(false)}
                 className="flex-1 px-3 py-2 bg-slate-800 text-slate-300 rounded-xl text-sm font-semibold hover:bg-slate-700"
               >
-                Goýbolsun
+                 {__("contest_register.cancel")}
               </button>
             </div>
           </div>
