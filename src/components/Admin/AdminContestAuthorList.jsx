@@ -1,7 +1,9 @@
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import React from 'react'
+import { useTranslation } from "@/contexts/TranslationContext";
 
 export default function AdminContestAuthorList({ users, contest, setContest }) {
+  const { __ } = useTranslation();
 
   const addAuthor = (authorName) => {
     if (authorName && !contest.authors.includes(authorName)) {
@@ -22,7 +24,7 @@ export default function AdminContestAuthorList({ users, contest, setContest }) {
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700">
-        Awtorlar:
+        {__("admin.contest.authors-label")}
       </label>
       <div className="mt-1 flex flex-wrap gap-2">
         {contest?.authors?.length > 0 && contest.authors.map((authorName) => {
@@ -45,7 +47,7 @@ export default function AdminContestAuthorList({ users, contest, setContest }) {
           onChange={(e) => addAuthor(e.target.value)}
           className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         >
-          <option value="">Awtory saýla</option>
+          <option value="">{__("admin.contest.select-author")}</option>
           {users?.length > 0 && users.map((user) => (
             <option key={user.id} value={user.name}>
               {user.name} - {user.email}

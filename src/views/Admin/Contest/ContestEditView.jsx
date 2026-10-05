@@ -132,9 +132,9 @@ export default function ContestEditView() {
         />
 
         <Field
-          label="Başlaýan wagty"
+          label={__("admin.contest.start_time_label")}
           htmlFor="start_date"
-          hint="Brauzeriňiziň ýerli wagt zolagy boýunça girizilýär."
+          hint={__("admin.contest.start_time_hint")}
         >
           <input
             id="start_date"

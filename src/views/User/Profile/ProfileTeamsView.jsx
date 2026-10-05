@@ -251,7 +251,7 @@ export default function ProfileTeamsView() {
             <div key={team.id} className="p-4 bg-slate-50 rounded-xl border border-slate-100">
               <div className="text-sm font-medium text-slate-900">{team.name}</div>
               <div className="text-xs text-slate-500">
-                Owner: {team.owner?.name} ({team.owner?.handle})
+                 {__("profile.owner")}: {team.owner?.name} ({team.owner?.handle})
               </div>
             </div>
           ))}

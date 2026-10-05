@@ -1,4 +1,7 @@
+import { useTranslation } from "@/contexts/TranslationContext";
+
 export default function AdminContestTypeForm({ contest, setContest, contestTypes }) {
+  const { __ } = useTranslation();
   const editType = (e) => {
     if (contest.type !== e.target.value) {
       setContest({
@@ -19,9 +22,9 @@ export default function AdminContestTypeForm({ contest, setContest, contestTypes
   return (
     <>
       <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Type:
-        </label>
+          <label className="block text-sm font-medium text-gray-700">
+            {__("admin.contest.type-label")}
+          </label>
         <div className="mt-2">
           <select
             name="type"
@@ -29,7 +32,7 @@ export default function AdminContestTypeForm({ contest, setContest, contestTypes
             onChange={editType}
             className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           >
-            <option value="">Select Type</option>
+            <option value="">{__("admin.contest.select-type")}</option>
             {contestTypes.length > 0 && contestTypes.map((type, id) => (
               <option key={id} value={type.name}>
                 {type.name}

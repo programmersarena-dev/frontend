@@ -131,7 +131,7 @@ export default function Login() {
                     ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
                     : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
                   } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
-                placeholder="••••••••"
+                 placeholder={__("auth.password-placeholder")}
               />
               {errors.password && (
                 <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.password}</p>

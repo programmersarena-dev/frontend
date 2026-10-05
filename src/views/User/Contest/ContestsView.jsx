@@ -58,7 +58,7 @@ export default function ContestsView() {
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
               </span>
               <h2 className="text-sm font-semibold text-slate-900">
-                {__("contest.upcoming-contests") || "Upcoming & active"}
+                 {__("contest.upcoming-contests")}
               </h2>
               <span className="text-xs font-mono text-slate-400">
                 {upcomingContests.length}
@@ -77,7 +77,7 @@ export default function ContestsView() {
           <section>
             <div className="flex items-center gap-2 mb-1 px-1">
               <h2 className="text-sm font-semibold text-slate-900">
-                {__("contest.finished-contests") || "Past contests"}
+                 {__("contest.finished-contests")}
               </h2>
               <span className="text-xs font-mono text-slate-400">
                 {finishedContests.length}
@@ -96,11 +96,10 @@ export default function ContestsView() {
           <div className="mx-auto my-16 max-w-sm text-center">
             <TrophyIcon className="mx-auto h-8 w-8 text-slate-300" strokeWidth={1.5} />
             <h3 className="mt-3 text-sm font-semibold text-slate-900">
-              {__("contest.no-contests") || "No contests found"}
+               {__("contest.no-contests")}
             </h3>
             <p className="mt-1 text-xs text-slate-500">
-              {__("contest.no-contests-description") ||
-                "Check back later for new upcoming contests and challenges."}
+               {__("contest.no-contests-description")}
             </p>
           </div>
         )}

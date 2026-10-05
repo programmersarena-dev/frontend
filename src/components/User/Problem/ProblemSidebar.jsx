@@ -30,19 +30,19 @@ export default function ProblemSidebar({ setLoading, problem, submissions, conte
 
     if (!currentUser || !currentUser.name) {
       setLoading(false);
-      addToast("Hasabyňyza giriň");
+      addToast(__("user.profile.login-required"));
       return;
     }
 
     if (!currentUser.email_verified_at) {
       setLoading(false);
-      addToast("Poçtaňyzy tassyklaň");
+      addToast(__("user.profile.verify-email-required"));
       return;
     }
 
     if (!file || !language) {
       setLoading(false);
-      addToast("Faýl ýa-da dil saýlanylmady");
+      addToast(__("user.profile.file-or-language-required"));
       return;
     }
 
@@ -58,11 +58,11 @@ export default function ProblemSidebar({ setLoading, problem, submissions, conte
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then(() => {
-        addToast("Üstünlikli iberildi");
+        addToast(__("user.profile.submit-success"));
         navigate("/problemset/status");
       })
       .catch((err) => {
-        addToast(err?.response?.data?.message || "Ýalňyşlyk ýüze çykdy");
+        addToast(err?.response?.data?.message || __("user.profile.error-generic"));
         setLoading(false);
       });
   };

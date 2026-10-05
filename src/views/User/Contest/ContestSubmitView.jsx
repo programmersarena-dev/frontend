@@ -180,7 +180,7 @@ export default function ContestSubmitView() {
                 rows="10"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                placeholder="// Paste or write your source code here..."
+                placeholder={__("contest.code-placeholder")}
                 className="w-full resize-y bg-transparent font-mono text-xs leading-relaxed text-slate-100 placeholder-slate-500 focus:outline-none"
               />
             </div>

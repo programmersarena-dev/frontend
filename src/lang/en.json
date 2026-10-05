@@ -3,7 +3,8 @@
     "notifications": "Notifications",
     "contests": "Contests",
     "archive": "Archive",
-    "ratings": "Ratings"
+    "ratings": "Ratings",
+    "admin": "Admin"
   },
   "auth": {
     "reset_password_title": "Forgot password?",
@@ -44,7 +45,13 @@
     "confirm-new-password": "Confirm new password",
     "update-password": "Update password",
     "loading": "Loading...",
-    "success-msg": "Logged in successfully"
+    "success-msg": "Logged in successfully",
+    "handle-placeholder": "e.g., prog_tkm",
+    "email-placeholder": "developer@programmersarena.com",
+    "first-name-placeholder": "First name",
+    "last-name-placeholder": "Last name",
+    "password-placeholder": "••••••••",
+    "confirm-password-placeholder": "••••••••"
   },
   "contest": {
     "problems": "Contest problems",
@@ -106,7 +113,10 @@
     "no-contests-description": "There are no contests yet",
     "no_problems": "No problems",
     "error-loading": "Error loading contest",
-    "submitted-successfully": "Submitted successfully"
+    "submitted-successfully": "Submitted successfully",
+    "vs": "vs",
+    "code-placeholder": "// Paste or write your source code here...",
+    "view-submissions": "View submissions"
   },
   "problem": {
     "problemset": "Problems",
@@ -137,6 +147,12 @@
     "hide-solved": "Hide solved problems",
     "user": "User",
     "count-solved": "Solved problems",
+    "rating": "Rating",
+    "solved": "Solved",
+    "copy-input": "Copy Input",
+    "copied": "Copied",
+    "copy": "Copy",
+    "copy-output": "Copy Output",
     "not-found": "Problem Not found.",
     "user-not-found": "Users not found",
     "test-not-found": "Tests not found",
@@ -188,6 +204,8 @@
     "rating": "Rating"
   },
   "admin": {
+    "upload-image": "Upload Image",
+    "paste-image-url": "Paste image URL...",
     "dashboard": {
       "title": "Dashboard",
       "user_panel": "User panel",
@@ -278,7 +296,20 @@
       "active_label": "Active",
       "cancel": "Cancel",
       "save": "Save",
-      "update": "Update"
+      "update": "Update",
+      "type-label": "Type:",
+      "select-type": "Select Type",
+      "authors-label": "Authors:",
+      "select-author": "Select author",
+      "official-label": "Official:",
+      "official-teams": "Official teams",
+      "official-participants": "Official participants",
+      "add-team-member": "Add team member",
+      "add-team": "Add team",
+      "select-official-participants": "Select official participants",
+      "select-player-1": "Select Player 1",
+      "select-player-2": "Select Player 2",
+      "add-players": "Add Players"
     },
     "problem": {
       "confirm_recheck": "Are you sure you want to recheck all submissions for this problem?",
@@ -366,7 +397,12 @@
       "confirm_password": "Confirm new password",
       "cancel": "Cancel",
       "update": "Update",
-      "update_success": "Profile updated successfully"
+      "update_success": "Profile updated successfully",
+      "login-required": "Login to your account",
+      "verify-email-required": "Verify your email",
+      "file-or-language-required": "File or language not selected",
+      "submit-success": "Submitted successfully",
+      "error-generic": "An error occurred. Please try again."
     },
     "blogs": {
       "no_updates": "No updates yet",
@@ -375,6 +411,15 @@
   },
   "profile": {
     "not-found": "Profile not found",
+    "owner": "Owner",
+    "ratings": {
+      "contest": "Contest",
+      "rank": "Rank",
+      "solved": "Solved",
+      "rating-change": "Rating change",
+      "new-rating": "New rating",
+      "not-found": "No contests found."
+    },
     "menu": {
       "profile": "Profile",
       "settings": "Settings",
@@ -394,13 +439,21 @@
       "verified": "Email verified successfully!",
       "failed": "Email verification failed. Please try again."
     },
+    "resend": {
+      "title": "Resend verification email",
+      "message": "A confirmation email has been sent to your address. Check your email and confirm your email to continue.",
+      "button": "Resend verification email"
+    },
     "pagination": {
       "previous": "Previous",
       "next": "Next",
       "showing": "Showing",
       "to": "to",
       "of": "of"
-    }
+    },
+    "copyright": "© {year} ProgrammersArena. All rights reserved.",
+    "terms": "Terms",
+    "privacy": "Privacy"
   },
   "contest_register": {
     "confirm": "Do you want to register for this contest?",

@@ -71,6 +71,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const handleRefreshFailed = () => {
+      if (window.location.pathname === "/login") return;
       setCurrentUser(null);
       setUserToken(null);
       clearStoredToken();

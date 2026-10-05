@@ -3,6 +3,7 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { ClassicEditor } from "ckeditor5";
 import { editorConfig } from "@/ckeditor/editorConfig";
 import { LinkIcon, PhotoIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 export function Tabs({ children }) {
   return <div className="flex border-b mb-4">{children}</div>;
@@ -23,6 +24,7 @@ export function Tab({ active, onClick, children }) {
 }
 
 export function Textarea({ text, description, setDescription }) {
+  const { __ } = useTranslation();
   const editorRef = useRef(null);
   const fileInputRef = useRef(null);
   const [imageUrl, setImageUrl] = useState("");
@@ -95,7 +97,7 @@ export function Textarea({ text, description, setDescription }) {
             className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 shadow-sm transition hover:bg-slate-100 active:scale-95"
           >
             <PhotoIcon className="h-4 w-4 text-slate-500" />
-            <span>Upload Image</span>
+            <span>{__("admin.upload-image")}</span>
           </button>
         </div>
 
@@ -104,7 +106,7 @@ export function Textarea({ text, description, setDescription }) {
             <LinkIcon className="absolute left-2.5 h-3.5 w-3.5 text-slate-400" />
             <input
               type="text"
-              placeholder="Paste image URL..."
+              placeholder={__("admin.paste-image-url")}
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
               className="w-48 sm:w-64 rounded-lg border border-slate-200 bg-white py-1.5 pl-8 pr-3 text-xs text-slate-800 placeholder-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
@@ -116,7 +118,7 @@ export function Textarea({ text, description, setDescription }) {
             className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-50 disabled:hover:bg-emerald-600 active:scale-95"
           >
             <PlusIcon className="h-3.5 w-3.5" />
-            <span>Add</span>
+            <span>{__("admin.add")}</span>
           </button>
         </form>
       </div>

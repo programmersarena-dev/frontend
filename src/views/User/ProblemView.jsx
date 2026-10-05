@@ -169,19 +169,19 @@ export default function ProblemView() {
                                   )
                                 }
                                 className="inline-flex items-center gap-1 rounded-md bg-white px-2 py-1 text-xs font-medium text-slate-600 shadow-sm transition hover:text-indigo-600 active:scale-95"
-                                title="Copy Input"
+                                title={__("problem.copy-input")}
                               >
-                                {copiedKey === `in-${index}` ? (
-                                  <>
-                                    <CheckIcon className="h-3.5 w-3.5 text-emerald-600" />
-                                    <span className="text-emerald-600">Copied</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <DocumentDuplicateIcon className="h-3.5 w-3.5 text-slate-400" />
-                                    <span>Copy</span>
-                                  </>
-                                )}
+                                 {copiedKey === `in-${index}` ? (
+                                   <>
+                                     <CheckIcon className="h-3.5 w-3.5 text-emerald-600" />
+                                     <span className="text-emerald-600">{__("problem.copied")}</span>
+                                   </>
+                                 ) : (
+                                   <>
+                                     <DocumentDuplicateIcon className="h-3.5 w-3.5 text-slate-400" />
+                                     <span>{__("problem.copy")}</span>
+                                   </>
+                                 )}
                               </button>
                             </div>
                             <pre className="overflow-x-auto rounded-lg bg-slate-900 p-3 font-mono text-xs text-slate-100 whitespace-pre-wrap leading-relaxed">
@@ -205,19 +205,19 @@ export default function ProblemView() {
                                   )
                                 }
                                 className="inline-flex items-center gap-1 rounded-md bg-white px-2 py-1 text-xs font-medium text-slate-600 shadow-sm transition hover:text-indigo-600 active:scale-95"
-                                title="Copy Output"
+                                title={__("problem.copy-output")}
                               >
-                                {copiedKey === `out-${index}` ? (
-                                  <>
-                                    <CheckIcon className="h-3.5 w-3.5 text-emerald-600" />
-                                    <span className="text-emerald-600">Copied</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <DocumentDuplicateIcon className="h-3.5 w-3.5 text-slate-400" />
-                                    <span>Copy</span>
-                                  </>
-                                )}
+                                 {copiedKey === `out-${index}` ? (
+                                   <>
+                                     <CheckIcon className="h-3.5 w-3.5 text-emerald-600" />
+                                     <span className="text-emerald-600">{__("problem.copied")}</span>
+                                   </>
+                                 ) : (
+                                   <>
+                                     <DocumentDuplicateIcon className="h-3.5 w-3.5 text-slate-400" />
+                                     <span>{__("problem.copy")}</span>
+                                   </>
+                                 )}
                               </button>
                             </div>
                             <pre className="overflow-x-auto rounded-lg bg-slate-900 p-3 font-mono text-xs text-slate-100 whitespace-pre-wrap leading-relaxed">

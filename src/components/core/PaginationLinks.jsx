@@ -99,7 +99,7 @@ export default function PaginationLinks({ meta, onPageClick, onPageChange }) {
 
     // Next link
     list.push({
-      label: "Indiki",
+      label: __("core.pagination.next"),
       url: currentPage < totalPages ? constructUrl(currentPage + 1) : null,
       isNext: true,
     });

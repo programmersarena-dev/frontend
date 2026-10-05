@@ -3,17 +3,19 @@ import axiosClient from "@/api/axios";
 import { Link, useParams } from "react-router-dom";
 import Loading from "@/components/core/Loading";
 import { ChevronUpIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 const COLUMNS = [
   { label: "ID", key: "id" },
-  { label: "Bäsleşik", key: null },
-  { label: "Ýeri", key: "rank" },
-  { label: "Işlän mesele sany", key: "solved" },
-  { label: "Reýting üýtgemesi", key: "rating" },
-  { label: "Täze reýting", key: "new_rating" },
+  { label: "contest", key: null },
+  { label: "rank", key: "rank" },
+  { label: "solved", key: "solved" },
+  { label: "rating-change", key: "rating" },
+  { label: "new-rating", key: "new_rating" },
 ];
 
 export default function ProfileRatingsView() {
+  const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [ratings, setRatings] = useState({});
   const { handle } = useParams();
@@ -72,7 +74,7 @@ export default function ProfileRatingsView() {
               className={`inline-flex items-center gap-1 text-xs font-medium transition-colors ${active ? "text-indigo-600" : "text-slate-400 hover:text-slate-600"
                 }`}
             >
-              {col.label}
+              {__(`profile.ratings.${col.label}`)}
               {active &&
                 (sortConfig.direction === "ascending" ? (
                   <ChevronUpIcon className="w-3 h-3" />
@@ -108,8 +110,8 @@ export default function ProfileRatingsView() {
                 </div>
 
                 <div className="flex items-center gap-6 text-xs font-mono text-slate-500">
-                  <span title="Ýeri">#{userContest.rank}</span>
-                  <span title="Işlän mesele sany">{userContest.solved}</span>
+                  <span title={__("profile.ratings.rank")}>#{userContest.rank}</span>
+                  <span title={__("profile.ratings.solved")}>{userContest.solved}</span>
                   <span
                     className={`font-semibold ${isPositive
                         ? "text-emerald-600"
@@ -130,7 +132,7 @@ export default function ProfileRatingsView() {
           })
         ) : (
           <div className="text-center text-sm text-slate-400 py-10">
-            Bäsleşikler tapylmady.
+            {__("profile.ratings.not-found")}
           </div>
         )}
       </div>

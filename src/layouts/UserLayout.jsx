@@ -157,7 +157,7 @@ export default function PageLayout() {
                       className="inline-flex items-center gap-1 rounded-lg border border-rose-100 bg-rose-50 px-2.5 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-100 transition-colors"
                     >
                       <ShieldCheckIcon className="h-3.5 w-3.5" />
-                      Admin
+                      {__("navigation.admin")}
                     </Link>
                   )}
 
@@ -248,7 +248,7 @@ export default function PageLayout() {
                     className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-base font-medium text-rose-600 hover:bg-rose-50 transition-colors"
                   >
                     <ShieldCheckIcon className="h-4 w-4" />
-                    Admin
+                    {__("navigation.admin")}
                   </NavLink>
                 )}
               </div>
@@ -330,14 +330,14 @@ export default function PageLayout() {
 
       <footer className="mx-auto max-w-7xl px-4 pb-8 pt-12 sm:px-6 lg:px-8">
         <div className="border-t border-slate-200/80 pt-6 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p>&copy; {new Date().getFullYear()} ProgrammersArena. All rights reserved.</p>
+          <p>{__("core.copyright").replace("{year}", new Date().getFullYear())}</p>
           <div className="flex items-center gap-4 text-slate-400">
             <span className="hover:text-slate-600 cursor-pointer transition-colors">
-              Terms
+              {__("core.terms")}
             </span>
             <span>&bull;</span>
             <span className="hover:text-slate-600 cursor-pointer transition-colors">
-              Privacy
+              {__("core.privacy")}
             </span>
           </div>
         </div>

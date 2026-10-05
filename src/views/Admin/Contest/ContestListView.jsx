@@ -142,21 +142,21 @@ export default function ContestListView() {
         return (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-             {__("admin.contest.active")}
+            {__("admin.contest.active")}
           </span>
         );
       case "Pending":
         return (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-600/20">
             <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-             {__("admin.contest.pending")}
+            {__("admin.contest.pending")}
           </span>
         );
       default:
         return (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-500/10">
             <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
-             {__("admin.contest.ended")}
+            {__("admin.contest.ended")}
           </span>
         );
     }
@@ -293,7 +293,7 @@ export default function ContestListView() {
                       <Link
                         to={`/admin/contest/${contest.id}/problems`}
                         className="inline-flex items-center justify-center p-2 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                         title={__("admin.contest.problems_tooltip")}
+                        title={__("admin.contest.problems_tooltip")}
                       >
                         <DocumentTextIcon className="h-5 w-5" />
                       </Link>
@@ -305,7 +305,7 @@ export default function ContestListView() {
                         <button
                           onClick={() => recheckAllSubmissions(contest.id)}
                           className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
-                           title={__("admin.contest.recheck_tooltip")}
+                          title={__("admin.contest.recheck_tooltip")}
                         >
                           <ArrowPathIcon className="h-4 w-4" />
                         </button>
@@ -314,7 +314,7 @@ export default function ContestListView() {
                           <button
                             onClick={() => notifyUsers(contest.id)}
                             className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
-                             title={__("admin.contest.notify_tooltip")}
+                            title={__("admin.contest.notify_tooltip")}
                           >
                             <BellIcon className="h-4 w-4" />
                           </button>
@@ -326,14 +326,14 @@ export default function ContestListView() {
                               <button
                                 onClick={() => onGiveRateClick(contest.id)}
                                 className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
-                                 title={__("admin.contest.rate_tooltip")}
+                                title={__("admin.contest.rate_tooltip")}
                               >
                                 <StarIcon className="h-4 w-4" />
                               </button>
                             ) : (
                               <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2.5 py-1 text-xs font-medium text-green-600 ring-1 ring-inset ring-green-500/20">
                                 <CheckCircleIcon className="h-3.5 w-3.5" />
-                                 {__("admin.contest.rated_badge")}
+                                {__("admin.contest.rated_badge")}
                               </span>
                             )}
                           </>
@@ -343,7 +343,7 @@ export default function ContestListView() {
                           <Link
                             to={`/admin/contest/${contest.id}/edit`}
                             className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                             title={__("admin.contest.edit_tooltip")}
+                            title={__("admin.contest.edit_tooltip")}
                           >
                             <PencilSquareIcon className="h-4 w-4" />
                           </Link>
@@ -353,7 +353,7 @@ export default function ContestListView() {
                           <button
                             onClick={() => onDeleteClick(contest.id)}
                             className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                             title={__("admin.contest.delete_tooltip")}
+                            title={__("admin.contest.delete_tooltip")}
                           >
                             <TrashIcon className="h-4 w-4" />
                           </button>
@@ -373,12 +373,12 @@ export default function ContestListView() {
         <div className="mx-auto my-12 max-w-md rounded-2xl border border-dashed border-slate-300 p-8 text-center bg-white/50">
           <TrophyIcon className="mx-auto h-10 w-10 text-slate-300" />
           <h3 className="mt-3 text-sm font-semibold text-slate-900">
-             {__("admin.contest.not_found")}
+            {__("admin.contest.not_found")}
           </h3>
           <p className="mt-1 text-xs text-slate-500">
             {searchName
-                             ? `${__("admin.contest.not_found_search")} "${searchName}".`
-              : __("admin.contest.add_new")}}
+              ? `${__("admin.contest.not_found_search")} "${searchName}".`
+              : __("admin.contest.add_new")}
           </p>
         </div>
       )}

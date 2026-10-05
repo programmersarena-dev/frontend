@@ -8,8 +8,8 @@ import axiosClient from "@/api/axios";
 
 export default function UserContestRegisterButton({ contest, setContest }) {
   const { currentUser } = useAuth();
-  const { addToast } = useToast();
   const { __ } = useTranslation();
+  const { addToast } = useToast();
   const navigate = useNavigate();
 
   const [opponent, setOpponent] = useState('');
@@ -26,7 +26,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
       axiosClient.get('/teams').then((res) => {
         const ownedTeams = res.data.owned_teams || [];
         setTeams(ownedTeams);
-      }).catch(() => {});
+      }).catch(() => { });
     }
   }, []);
 
@@ -153,7 +153,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
           {currentDuo && (
             <div className="flex items-center justify-center gap-2 px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs font-medium text-slate-300">
               <span className="text-slate-100">{currentDuo[0]}</span>
-              <span className="text-indigo-400 font-semibold">vs</span>
+              <span className="text-indigo-400 font-semibold">{__("contest.vs")}</span>
               {currentDuo[1].endsWith('|X') ? (
                 <div className="flex items-center gap-1 bg-rose-500/10 text-rose-400 px-2 py-0.5 rounded-lg border border-rose-500/20">
                   <span>{currentDuo[1].split('|')[0]}</span>
@@ -186,7 +186,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
                 disabled={loading}
                 onChange={(e) => setOpponent(e.target.value)}
                 type="text"
-                 placeholder={__("contest_register.opponent_placeholder")}
+                placeholder={__("contest_register.opponent_placeholder")}
                 className="block w-full pl-9 pr-3 py-2 bg-slate-900 border border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500 placeholder-slate-600 text-slate-200 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50"
               />
             </div>
@@ -196,7 +196,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
             <div className="flex flex-col items-center gap-3 p-3 bg-slate-950 border border-slate-800 rounded-2xl w-full">
               <div className="flex items-center gap-2 text-xs font-medium text-slate-300">
                 <span className="text-slate-100">{currentDuo[0]?.split('|')[0]}</span>
-                <span className="text-indigo-400 font-semibold">vs</span>
+                <span className="text-indigo-400 font-semibold">{__("contest.vs")}</span>
                 <span className="text-slate-100">{currentDuo[1]?.split('|')[0]}</span>
               </div>
               <div className="grid grid-cols-2 gap-2 w-full">
@@ -206,7 +206,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
                   className="flex items-center justify-center gap-1.5 bg-indigo-600 text-white px-3 py-2 border border-transparent text-xs font-semibold rounded-xl hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/40 transition duration-200 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                 >
                   <CheckIcon className="w-3.5 h-3.5" />
-                   <span>{__("contest_register.confirm_btn")}</span>
+                  <span>{__("contest_register.confirm_btn")}</span>
                 </button>
                 <button
                   disabled={loading}
@@ -214,7 +214,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
                   className="flex items-center justify-center gap-1.5 bg-slate-900 text-slate-300 px-3 py-2 border border-slate-700 text-xs font-semibold rounded-xl hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-700/40 transition duration-200 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                 >
                   <XMarkIcon className="w-3.5 h-3.5" />
-                   <span>{__("contest_register.cancel")}</span>
+                  <span>{__("contest_register.cancel")}</span>
                 </button>
               </div>
             </div>
@@ -227,7 +227,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
                     onChange={(e) => setSelectedTeamId(e.target.value)}
                     className="block w-full px-3 py-2 border border-slate-700 bg-slate-900 text-slate-200 rounded-xl focus:outline-none focus:ring-indigo-500/40 focus:border-indigo-500 text-sm"
                   >
-                     <option value="">{__("contest_register.select_team")}</option>
+                    <option value="">{__("contest_register.select_team")}</option>
                     {teams.map((team) => (
                       <option key={team.id} value={team.id}>
                         {team.name} ({team.members?.length || 0}/4)
@@ -243,7 +243,7 @@ export default function UserContestRegisterButton({ contest, setContest }) {
                   onClick={() => setShowTeamModal(true)}
                   className="w-full text-xs text-indigo-400 hover:text-indigo-300 py-1"
                 >
-                   {__("contest_register.create_new")}
+                  {__("contest_register.create_new")}
                 </button>
               )}
 
@@ -263,12 +263,12 @@ export default function UserContestRegisterButton({ contest, setContest }) {
       {showTeamModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm">
-             <h3 className="text-lg font-semibold text-slate-100 mb-4">{__("contest_register.create_title")}</h3>
+            <h3 className="text-lg font-semibold text-slate-100 mb-4">{__("contest_register.create_title")}</h3>
             <input
               type="text"
               value={newTeamName}
               onChange={(e) => setNewTeamName(e.target.value)}
-               placeholder={__("contest_register.team_name_placeholder")}
+              placeholder={__("contest_register.team_name_placeholder")}
               className="block w-full px-3 py-2 border border-slate-700 bg-slate-800 text-slate-200 rounded-xl focus:outline-none focus:ring-indigo-500/40 focus:border-indigo-500 text-sm mb-4"
             />
             <div className="flex gap-2">
@@ -277,13 +277,13 @@ export default function UserContestRegisterButton({ contest, setContest }) {
                 disabled={loading || !newTeamName.trim()}
                 className="flex-1 px-3 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-500 disabled:opacity-50"
               >
-                 {__("contest_register.create")}
+                {__("contest_register.create")}
               </button>
               <button
                 onClick={() => setShowTeamModal(false)}
                 className="flex-1 px-3 py-2 bg-slate-800 text-slate-300 rounded-xl text-sm font-semibold hover:bg-slate-700"
               >
-                 {__("contest_register.cancel")}
+                {__("contest_register.cancel")}
               </button>
             </div>
           </div>

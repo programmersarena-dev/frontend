@@ -1,7 +1,9 @@
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from "@/contexts/TranslationContext";
 
 export default function AdminContestOfficialCheckBox({ contest, setContest, users, handleInputChange }) {
+  const { __ } = useTranslation();
   const [tempUser1, setTempUser1] = useState(0);
   const [tempUser2, setTempUser2] = useState(0);
   const [tempICPCUsers, setTempICPCUsers] = useState([]);
@@ -141,7 +143,7 @@ export default function AdminContestOfficialCheckBox({ contest, setContest, user
     <>
       <div>
         <label className="block text-sm font-medium text-gray-700">
-          Resmi:
+          {__("admin.contest.official-label")}
         </label>
         <input
           type="checkbox"
@@ -154,7 +156,7 @@ export default function AdminContestOfficialCheckBox({ contest, setContest, user
       {contest.official === true && (
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            {isICPC ? 'Resmi toparlar' : 'Resmi gatnaşyjylar'}
+            {isICPC ? __("admin.contest.official-teams") : __("admin.contest.official-participants")}
           </label>
           <div className="mt-1 flex flex-wrap gap-2">
             {isICPC ? (
@@ -260,7 +262,7 @@ export default function AdminContestOfficialCheckBox({ contest, setContest, user
                       onChange={(e) => addICPCUser(e.target.value)}
                       className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     >
-                      <option value="">Topara agza goş ({tempICPCUsers.length}/4)</option>
+                      <option value="">{__("admin.contest.add-team-member").replace("{count}", tempICPCUsers.length)}</option>
                       {users.map((user) => (
                         <option
                           key={user.id}
@@ -276,19 +278,19 @@ export default function AdminContestOfficialCheckBox({ contest, setContest, user
                 {tempICPCUsers.length === 4 && (
                   <button
                     type="button"
-                    onClick={submitICPCGroup}
-                    className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-                  >
-                    Topary goş
-                  </button>
+                     onClick={submitICPCGroup}
+                     className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                   >
+                     {__("admin.contest.add-team")}
+                   </button>
                 )}
               </div>
             ) : contest.type === 'Classic' ? (
-              <select
-                onChange={(e) => addParticipant(e.target.value)}
-                className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              >
-                <option value="">Resmi gatnaşyjylary saýla</option>
+                <select
+                  onChange={(e) => addParticipant(e.target.value)}
+                  className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                >
+                  <option value="">{__("admin.contest.select-official-participants")}</option>
                 {users.map((user) => (
                   <option key={user.id} value={user.name}>
                     {user.name} - {user.email}
@@ -303,7 +305,7 @@ export default function AdminContestOfficialCheckBox({ contest, setContest, user
                     onChange={(e) => setTempUser1(e.target.value)}
                     className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                   >
-                    <option value="">Select Player 1</option>
+                    <option value="">{__("admin.contest.select-player-1")}</option>
                     {users.map((user) => (
                       <option
                         key={user.id}
@@ -320,7 +322,7 @@ export default function AdminContestOfficialCheckBox({ contest, setContest, user
                     onChange={(e) => setTempUser2(e.target.value)}
                     className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                   >
-                    <option value="">Select Player 2</option>
+                    <option value="">{__("admin.contest.select-player-2")}</option>
                     {users.map((user) => (
                       <option
                         key={user.id}
@@ -337,7 +339,7 @@ export default function AdminContestOfficialCheckBox({ contest, setContest, user
                   onClick={addParticipantsInDuelMode}
                   className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700"
                 >
-                  Add Players
+                  {__("admin.contest.add-players")}
                 </button>
               </div>
             )}

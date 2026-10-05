@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 const PdfViewer = ({ file }) => {
+  const { __ } = useTranslation();
   const [fileUrl, setFileUrl] = useState(null);
 
   useEffect(() => {
@@ -20,7 +22,7 @@ const PdfViewer = ({ file }) => {
   }, [file]);
 
   if (!file) {
-    return <div className="p-4 text-slate-500">PDF ýüklenýär...</div>;
+    return <div className="p-4 text-slate-500">{__("problem.loading-pdf")}</div>;
   }
 
   return (

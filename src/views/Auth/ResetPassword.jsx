@@ -104,30 +104,30 @@ export default function ResetPassword() {
                     ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
                     : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
                   } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
-                placeholder="••••••••"
-              />
-              {errors.password && (
-                <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.password}</p>
-              )}
-            </div>
+                 placeholder={__("auth.password-placeholder")}
+               />
+               {errors.password && (
+                 <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.password}</p>
+               )}
+             </div>
 
-            <div>
-              <label htmlFor="password-confirmation-input" className="block text-sm font-medium text-slate-700 mb-1">
-                {__("auth.confirm-new-password") || "Confirm New Password"}
-              </label>
-              <input
-                id="password-confirmation-input"
-                name="password_confirmation"
-                type="password"
-                required
-                disabled={loading}
-                value={passwordConfirmation}
-                onChange={handleInputChange(setPasswordConfirmation, "password_confirmation")}
-                className={`block w-full px-4 py-2.5 bg-slate-50 border ${errors.password_confirmation
-                    ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
-                    : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
-                  } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
-                placeholder="••••••••"
+             <div>
+               <label htmlFor="password-confirmation-input" className="block text-sm font-medium text-slate-700 mb-1">
+                 {__("auth.confirm-new-password") || "Confirm New Password"}
+               </label>
+               <input
+                 id="password-confirmation-input"
+                 name="password_confirmation"
+                 type="password"
+                 required
+                 disabled={loading}
+                 value={passwordConfirmation}
+                 onChange={handleInputChange(setPasswordConfirmation, "password_confirmation")}
+                 className={`block w-full px-4 py-2.5 bg-slate-50 border ${errors.password_confirmation
+                     ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
+                     : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
+                   } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
+                 placeholder={__("auth.confirm-password-placeholder")}
               />
               {errors.password_confirmation && (
                 <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.password_confirmation}</p>

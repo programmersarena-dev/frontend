@@ -1,7 +1,9 @@
 import { UserIcon, CheckCircleIcon } from "@heroicons/react/24/solid";
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 export default function ProblemItem({ index, problem, contestId }) {
+  const { __ } = useTranslation();
   const char = String.fromCharCode("A".charCodeAt(0) + index);
   const location = useLocation();
 
@@ -49,7 +51,7 @@ export default function ProblemItem({ index, problem, contestId }) {
         <Link
           to={`/contest/${contestId}/problem/${char}/submissions`}
           className="inline-flex items-center space-x-1.5 text-xs font-medium text-slate-500 hover:text-slate-800 transition-colors bg-slate-100/70 hover:bg-slate-200/60 px-2.5 py-1 rounded-full"
-          title="View submissions"
+          title={__("contest.view-submissions")}
         >
           <UserIcon className="h-3.5 w-3.5 text-slate-400" />
           <span>{problem.accepted_submissions_count ?? 0}</span>

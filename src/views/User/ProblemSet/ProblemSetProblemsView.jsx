@@ -84,7 +84,7 @@ export default function ProblemSetProblemsView() {
                           order.includes("RATING") ? "text-zinc-900 font-semibold" : ""
                         }`}
                       >
-                        <span>Rating</span>
+                        <span>{__("problem.rating")}</span>
                         {order === "BY_RATING_ASC" ? (
                           <ChevronUpIcon className="w-3 h-3" />
                         ) : order === "BY_RATING_DESC" ? (
@@ -99,7 +99,7 @@ export default function ProblemSetProblemsView() {
                           order.includes("SOLVED") ? "text-zinc-900 font-semibold" : ""
                         }`}
                       >
-                        <span>Solved</span>
+                        <span>{__("problem.solved")}</span>
                         {order === "BY_SOLVED_ASC" ? (
                           <ChevronUpIcon className="w-3 h-3" />
                         ) : order === "BY_SOLVED_DESC" ? (

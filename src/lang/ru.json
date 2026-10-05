@@ -3,7 +3,8 @@
     "notifications": "Уведомления",
     "contests": "Соревнования",
     "archive": "Архив",
-    "ratings": "Рейтинги"
+    "ratings": "Рейтинги",
+    "admin": "Админ"
   },
   "auth": {
     "reset_password_title": "Забыли пароль?",
@@ -44,7 +45,13 @@
     "confirm-new-password": "Подтвердите новый пароль",
     "update-password": "Обновить пароль",
     "loading": "Загрузка...",
-    "success-msg": "Вы успешно вошли"
+    "success-msg": "Вы успешно вошли",
+    "handle-placeholder": "например, prog_ru",
+    "email-placeholder": "developer@programmersarena.com",
+    "first-name-placeholder": "Имя",
+    "last-name-placeholder": "Фамилия",
+    "password-placeholder": "••••••••",
+    "confirm-password-placeholder": "••••••••"
   },
   "contest": {
     "problems": "Задачи соревнования",
@@ -106,7 +113,10 @@
     "no-contests-description": "Пока нет соревнований",
     "no_problems": "Нет задач",
     "error-loading": "Ошибка загрузки соревнования",
-    "submitted-successfully": "Успешно отправлено"
+    "submitted-successfully": "Успешно отправлено",
+    "vs": "против",
+    "code-placeholder": "// Вставьте или напишите ваш исходный код здесь...",
+    "view-submissions": "Посмотреть отправки"
   },
   "problem": {
     "problemset": "Задачи",
@@ -137,6 +147,12 @@
     "hide-solved": "Скрыть решённые задачи",
     "user": "Пользователь",
     "count-solved": "Решённые задачи",
+    "rating": "Рейтинг",
+    "solved": "Решённые",
+    "copy-input": "Копировать ввод",
+    "copied": "Скопировано",
+    "copy": "Копировать",
+    "copy-output": "Копировать вывод",
     "not-found": "Задача не найдена.",
     "user-not-found": "Пользователи не найдены",
     "test-not-found": "Тесты не найдены",
@@ -278,7 +294,20 @@
       "active_label": "Активный",
       "cancel": "Отмена",
       "save": "Сохранить",
-      "update": "Обновить"
+      "update": "Обновить",
+      "type-label": "Тип:",
+      "select-type": "Выбрать тип",
+      "authors-label": "Авторы:",
+      "select-author": "Выбрать автора",
+      "official-label": "Официальный:",
+      "official-teams": "Официальные команды",
+      "official-participants": "Официальные участники",
+      "add-team-member": "Добавить участника команды",
+      "add-team": "Добавить команду",
+      "select-official-participants": "Выбрать официальных участников",
+      "select-player-1": "Выбрать игрока 1",
+      "select-player-2": "Выбрать игрока 2",
+      "add-players": "Добавить игроков"
     },
     "problem": {
       "confirm_recheck": "Вы уверены, что хотите перепроверить все решения для этой задачи?",
@@ -366,7 +395,12 @@
       "confirm_password": "Подтвердите новый пароль",
       "cancel": "Отмена",
       "update": "Обновить",
-      "update_success": "Профиль успешно обновлён"
+      "update_success": "Профиль успешно обновлён",
+      "login-required": "Войдите в свой аккаунт",
+      "verify-email-required": "Подтвердите ваш email",
+      "file-or-language-required": "Файл или язык не выбраны",
+      "submit-success": "Успешно отправлено",
+      "error-generic": "Произошла ошибка. Попробуйте снова."
     },
     "blogs": {
       "no_updates": "Пока нет обновлений",
@@ -375,6 +409,15 @@
   },
   "profile": {
     "not-found": "Профиль не найден",
+    "owner": "Владелец",
+    "ratings": {
+      "contest": "Соревнование",
+      "rank": "Место",
+      "solved": "Решено",
+      "rating-change": "Изменение рейтинга",
+      "new-rating": "Новый рейтинг",
+      "not-found": "Соревнования не найдены."
+    },
     "menu": {
       "profile": "Профиль",
       "settings": "Настройки",
@@ -394,13 +437,21 @@
       "verified": "Email успешно подтверждён!",
       "failed": "Не удалось подтвердить email. Попробуйте снова."
     },
+    "resend": {
+      "title": "Отправить письмо для подтверждения повторно",
+      "message": "Письмо с подтверждением было отправлено на ваш адрес. Проверьте почту и подтвердите email для продолжения.",
+      "button": "Отправить повторно"
+    },
     "pagination": {
       "previous": "Предыдущая",
       "next": "Следующая",
       "showing": "Показано",
       "to": "до",
       "of": "из"
-    }
+    },
+    "copyright": "© {year} ProgrammersArena. Все права защищены.",
+    "terms": "Условия",
+    "privacy": "Конфиденциальность"
   },
   "contest_register": {
     "confirm": "Вы хотите зарегистрироваться на это соревнование?",

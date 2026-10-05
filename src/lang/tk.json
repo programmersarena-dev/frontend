@@ -3,7 +3,8 @@
     "notifications": "Bildirişler",
     "contests": "Bäsleşikler",
     "archive": "Arhiw",
-    "ratings": "Reýting"
+    "ratings": "Reýting",
+    "admin": "Admin"
   },
   "auth": {
     "reset_password_title": "Paroly ýatdan çykardyňyzmy?",
@@ -44,7 +45,13 @@
     "confirm-new-password": "Täze paroly tassyklaň",
     "update-password": "Paroly täzele",
     "loading": "Ýüklenilýär...",
-    "success-msg": "Üstünlikli girdiňiz"
+    "success-msg": "Üstünlikli girdiňiz",
+    "handle-placeholder": "mysal, prog_tkm",
+    "email-placeholder": "developer@programmersarena.com",
+    "first-name-placeholder": "Ady",
+    "last-name-placeholder": "Familiýasy",
+    "password-placeholder": "••••••••",
+    "confirm-password-placeholder": "••••••••"
   },
   "contest": {
     "problems": "Bäsleşigiň meseleleri",
@@ -106,7 +113,10 @@
     "no-contests-description": "Häzir bäsleşik ýok",
     "no_problems": "Mesele ýok",
     "error-loading": "Bäsleşigi ýüklemekde ýalňyşlyk",
-    "submitted-successfully": "Üstünlikli berildi"
+    "submitted-successfully": "Üstünlikli berildi",
+    "vs": "vs",
+    "code-placeholder": "// Kod bu ýere goýulyň ýa-da ýazyň...",
+    "view-submissions": "Iberilenleri gör"
   },
   "problem": {
     "problemset": "Meseleler",
@@ -137,6 +147,12 @@
     "hide-solved": "Çözülen meseleleri gizle",
     "user": "Ulanyjy",
     "count-solved": "Çözülen meseleleriň sany",
+    "rating": "Reýtingi",
+    "solved": "Çözülen",
+    "copy-input": "Girişi göçür",
+    "copied": "Göçürildi",
+    "copy": "Göçür",
+    "copy-output": "Çykyşy göçür",
     "not-found": "Meseleler tapylmady.",
     "user-not-found": "Ulanyjylar tapylmady",
     "test-not-found": "Nusga testleri tapylmady",
@@ -278,7 +294,20 @@
       "active_label": "Işjeň",
       "cancel": "Goýbolsun",
       "save": "Goş",
-      "update": "Täzele"
+      "update": "Täzele",
+      "type-label": "Görnüşi:",
+      "select-type": "Görnüşi saýla",
+      "authors-label": "Awtorlar:",
+      "select-author": "Awtory saýla",
+      "official-label": "Resmi:",
+      "official-teams": "Resmi toparlar",
+      "official-participants": "Resmi gatnaşyjylar",
+      "add-team-member": "Topara agza goş",
+      "add-team": "Topary goş",
+      "select-official-participants": "Resmi gatnaşyjylary saýla",
+      "select-player-1": "Oýunçy 1 saýla",
+      "select-player-2": "Oýunçy 2 saýla",
+      "add-players": "Oýunçylary goş"
     },
     "problem": {
       "confirm_recheck": "Bu meseläniň ähli çözüwlerini täzeden barlamak isleýäňizmi?",
@@ -366,7 +395,12 @@
       "confirm_password": "Täze paroly tassykla",
       "cancel": "Goýbolsun",
       "update": "Täzele",
-      "update_success": "Siziň profiliňiz üstünlikli täzelendi"
+      "update_success": "Siziň profiliňiz üstünlikli täzelendi",
+      "login-required": "Hasabyňyza giriň",
+      "verify-email-required": "Poçtaňyzy tassyklaň",
+      "file-or-language-required": "Faýl ýa-da dil saýlanylmady",
+      "submit-success": "Üstünlikli iberildi",
+      "error-generic": "Ýalňyşlyk ýüze çykdy. Gaýtadan synanyşyň."
     },
     "blogs": {
       "no_updates": "Häzir täzelik ýok",
@@ -375,6 +409,15 @@
   },
   "profile": {
     "not-found": "Profil tapylmady",
+    "owner": "Eýesi",
+    "ratings": {
+      "contest": "Bäsleşik",
+      "rank": "Ýeri",
+      "solved": "Işlän",
+      "rating-change": "Reýting üýtgemesi",
+      "new-rating": "Täze reýting",
+      "not-found": "Bäsleşikler tapylmady."
+    },
     "menu": {
       "profile": "Profil",
       "settings": "Sazlamalar",
@@ -394,13 +437,21 @@
       "verified": "E-poçta üstünlikli tassyklanyldy!",
       "failed": "E-poçta barlag şowsuz. Gaýtadan synanyşmagyňyzy haýyş edýäris."
     },
+    "resend": {
+      "title": "Tassyklama haty täzeden iber",
+      "message": "Tassyklama e-poçta salgyňyza ugradyldy. Poçtaňyzy barlaň we dowam etmek üçin e-poçtaňyzy tassyklaň.",
+      "button": "Tassyklamany täzeden iber"
+    },
     "pagination": {
       "previous": "Öňki",
       "next": "Indiki",
       "showing": "Görkezilýär",
       "to": "-",
       "of": "/ Jemi"
-    }
+    },
+    "copyright": "© {year} ProgrammersArena. Ähli hukuklar goralan.",
+    "terms": "Şertler",
+    "privacy": "Gizlinlik"
   },
   "contest_register": {
     "confirm": "Siz çyndanam bäsleşige ýazylmakçymy?",

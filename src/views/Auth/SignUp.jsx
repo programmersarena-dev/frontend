@@ -124,7 +124,7 @@ export default function SignUp() {
                     ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
                     : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
                   } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
-                placeholder="e.g., prog_tkm"
+                placeholder={__("auth.handle-placeholder")}
               />
               {errors.handle && (
                 <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.handle}</p>
@@ -148,7 +148,7 @@ export default function SignUp() {
                     ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
                     : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
                   } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
-                placeholder="developer@programmersarena.com"
+                placeholder={__("auth.email-placeholder")}
               />
               {errors.email && (
                 <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.email}</p>
@@ -172,7 +172,7 @@ export default function SignUp() {
                       ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
                       : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
                     } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
-                  placeholder="Oguz"
+                  placeholder={__("auth.first-name-placeholder")}
                 />
                 {errors.first_name && (
                   <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.first_name}</p>
@@ -195,7 +195,7 @@ export default function SignUp() {
                       ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
                       : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
                     } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
-                  placeholder="Hanow"
+                  placeholder={__("auth.last-name-placeholder")}
                 />
                 {errors.last_name && (
                   <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.last_name}</p>
@@ -243,9 +243,9 @@ export default function SignUp() {
                     ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
                     : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
                   } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
-                placeholder="••••••••"
-              />
-              {errors.password && (
+                 placeholder={__("auth.password-placeholder")}
+               />
+               {errors.password && (
                 <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.password}</p>
               )}
             </div>
@@ -267,9 +267,9 @@ export default function SignUp() {
                     ? "border-rose-500 focus:ring-rose-500/20 focus:border-rose-500"
                     : "border-slate-300 focus:ring-indigo-500/20 focus:border-indigo-600"
                   } placeholder-slate-400 text-slate-900 rounded-xl focus:outline-none focus:ring-4 text-sm transition duration-200 disabled:opacity-50`}
-                placeholder="••••••••"
-              />
-              {errors.password_confirmation && (
+                 placeholder={__("auth.confirm-password-placeholder")}
+               />
+               {errors.password_confirmation && (
                 <p className="mt-1.5 text-xs text-rose-600 font-medium">{errors.password_confirmation}</p>
               )}
             </div>

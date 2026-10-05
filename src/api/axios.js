@@ -60,11 +60,6 @@ axiosClient.interceptors.request.use(
     const token = getStoredToken();
     const expiry = getStoredTokenExpiry();
 
-    if (token && expiry && isTokenExpired(expiry)) {
-      config.headers.Authorization = undefined;
-      return config;
-    }
-
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -74,7 +69,7 @@ axiosClient.interceptors.request.use(
       if (storedLang && ["en", "ru", "tk"].includes(storedLang)) {
         config.headers["X-Locale"] = storedLang;
       }
-    } catch {}
+    } catch { }
 
     return config;
   },
@@ -107,6 +102,10 @@ axiosClient.interceptors.response.use(
     const isRefreshRequest = originalRequest.url.includes("/auth/refresh");
 
     if (error.response.status === 401 && !originalRequest._retry && !isRefreshRequest) {
+      if (!getStoredToken()) {
+        return Promise.reject(error);
+      }
+
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });

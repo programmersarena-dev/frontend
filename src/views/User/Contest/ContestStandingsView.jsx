@@ -112,7 +112,7 @@ const StandingsTable = ({ data, currentUser, onClick, contestId, contestType, __
                       >
                         {user.handle}
                       </Link>
-                      <span className="text-slate-300 text-xs">vs</span>
+                       <span className="text-slate-300 text-xs">{__("contest.vs")}</span>
                       <Link
                         to={`/profile/${user.handle2}`}
                         className="font-medium text-slate-900 hover:text-indigo-600 transition-colors"
