@@ -10,15 +10,17 @@ import {
 import { Outlet, NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import axiosClient from "@/api/axios";
 import Loading from "@/components/core/Loading";
-import ReactCountryFlag from "react-world-flags";
+import usFlag from 'svg-country-flags/svg/us.svg';
+import ruFlag from 'svg-country-flags/svg/ru.svg';
+import tmFlag from 'svg-country-flags/svg/tm.svg';
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "@/contexts/TranslationContext";
-import { clearStoredToken, getStoredToken, setStoredToken } from "@/api/axios";
+import { clearStoredToken } from "@/api/axios";
 
 const availableLanguages = [
-  { code: "US", label: "United States", title: "en" },
-  { code: "RU", label: "Russia", title: "ru" },
-  { code: "TM", label: "Turkmenistan", title: "tk" },
+  { code: "US", label: "United States", title: "en", flag: usFlag },
+  { code: "RU", label: "Russia", title: "ru", flag: ruFlag },
+  { code: "TM", label: "Turkmenistan", title: "tk", flag: tmFlag },
 ];
 
 function classNames(...classes) {
@@ -138,8 +140,9 @@ export default function PageLayout() {
                         disabled={loading}
                         title={language.label}
                       >
-                        <ReactCountryFlag
-                          code={language.code}
+                        <img
+                          src={language.flag}
+                          alt={language.label}
                           style={{
                             width: "16px",
                             height: "12px",
@@ -267,8 +270,9 @@ export default function PageLayout() {
                       onClick={() => changeLanguage(language.title)}
                       disabled={loading}
                     >
-                      <ReactCountryFlag
-                        code={language.code}
+                      <img
+                        src={language.flag}
+                        alt={language.label}
                         style={{
                           width: "18px",
                           height: "13px",

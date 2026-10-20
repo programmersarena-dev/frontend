@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
 import axiosClient from "@/api/axios";
 import AdminPageHeader from "@/components/Admin/PageHeader";
@@ -21,10 +22,11 @@ const Field = ({ label, htmlFor, hint, children }) => (
   </div>
 );
 
+Field.propTypes = { label: PropTypes.string.isRequired, htmlFor: PropTypes.string, hint: PropTypes.string, children: PropTypes.node };
+
 export default function ContestCreateView() {
   const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
-  const [users, setUsers] = useState([]);
   const [contestTypes, setContestTypes] = useState([]);
   const [contest, setContest] = useState({
     type: "",
@@ -84,11 +86,9 @@ export default function ContestCreateView() {
 
   useEffect(() => {
     Promise.all([
-      axiosClient.get("/admin/users"),
       axiosClient.get("/admin/contest-types"),
     ])
-      .then(([usersRes, contestTypesRes]) => {
-        setUsers(usersRes.data);
+      .then(([contestTypesRes]) => {
         setContestTypes(contestTypesRes.data);
         setLoading(false);
       })
@@ -120,7 +120,6 @@ export default function ContestCreateView() {
         </Field>
 
         <AdminContestAuthorList
-          users={users}
           contest={contest}
           setContest={setContest}
         />
@@ -170,7 +169,6 @@ export default function ContestCreateView() {
         <AdminContestOfficialCheckBox
           contest={contest}
           setContest={setContest}
-          users={users}
           handleInputChange={handleInputChange}
         />
 

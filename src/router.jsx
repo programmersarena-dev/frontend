@@ -1,60 +1,63 @@
-import React, { Suspense } from "react";
-import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
+import { Suspense, lazy } from "react";
+import PropTypes from 'prop-types';
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import Loading from "@/components/core/Loading";
-
-import Login from "@/views/Auth/Login";
-import SignUp from "@/views/Auth/SignUp";
-import ResetPassword from "@/views/Auth/ResetPassword";
-import RequestReset from "@/views/Auth/RequestReset";
-
 import GuestLayout from "@/layouts/GuestLayout";
 import UserLayout from "@/layouts/UserLayout";
 import AdminLayout from "@/layouts/AdminLayout";
-
-import BlogsView from "@/views/User/BlogsView";
-import ProblemView from "@/views/User/ProblemView";
-import SubmissionView from "@/views/User/SubmissionView";
-import RatingsView from "@/views/User/RatingsView";
-
 import ContestLayout from "@/layouts/ContestLayout";
-import ContestsView from "@/views/User/Contest/ContestsView";
-import ContestProblemsView from "@/views/User/Contest/ContestProblemsView";
-import ContestSubmitView from "@/views/User/Contest/ContestSubmitView";
-import ContestStandingsView from "@/views/User/Contest/ContestStandingsView";
 
 import ProblemSetLayout from "@/layouts/ProblemSetLayout";
-import ProblemSetProblemsView from "@/views/User/ProblemSet/ProblemSetProblemsView";
-import ProblemSetStatusView from "@/views/User/ProblemSet/ProblemSetStatusView";
-import ProblemSetStandingsView from "@/views/User/ProblemSet/ProblemSetStandingsView";
 
 import ProfileLayout from "@/layouts/ProfileLayout";
-import ProfileView from "@/views/User/Profile/ProfileView";
-import ProfileEditView from "@/views/User/Profile/ProfileEditView";
-import ProfileRatingsView from "@/views/User/Profile/ProfileRatingsView";
-import ProfileSubmissionsView from "@/views/User/Profile/ProfileSubmissionsView";
-import ProfileTeamsView from "@/views/User/Profile/ProfileTeamsView";
 
 import EmailVerification from "@/components/core/EmailVerification";
 import ResendVerificationEmail from "@/components/core/ResendVerificationEmail";
 import NotFound from "@/components/core/NotFound";
-
-import AdminDashboardView from "@/views/Admin/DashboardView";
-import AdminFileManagerView from "@/views/Admin/FileManagerView";
-import AdminBlogList from "@/views/Admin/Blog/BlogList";
-import AdminAddBlog from "@/views/Admin/Blog/AddBlog";
-import AdminEditBlog from "@/views/Admin/Blog/EditBlog";
-
-import AdminContestListView from "@/views/Admin/Contest/ContestListView";
-import AdminContestCreateView from "@/views/Admin/Contest/ContestCreateView";
-import AdminContestEditView from "@/views/Admin/Contest/ContestEditView";
-
-import AdminProblemListView from "@/views/Admin/Problem/ProblemListView";
-import AdminProblemCreateView from "@/views/Admin/Problem/ProblemCreateView";
-import AdminProblemEditView from "@/views/Admin/Problem/ProblemEditView";
-
 import { getStoredToken } from "@/api/axios";
 
+function lazyView(loader) {
+  const Component = lazy(loader);
+  return function LazyView(props) {
+    return <Suspense fallback={<Loading />}><Component {...props} /></Suspense>;
+  };
+}
+
+const Login = lazyView(() => import("@/views/Auth/Login"));
+const SignUp = lazyView(() => import("@/views/Auth/SignUp"));
+const ResetPassword = lazyView(() => import("@/views/Auth/ResetPassword"));
+const RequestReset = lazyView(() => import("@/views/Auth/RequestReset"));
+const BlogsView = lazyView(() => import("@/views/User/BlogsView"));
+const ProblemView = lazyView(() => import("@/views/User/ProblemView"));
+const SubmissionView = lazyView(() => import("@/views/User/SubmissionView"));
+const RatingsView = lazyView(() => import("@/views/User/RatingsView"));
+const ContestsView = lazyView(() => import("@/views/User/Contest/ContestsView"));
+const ContestProblemsView = lazyView(() => import("@/views/User/Contest/ContestProblemsView"));
+const ContestSubmitView = lazyView(() => import("@/views/User/Contest/ContestSubmitView"));
+const ContestStandingsView = lazyView(() => import("@/views/User/Contest/ContestStandingsView"));
+const ProblemSetProblemsView = lazyView(() => import("@/views/User/ProblemSet/ProblemSetProblemsView"));
+const ProblemSetStatusView = lazyView(() => import("@/views/User/ProblemSet/ProblemSetStatusView"));
+const ProblemSetStandingsView = lazyView(() => import("@/views/User/ProblemSet/ProblemSetStandingsView"));
+const ProfileView = lazyView(() => import("@/views/User/Profile/ProfileView"));
+const ProfileEditView = lazyView(() => import("@/views/User/Profile/ProfileEditView"));
+const ProfileRatingsView = lazyView(() => import("@/views/User/Profile/ProfileRatingsView"));
+const ProfileSubmissionsView = lazyView(() => import("@/views/User/Profile/ProfileSubmissionsView"));
+const ProfileTeamsView = lazyView(() => import("@/views/User/Profile/ProfileTeamsView"));
+const AdminDashboardView = lazyView(() => import("@/views/Admin/DashboardView"));
+const AdminFileManagerView = lazyView(() => import("@/views/Admin/FileManagerView"));
+const AdminBlogList = lazyView(() => import("@/views/Admin/Blog/BlogList"));
+const AdminAddBlog = lazyView(() => import("@/views/Admin/Blog/AddBlog"));
+const AdminEditBlog = lazyView(() => import("@/views/Admin/Blog/EditBlog"));
+const AdminContestListView = lazyView(() => import("@/views/Admin/Contest/ContestListView"));
+const AdminContestCreateView = lazyView(() => import("@/views/Admin/Contest/ContestCreateView"));
+const AdminContestEditView = lazyView(() => import("@/views/Admin/Contest/ContestEditView"));
+const AdminProblemListView = lazyView(() => import("@/views/Admin/Problem/ProblemListView"));
+const AdminProblemCreateView = lazyView(() => import("@/views/Admin/Problem/ProblemCreateView"));
+const AdminProblemEditView = lazyView(() => import("@/views/Admin/Problem/ProblemEditView"));
+
+// Route guards are intentionally kept next to their route configuration.
+// eslint-disable-next-line react-refresh/only-export-components
 function ProtectedRoute({ children }) {
   const { loading } = useAuth();
   const token = getStoredToken();
@@ -64,6 +67,7 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 function AdminRoute({ children }) {
   const { currentUser, loading } = useAuth();
 
@@ -71,6 +75,9 @@ function AdminRoute({ children }) {
   if (!currentUser || currentUser.user_type !== "admin") return <NotFound />;
   return children;
 }
+
+ProtectedRoute.propTypes = { children: PropTypes.node.isRequired };
+AdminRoute.propTypes = { children: PropTypes.node.isRequired };
 
 const router = createBrowserRouter([
   {

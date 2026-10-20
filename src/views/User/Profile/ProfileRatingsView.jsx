@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axiosClient from "@/api/axios";
 import { Link, useParams } from "react-router-dom";
 import Loading from "@/components/core/Loading";
+import RequestError from '@/components/core/RequestError';
 import { ChevronUpIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { useTranslation } from "@/contexts/TranslationContext";
 
@@ -18,20 +19,32 @@ export default function ProfileRatingsView() {
   const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [ratings, setRatings] = useState({});
+  const [error, setError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  const [loadedHandle, setLoadedHandle] = useState(null);
   const { handle } = useParams();
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "ascending" });
 
   useEffect(() => {
+    const controller = new AbortController();
+    setLoading(true);
+    setError(false);
     axiosClient
-      .get(`/profile/${handle}/ratings`)
+      .get(`/profile/${encodeURIComponent(handle)}/ratings`, { signal: controller.signal })
       .then((res) => {
+        if (controller.signal.aborted) return;
         setRatings(res.data);
+        setLoadedHandle(handle);
         setLoading(false);
       })
       .catch(() => {
+        if (controller.signal.aborted) return;
+        setError(true);
+        setLoadedHandle(handle);
         setLoading(false);
       });
-  }, [handle]);
+    return () => controller.abort();
+  }, [handle, attempt]);
 
   const handleSort = (key) => {
     if (!key) return;
@@ -56,9 +69,11 @@ export default function ProfileRatingsView() {
     return sorted;
   };
 
-  if (loading) {
+  if (loading || loadedHandle !== handle) {
     return <Loading />;
   }
+
+  if (error) return <RequestError onRetry={() => setAttempt((value) => value + 1)} />;
 
   const rows = sortedContestRatings();
 

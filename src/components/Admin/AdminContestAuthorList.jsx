@@ -1,60 +1,22 @@
+import PropTypes from 'prop-types';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import React from 'react'
-import { useTranslation } from "@/contexts/TranslationContext";
+import UserSearch from './UserSearch';
+import { useTranslation } from '@/contexts/TranslationContext';
 
-export default function AdminContestAuthorList({ users, contest, setContest }) {
+export default function AdminContestAuthorList({ contest, setContest }) {
   const { __ } = useTranslation();
-
-  const addAuthor = (authorName) => {
-    if (authorName && !contest.authors.includes(authorName)) {
-      setContest({
-        ...contest,
-        authors: [...contest.authors, authorName],
-      });
-    }
-  };
-
-  const removeAuthor = (authorName) => {
-    setContest({
-      ...contest,
-      authors: contest.authors.filter((name) => name !== authorName),
-    });
-  };
-
-  return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700">
-        {__("admin.contest.authors-label")}
-      </label>
-      <div className="mt-1 flex flex-wrap gap-2">
-        {contest?.authors?.length > 0 && contest.authors.map((authorName) => {
-          const author = users.find((user) => user.name === authorName);
-          return (
-            author && (
-              <span
-                key={authorName}
-                className="bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm cursor-pointer flex items-center gap-1"
-                onClick={() => removeAuthor(authorName)}
-              >
-                {author.name} <XMarkIcon className="h-4 w-4" />
-              </span>
-            )
-          );
-        })}
-      </div>
-      <div className="mt-2">
-        <select
-          onChange={(e) => addAuthor(e.target.value)}
-          className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-        >
-          <option value="">{__("admin.contest.select-author")}</option>
-          {users?.length > 0 && users.map((user) => (
-            <option key={user.id} value={user.name}>
-              {user.name} - {user.email}
-            </option>
-          ))}
-        </select>
-      </div>
+  return <div className="space-y-3">
+    <UserSearch label={__('admin.contest.authors-label')} excluded={contest.authors}
+      onSelect={(handle) => setContest((previous) => ({ ...previous, authors: [...previous.authors, handle] }))} />
+    <div className="flex flex-wrap gap-2">
+      {contest.authors.map((handle) => <button key={handle} type="button"
+        aria-label={`${__('common.remove')} @${handle}`}
+        onClick={() => setContest((previous) => ({ ...previous, authors: previous.authors.filter((value) => value !== handle) }))}
+        className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-xs text-indigo-700">
+        @{handle}<XMarkIcon aria-hidden="true" className="h-3 w-3" />
+      </button>)}
     </div>
-  )
+  </div>;
 }
+
+AdminContestAuthorList.propTypes = { contest: PropTypes.object.isRequired, setContest: PropTypes.func.isRequired };

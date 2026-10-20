@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import PropTypes from 'prop-types';
 import { useNavigate, useParams } from "react-router-dom";
 import axiosClient from "@/api/axios";
 import Loading from "@/components/core/Loading";
@@ -21,10 +22,11 @@ const Field = ({ label, htmlFor, hint, children }) => (
   </div>
 );
 
+Field.propTypes = { label: PropTypes.string.isRequired, htmlFor: PropTypes.string, hint: PropTypes.string, children: PropTypes.node };
+
 export default function ContestEditView() {
   const { __ } = useTranslation();
   const [loading, setLoading] = useState(true);
-  const [users, setUsers] = useState([]);
   const [contestTypes, setContestTypes] = useState([]);
   const [contest, setContest] = useState({
     type: "",
@@ -69,7 +71,7 @@ export default function ContestEditView() {
     setLoading(true);
     axiosClient
       .post(`/admin/contest/${id}`, contest)
-      .then((res) => {
+      .then(() => {
         navigate("/admin/contests");
         setLoading(false);
       })
@@ -85,12 +87,10 @@ export default function ContestEditView() {
 
   useEffect(() => {
     Promise.all([
-      axiosClient.get("/admin/users"),
       axiosClient.get("/admin/contest-types"),
       axiosClient.get(`/admin/contest/${id}`),
     ])
-      .then(([usersRes, contestTypesRes, contestRes]) => {
-        setUsers(usersRes.data);
+      .then(([contestTypesRes, contestRes]) => {
         setContestTypes(contestTypesRes.data);
         setContest(contestRes.data.data);
         setLoading(false);
@@ -126,7 +126,6 @@ export default function ContestEditView() {
         </Field>
 
         <AdminContestAuthorList
-          users={users}
           contest={contest}
           setContest={setContest}
         />
@@ -176,7 +175,6 @@ export default function ContestEditView() {
         <AdminContestOfficialCheckBox
           contest={contest}
           setContest={setContest}
-          users={users}
           handleInputChange={handleInputChange}
         />
 

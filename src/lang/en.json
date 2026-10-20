@@ -1,4 +1,13 @@
 {
+  "common": {
+    "load_error": "Something went wrong. Please try again.",
+    "retry": "Try again",
+    "loading": "Loading…",
+    "sending": "Sending…",
+    "search_users": "Search by handle or name…",
+    "no_users": "No matching users",
+    "remove": "Remove"
+  },
   "navigation": {
     "notifications": "Notifications",
     "contests": "Contests",
@@ -384,6 +393,8 @@
       "offline": "Offline",
       "edit": "Edit profile",
       "verify_email": "Send verification email",
+      "verification_sent": "Verification email sent",
+      "verification_wait": "Please wait a minute before trying again.",
       "info_title": "Profile information",
       "first_name": "First name",
       "last_name": "Last name",

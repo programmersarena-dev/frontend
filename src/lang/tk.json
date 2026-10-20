@@ -1,4 +1,13 @@
 {
+  "common": {
+    "load_error": "Ýalňyşlyk ýüze çykdy. Täzeden synanyşyň.",
+    "retry": "Täzeden synanyş",
+    "loading": "Ýüklenýär…",
+    "sending": "Ugradylýar…",
+    "search_users": "Ulanyjy ady ýa-da ady boýunça gözle…",
+    "no_users": "Ulanyjy tapylmady",
+    "remove": "Aýyr"
+  },
   "navigation": {
     "notifications": "Bildirişler",
     "contests": "Bäsleşikler",
@@ -382,6 +391,8 @@
       "offline": "Oflaýn",
       "edit": "Profili üýtgetmek",
       "verify_email": "Tassyklama haty iber",
+      "verification_sent": "Tassyklama haty ugradyldy",
+      "verification_wait": "Bir minut garaşyň we täzeden synanyşyň.",
       "info_title": "Profil maglumatlar",
       "first_name": "Ady",
       "last_name": "Familiýasy",
