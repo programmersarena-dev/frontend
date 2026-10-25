@@ -3,14 +3,19 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
     container_name: react-app
     ports:
-      - "3000:8080"
+      - "0.0.0.0:3000:8080"
     restart: unless-stopped
+    networks:
+      - backend-network
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/"]
       interval: 30s
       timeout: 3s
       retries: 3
+
+networks:
+  backend-network:
+    external: true
+    name: backend_app-network

@@ -101,7 +101,7 @@ export default function FileManagerView() {
 
   const copyToClipboard = (path) => {
     // 1. Get the base URL from Vite env
-    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+    const baseUrl = (import.meta.env.VITE_API_BASE_URL || window.location.origin).replace(/\/$/, '');
 
     // 2. Remove 'public/' prefix if Laravel returns it (depends on your disk config)
     const cleanPath = path.replace(/^public\//, '');

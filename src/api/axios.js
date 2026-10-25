@@ -3,6 +3,8 @@ import axios from "axios";
 const TOKEN_STORAGE_KEY = "ACCESS_TOKEN";
 const LEGACY_TOKEN_STORAGE_KEY = "TOKEN";
 const TOKEN_EXPIRES_AT_KEY = "ACCESS_TOKEN_EXPIRES_AT";
+const API_ORIGIN = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
+const API_URL = `${API_ORIGIN}/api/v1`;
 
 export const getStoredToken = () => {
   const token = localStorage.getItem(TOKEN_STORAGE_KEY) || localStorage.getItem(LEGACY_TOKEN_STORAGE_KEY);
@@ -40,7 +42,7 @@ export const clearStoredToken = () => {
 };
 
 const axiosClient = axios.create({
-  baseURL: `${import.meta.env.VITE_API_BASE_URL}/api/v1`,
+  baseURL: API_URL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -122,7 +124,7 @@ axiosClient.interceptors.response.use(
 
       try {
         const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/refresh`,
+          `${API_URL}/auth/refresh`,
           {},
           { withCredentials: true }
         );

@@ -111,11 +111,7 @@ export const AuthProvider = ({ children }) => {
 
       if (expiresAt <= now + twoMinutes) {
         try {
-          const response = await axios.post(
-            `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/refresh`,
-            {},
-            { withCredentials: true }
-          );
+          const response = await axiosClient.post("/auth/refresh");
           if (response.data?.token) {
             const newExpiresAt = response.data?.token_expires_at || response.data?.expires_at;
             setStoredToken(response.data.token, newExpiresAt);

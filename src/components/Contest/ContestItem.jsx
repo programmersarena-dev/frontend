@@ -19,9 +19,21 @@ export default function ContestItem({ contest, index }) {
     (contest.participants?.official?.length || 0) +
     (contest.participants?.unofficial?.length || 0);
 
-  const isEnded = contest.status === "Ended";
-  const isStarted = contest.status === "Active";
-  const isNotStarted = contest.status === "Pending";
+  const startDate = new Date(contest.start_date);
+  const endDate = new Date(contest.end_date);
+  const hasValidSchedule = !Number.isNaN(startDate.getTime()) && !Number.isNaN(endDate.getTime());
+
+  // The API status is only a snapshot from when the list was fetched. Derive
+  // the live state locally so the action changes when the countdown reaches 0.
+  const isNotStarted = hasValidSchedule
+    ? currentDate < startDate
+    : contest.status === "Pending";
+  const isEnded = hasValidSchedule
+    ? currentDate > endDate
+    : contest.status === "Ended";
+  const isStarted = hasValidSchedule
+    ? !isNotStarted && !isEnded
+    : contest.status === "Active";
 
   return (
     <div className="group flex flex-col gap-3 py-4 px-1 border-b border-slate-100 last:border-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Loading from "@/components/core/Loading";
 import axiosClient from "@/api/axios";
 import ContestItem from "@/components/Contest/ContestItem";
@@ -16,25 +16,40 @@ export default function ContestsView() {
     getContests(link.url);
   };
 
-  const getContests = (url) => {
+  const getContests = useCallback((url, showLoading = true) => {
     url = url || "/contests";
-    setLoading(true);
+    if (showLoading) {
+      setLoading(true);
+    }
+
     axiosClient
       .get(url)
       .then((response) => {
         setContests(response.data.data || []);
         setMeta(response.data.meta || {});
-        setLoading(false);
+        if (showLoading) {
+          setLoading(false);
+        }
       })
       .catch((error) => {
         console.error("Error fetching contests:", error);
-        setLoading(false);
+        if (showLoading) {
+          setLoading(false);
+        }
       });
-  };
+  }, []);
 
   useEffect(() => {
     getContests();
-  }, []);
+
+    // Contest status is calculated by the API. Refresh it silently so a page
+    // left open across the start/end boundary updates its label and action.
+    const statusRefreshInterval = window.setInterval(() => {
+      getContests(undefined, false);
+    }, 5000);
+
+    return () => window.clearInterval(statusRefreshInterval);
+  }, [getContests]);
 
   if (loading) return <Loading />;
 
